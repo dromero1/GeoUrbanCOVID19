@@ -93,7 +93,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
-			NdPoint workplace = Heuristics.getSODBasedWorkplace();
+			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
+			NdPoint workplace = Heuristics.getSODBasedWorkplace(null, livingNeighborhood, this.neighborhoods);
 			citizen.setWorkplace(workplace);
 		}
 		// Initialize output manager
