@@ -5,6 +5,8 @@ import java.util.HashMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
 
 import gis.GISPolygon;
 import repast.simphony.engine.environment.RunEnvironment;
@@ -125,9 +127,9 @@ public class Citizen {
 	 */
 	@ScheduledMethod(start = 0)
 	public void init() {
+		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();
-		relocate(this.homeplace);
 	}
 
 	/**
@@ -188,7 +190,8 @@ public class Citizen {
 		// Schedule regular expulsion
 		EventScheduler eventScheduler = EventScheduler.getInstance();
 		double expelInterval = TickConverter.minutesToTicks(PARTICLE_EXPULSION_INTERVAL);
-		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(1, this, expelInterval, "expel");
+		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(1, this, expelInterval,
+				"expelParticles");
 		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES, expelAction);
 		// Schedule removal
 		boolean isDying = Probabilities.isGoingToDie(patientType);
@@ -410,11 +413,10 @@ public class Citizen {
 	 * @param destination Destination
 	 */
 	private void relocate(NdPoint destination) {
-		Geometry geometry = this.simulationBuilder.geography.getGeometry(this);
-		Coordinate coordinate = geometry.getCoordinate();
-		coordinate.x = destination.getX();
-		coordinate.y = destination.getY();
-		this.simulationBuilder.geography.move(this, geometry);
+		GeometryFactory geometryFactory = new GeometryFactory();
+		Coordinate coordinate = new Coordinate(destination.getX(), destination.getY());
+		Point point = geometryFactory.createPoint(coordinate);
+		this.simulationBuilder.geography.move(this, point);
 	}
 
 }
