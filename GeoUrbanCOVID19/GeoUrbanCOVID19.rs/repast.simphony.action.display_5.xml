@@ -8,11 +8,11 @@
     </entry>
     <entry>
       <string>geography.Zone</string>
-      <string>styles.BorderStyle</string>
+      <string>styles.GISPolygonStyle</string>
     </entry>
     <entry>
       <string>geography.Border</string>
-      <string>styles.BorderStyle</string>
+      <string>styles.GISPolygonStyle</string>
     </entry>
   </styles>
   <editedStyles>
@@ -39,7 +39,7 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1392587105</hashCode>
+    <hashCode>397753443</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
@@ -82,7 +82,20 @@
   <renderQuality>MEDIUM</renderQuality>
   <viewType>FLAT</viewType>
   <trackAgents>false</trackAgents>
-  <globeLayers/>
+  <globeLayers>
+    <entry>
+      <string>Scale bar</string>
+      <boolean>true</boolean>
+    </entry>
+    <entry>
+      <string>World Map</string>
+      <boolean>true</boolean>
+    </entry>
+    <entry>
+      <string>Compass</string>
+      <boolean>true</boolean>
+    </entry>
+  </globeLayers>
   <staticCoverages/>
   <coverageLayers/>
 </repast.simphony.gis.visualization.engine.GISDisplayDescriptor>
