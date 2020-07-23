@@ -1,31 +1,24 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
-import geography.Zone;
+
+import gis.GISPolygon;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ISchedulableAction;
-import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduledMethod;
+import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.NdPoint;
-import repast.simphony.space.gis.Geography;
 import simulation.EventScheduler;
+import simulation.SimulationBuilder;
 import util.TickConverter;
 
-/**
- * Citizen
- * 
- * @author Paula Escudero
- * @author Mateo Bonnett
- * @author David Plazas
- * @author Juan Sebastián Cárdenas
- * @author David Andrés Romero
- */
 public class Citizen {
 
 	/**
@@ -34,9 +27,14 @@ public class Citizen {
 	public static final double DISPLACEMENT_FACTOR = 0.0001;
 
 	/**
-	 * Maximum movement in destination (unit: meters). Reference: <pending>
+	 * Maximum displacement per step (unit: meters). Reference: <pending>
 	 */
-	public static final int MAX_MOVEMENT_IN_DESTINATION = 50;
+	public static final double MAX_DISPLACEMENT_PER_STEP = 50;
+
+	/**
+	 * Particle expulsion interval (unit: minutes)
+	 */
+	public static final double PARTICLE_EXPULSION_INTERVAL = 15;
 
 	/**
 	 * Citizen id
@@ -49,39 +47,14 @@ public class Citizen {
 	private int age;
 
 	/**
-	 * Family
+	 * Compartment
 	 */
-	private ArrayList<Citizen> family;
+	private Compartment compartment;
 
 	/**
-	 * Currently at home
+	 * Incubation end (unit: hours)
 	 */
-	private boolean atHome;
-
-	/**
-	 * Wake up time
-	 */
-	private double wakeUpTime;
-
-	/**
-	 * Return to home time
-	 */
-	private double returnToHomeTime;
-
-	/**
-	 * Disease stage
-	 */
-	private DiseaseStage diseaseStage;
-
-	/**
-	 * Ticks to incubation end
-	 */
-	private double incubationShift;
-
-	/**
-	 * Infections count
-	 */
-	private int infections;
+	protected double incubationEnd;
 
 	/**
 	 * Homeplace
@@ -94,44 +67,57 @@ public class Citizen {
 	private NdPoint workplace;
 
 	/**
-	 * Policy enforcer
+	 * Wake up time
 	 */
-	private PolicyEnforcer policyEnforcer;
+	private double wakeUpTime;
 
 	/**
-	 * Reference to geography projection
+	 * Returning home time
 	 */
-	private Geography<Object> geography;
+	private double returningHomeTime;
 
 	/**
-	 * Reference to geometry
+	 * Currently at home
 	 */
-	private Geometry geometry;
+	private boolean atHome;
 
 	/**
-	 * Current zone
+	 * Family
 	 */
-	private Zone currentZone;
+	private ArrayList<Citizen> family;
+
+	/**
+	 * Living neighborhood
+	 */
+	private GISPolygon livingNeighborhood;
+
+	/**
+	 * Reference to simulation builder
+	 */
+	protected SimulationBuilder simulationBuilder;
 
 	/**
 	 * Scheduled actions
 	 */
-	private ArrayList<ISchedulableAction> scheduledActions;
+	private HashMap<SchedulableAction, ISchedulableAction> scheduledActions;
 
 	/**
 	 * Create a new citizen agent
 	 * 
-	 * @param geography      Reference to geography projection
-	 * @param diseaseStage   Disease stage
-	 * @param policyEnforcer Policy enforcer
+	 * @param simulationBuilder Reference to the simulation builder
+	 * @param compartment       Compartment
 	 */
-	public Citizen(Geography<Object> geography, DiseaseStage diseaseStage, PolicyEnforcer policyEnforcer) {
+	public Citizen(SimulationBuilder simulationBuilder, Compartment compartment) {
 		super();
-		this.diseaseStage = diseaseStage;
-		this.geography = geography;
-		this.policyEnforcer = policyEnforcer;
+		this.simulationBuilder = simulationBuilder;
+		this.compartment = compartment;
+		this.id = Probabilities.getRandomId();
+		this.age = Probabilities.getRandomAge();
+		this.atHome = true;
+		this.wakeUpTime = Probabilities.getRandomWakeUpTime();
+		this.returningHomeTime = Probabilities.getRandomReturningHomeTime();
 		this.family = new ArrayList<>();
-		this.scheduledActions = new ArrayList<>();
+		this.scheduledActions = new HashMap<>();
 	}
 
 	/**
@@ -139,36 +125,32 @@ public class Citizen {
 	 */
 	@ScheduledMethod(start = 0)
 	public void init() {
-		this.id = Probabilities.getRandomId();
-		this.age = Probabilities.getRandomAge();
-		this.atHome = true;
-		Shift workShift = Probabilities.getRandomWorkShift();
-		this.wakeUpTime = Probabilities.getRandomWakeUpTime(workShift);
-		this.returnToHomeTime = Probabilities.getRandomReturnToHomeTime(workShift);
 		initDisease();
 		scheduleRecurringEvents();
+		relocate(this.homeplace);
 	}
 
 	/**
 	 * Step
 	 */
 	public void step() {
-		if (this.policyEnforcer.isAllowedToGoOut(this)) {
+		if (this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this)) {
 			randomWalk();
 		}
-		if (this.diseaseStage == DiseaseStage.INFECTED) {
-			infect();
-		}
-		if (isActiveCase()) {
-			this.incubationShift++;
-		}
+	}
+
+	/**
+	 * Expel particles
+	 */
+	public void expelParticles() {
+		infect();
 	}
 
 	/**
 	 * Wake up and go to workplace
 	 */
 	public void wakeUp() {
-		if (this.policyEnforcer.isAllowedToGoOut(this)) {
+		if (this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this)) {
 			this.atHome = false;
 			relocate(this.workplace);
 		}
@@ -185,56 +167,54 @@ public class Citizen {
 	}
 
 	/**
-	 * Set exposed
+	 * Transition to the exposed compartment
 	 */
-	public void setExposed() {
-		this.diseaseStage = DiseaseStage.EXPOSED;
+	public void transitionToExposed() {
+		this.compartment = Compartment.EXPOSED;
 		double incubationPeriod = Probabilities.getRandomIncubationPeriod();
-		this.incubationShift = -TickConverter.daysToTicks(incubationPeriod);
 		double infectiousPeriod = Math.max(incubationPeriod + Probabilities.INFECTION_MIN, 1);
+		this.incubationEnd = RepastEssentials.GetTickCount() + TickConverter.daysToTicks(incubationPeriod);
 		double ticks = TickConverter.daysToTicks(infectiousPeriod);
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		eventScheduler.scheduleOneTimeEvent(ticks, this, "setInfected");
+		eventScheduler.scheduleOneTimeEvent(ticks, this, "transitionToInfected");
 	}
 
 	/**
-	 * Set infected
+	 * Transition to the infected compartment
 	 */
-	public void setInfected() {
-		this.diseaseStage = DiseaseStage.INFECTED;
+	public void transitionToInfected() {
+		this.compartment = Compartment.INFECTED;
 		PatientType patientType = Probabilities.getRandomPatientType();
-		String method = Probabilities.isGoingToDie(patientType) ? "kill" : "setImmune";
-		double daysToEvent = Probabilities.getRandomTimeToDischarge() - Probabilities.INFECTION_MIN;
-		double ticks = TickConverter.daysToTicks(daysToEvent);
+		// Schedule regular expulsion
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		eventScheduler.scheduleOneTimeEvent(ticks, this, method);
+		double expelInterval = TickConverter.minutesToTicks(PARTICLE_EXPULSION_INTERVAL);
+		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(1, this, expelInterval, "expel");
+		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES, expelAction);
+		// Schedule removal
+		boolean isDying = Probabilities.isGoingToDie(patientType);
+		String removalMethod = (isDying) ? "die" : "transitionToImmune";
+		double timeToDischarge = Probabilities.getRandomTimeToDischarge();
+		double ticksToRemoval = TickConverter.daysToTicks(timeToDischarge - Probabilities.INFECTION_MIN);
+		eventScheduler.scheduleOneTimeEvent(ticksToRemoval, this, removalMethod);
 	}
 
 	/**
-	 * Set immune
+	 * Transition to the immune compartment
 	 */
-	public void setImmune() {
-		this.diseaseStage = DiseaseStage.IMMUNE;
+	public void transitionToImmune() {
+		this.compartment = Compartment.IMMUNE;
+		this.scheduledActions.remove(SchedulableAction.EXPEL_PARTICLES);
 	}
 
 	/**
-	 * Kill citizen
+	 * Transition to the dead compartment
 	 */
-	public void kill() {
-		this.diseaseStage = DiseaseStage.DEAD;
-		removeScheduledEvents();
-	}
-
-	/**
-	 * Relocate to destination
-	 * 
-	 * @param destination Destination
-	 */
-	public void relocate(NdPoint destination) {
-		Coordinate coordinate = this.geometry.getCoordinate();
-		coordinate.x = destination.getX();
-		coordinate.y = destination.getY();
-		this.geography.move(this, this.geometry);
+	public void die() {
+		this.compartment = Compartment.DEAD;
+		this.scheduledActions.remove(SchedulableAction.STEP);
+		this.scheduledActions.remove(SchedulableAction.WAKE_UP);
+		this.scheduledActions.remove(SchedulableAction.RETURN_HOME);
+		this.scheduledActions.remove(SchedulableAction.EXPEL_PARTICLES);
 	}
 
 	/**
@@ -245,26 +225,17 @@ public class Citizen {
 	}
 
 	/**
-	 * Get disease stage
+	 * Get age
 	 */
-	public DiseaseStage getDiseaseStage() {
-		return this.diseaseStage;
+	public int getAge() {
+		return this.age;
 	}
 
 	/**
-	 * Get family members
+	 * Get compartment
 	 */
-	public ArrayList<Citizen> getFamily() {
-		return this.family;
-	}
-
-	/**
-	 * Set family members
-	 * 
-	 * @param family List of family members
-	 */
-	public void setFamily(ArrayList<Citizen> family) {
-		this.family = family;
+	public Compartment getCompartment() {
+		return this.compartment;
 	}
 
 	/**
@@ -300,89 +271,90 @@ public class Citizen {
 	}
 
 	/**
-	 * Get age
+	 * Get family
 	 */
-	public int getAge() {
-		return this.age;
+	public ArrayList<Citizen> getFamily() {
+		return this.family;
 	}
 
 	/**
-	 * Get current zone
-	 */
-	public Zone getCurrentZone() {
-		return this.currentZone;
-	}
-
-	/**
-	 * Set current zone
+	 * Set family
 	 * 
-	 * @param zone Zone
+	 * @param family List of family members
 	 */
-	public void setCurrentZone(Zone zone) {
-		this.currentZone = zone;
+	public void setFamily(ArrayList<Citizen> family) {
+		this.family = family;
 	}
 
 	/**
-	 * Set reference to geometry
+	 * Get living neighborhood
+	 */
+	public GISPolygon getLivingNeighborhood() {
+		return this.livingNeighborhood;
+	}
+
+	/**
+	 * Set living neighborhood
 	 * 
-	 * @param geometry Reference to geometry
+	 * @param neighborhood Neighborhood
 	 */
-	public void setGeometry(Geometry geometry) {
-		this.geometry = geometry;
-	}
-
-	/**
-	 * Get infections count
-	 */
-	public int getInfections() {
-		return this.infections;
+	public void setLivingNeighborhood(GISPolygon neighborhood) {
+		this.livingNeighborhood = neighborhood;
 	}
 
 	/**
 	 * Is susceptible?
 	 */
 	public int isSusceptible() {
-		return diseaseStage == DiseaseStage.SUSCEPTIBLE ? 1 : 0;
+		return this.compartment == Compartment.SUSCEPTIBLE ? 1 : 0;
 	}
 
 	/**
 	 * Is exposed?
 	 */
 	public int isExposed() {
-		return diseaseStage == DiseaseStage.EXPOSED ? 1 : 0;
+		return this.compartment == Compartment.EXPOSED ? 1 : 0;
 	}
 
 	/**
 	 * Is infected?
 	 */
 	public int isInfected() {
-		return diseaseStage == DiseaseStage.INFECTED ? 1 : 0;
+		return this.compartment == Compartment.INFECTED ? 1 : 0;
 	}
 
 	/**
 	 * Is immune?
 	 */
 	public int isImmune() {
-		return diseaseStage == DiseaseStage.IMMUNE ? 1 : 0;
+		return this.compartment == Compartment.IMMUNE ? 1 : 0;
 	}
 
 	/**
 	 * Is dead?
 	 */
 	public int isDead() {
-		return diseaseStage == DiseaseStage.DEAD ? 1 : 0;
+		return this.compartment == Compartment.DEAD ? 1 : 0;
+	}
+
+	/**
+	 * Is active case?
+	 */
+	public int isActiveCase() {
+		return this.compartment == Compartment.EXPOSED || this.compartment == Compartment.INFECTED ? 1 : 0;
 	}
 
 	/**
 	 * Initialize disease
 	 */
 	private void initDisease() {
-		switch (this.diseaseStage) {
+		switch (this.compartment) {
 		case EXPOSED:
-			setExposed();
+			transitionToExposed();
 			break;
 		case INFECTED:
-			setInfected();
+			this.incubationEnd = -TickConverter.daysToTicks(Probabilities.INFECTION_MIN);
+			transitionToInfected();
 			break;
 		default:
 			break;
@@ -397,27 +369,21 @@ public class Citizen {
 		ISchedulableAction stepAction = eventScheduler.scheduleRecurringEvent(1, this, 1, "step");
 		ISchedulableAction wakeUpAction = eventScheduler.scheduleRecurringEvent(this.wakeUpTime, this,
 				TickConverter.TICKS_PER_DAY, "wakeUp");
-		ISchedulableAction returnHomeAction = eventScheduler.scheduleRecurringEvent(this.returnToHomeTime, this,
+		ISchedulableAction returnHomeAction = eventScheduler.scheduleRecurringEvent(this.returningHomeTime, this,
 				TickConverter.TICKS_PER_DAY, "returnHome");
-		this.scheduledActions.add(stepAction);
-		this.scheduledActions.add(wakeUpAction);
-		this.scheduledActions.add(returnHomeAction);
+		this.scheduledActions.put(SchedulableAction.STEP, stepAction);
+		this.scheduledActions.put(SchedulableAction.WAKE_UP, wakeUpAction);
+		this.scheduledActions.put(SchedulableAction.RETURN_HOME, returnHomeAction);
 	}
 
 	/**
 	 * Walk randomly
 	 */
 	private void randomWalk() {
-		double distance = 0.0;
-		if (this.atHome) {
-			distance = this.currentZone.getWalkingAverage();
-		} else {
-			distance = MAX_MOVEMENT_IN_DESTINATION;
-		}
-		distance = distance * DISPLACEMENT_FACTOR;
+		double distance = MAX_DISPLACEMENT_PER_STEP * DISPLACEMENT_FACTOR;
 		double x = RandomHelper.nextDoubleFromTo(-distance, distance);
 		double y = RandomHelper.nextDoubleFromTo(-distance, distance);
-		this.geography.moveByDisplacement(this, x, y);
+		this.simulationBuilder.geography.moveByDisplacement(this, x, y);
 	}
 
 	/**
@@ -426,34 +392,29 @@ public class Citizen {
 	private void infect() {
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		double distance = simParams.getDouble("infectionRadius");
-		Geometry searchArea = GeometryUtil.generateBuffer(geography, geography.getGeometry(this), distance);
+		Geometry searchArea = GeometryUtil.generateBuffer(this.simulationBuilder.geography,
+				this.simulationBuilder.geography.getGeometry(this), distance);
 		Envelope searchEnvelope = searchArea.getEnvelopeInternal();
-		Iterable<Citizen> citizens = geography.getObjectsWithin(searchEnvelope, Citizen.class);
+		Iterable<Citizen> citizens = this.simulationBuilder.geography.getObjectsWithin(searchEnvelope, Citizen.class);
+		double incubationDiff = RepastEssentials.GetTickCount() - this.incubationEnd;
 		for (Citizen citizen : citizens) {
-			if (citizen.diseaseStage == DiseaseStage.SUSCEPTIBLE && Probabilities.isGettingExposed(incubationShift)) {
-				citizen.setExposed();
-				this.infections++;
+			if (citizen.compartment == Compartment.SUSCEPTIBLE && Probabilities.isGettingExposed(incubationDiff)) {
+				citizen.transitionToExposed();
 			}
 		}
 	}
 
 	/**
-	 * Is an active case (infected or exposed)?
+	 * Relocate to destination
+	 * 
+	 * @param destination Destination
 	 */
-	private boolean isActiveCase() {
-		return this.diseaseStage == DiseaseStage.INFECTED || this.diseaseStage == DiseaseStage.EXPOSED;
-	}
-
-	/**
-	 * Remove scheduled events
-	 */
-	private void removeScheduledEvents() {
-		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-		for (int i = 0; i < this.scheduledActions.size(); i++) {
-			ISchedulableAction action = this.scheduledActions.get(i);
-			schedule.removeAction(action);
-			this.scheduledActions.remove(action);
-		}
+	private void relocate(NdPoint destination) {
+		Geometry geometry = this.simulationBuilder.geography.getGeometry(this);
+		Coordinate coordinate = geometry.getCoordinate();
+		coordinate.x = destination.getX();
+		coordinate.y = destination.getY();
+		this.simulationBuilder.geography.move(this, geometry);
 	}
 
 }

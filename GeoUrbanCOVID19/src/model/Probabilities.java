@@ -1,20 +1,10 @@
 package model;
 
-import java.util.Arrays;
 import cern.jet.random.Gamma;
 import cern.jet.random.Normal;
 import repast.simphony.random.RandomHelper;
 import util.TickConverter;
 
-/**
- * Probabilities
- * 
- * @author Paula Escudero
- * @author Mateo Bonnett
- * @author David Plazas
- * @author Juan Sebastián Cárdenas
- * @author David Andrés Romero
- */
 public abstract class Probabilities {
 
 	/**
@@ -30,16 +20,24 @@ public abstract class Probabilities {
 			0.0206 };
 
 	/**
-	 * Daily travels (unit: travels). Reference: <pending>
+	 * Minimum wake up time (unit: hours). Reference: <pending>
 	 */
-	public static final int[] DAILY_TRAVELS = { 335, 2169, 3704, 9833, 70018, 328893, 610550, 481395, 314939, 244620,
-			245991, 322370, 318179, 313987, 327201, 309527, 395493, 613719, 466570, 210368, 128377, 93656, 60591,
-			23699 };
+	public static final double MIN_WAKE_UP_TIME = 4;
 
 	/**
-	 * Day shift probability (unit: probability). Reference: <pending>
+	 * Maximum wake up time (unit: hours). Reference: <pending>
 	 */
-	public static final double DAY_SHIFT_PROBABILITY = 0.7;
+	public static final double MAX_WAKE_UP_TIME = 10;
+
+	/**
+	 * Minimum returning home time (unit: hours). Reference: <pending>
+	 */
+	public static final double MIN_RETURN_HOME_TIME = 13;
+
+	/**
+	 * Maximum returning home time (unit: hours). Reference: <pending>
+	 */
+	public static final double MAX_RETURN_HOME_TIME = 22;
 
 	/**
 	 * Infection alpha parameter. Reference: <pending>
@@ -85,8 +83,8 @@ public abstract class Probabilities {
 	 * @param max  Maximum
 	 */
 	public static double getRandomTriangular(double min, double mode, double max) {
-		double beta = (mode - min) / (max - min);
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		double beta = (mode - min) / (max - min);
 		double t = 0.0;
 		if (r < beta) {
 			t = Math.sqrt(beta * r);
@@ -151,6 +149,8 @@ public abstract class Probabilities {
 
 	/**
 	 * Is the patient going to die? Reference: <pending>
+	 * 
+	 * @param patientType Patient type
 	 */
 	public static boolean isGoingToDie(PatientType patientType) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
@@ -166,14 +166,16 @@ public abstract class Probabilities {
 
 	/**
 	 * Is the citizen getting exposed? Reference: <pending>
+	 * 
+	 * @param incubationDiff Incubation difference
 	 */
-	public static boolean isGettingExposed(double incubationShift) {
+	public static boolean isGettingExposed(double incubationDiff) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		Gamma gamma = RandomHelper.createGamma(INFECTION_ALPHA, 1.0 / INFECTION_BETA);
-		if (incubationShift < INFECTION_MIN) {
+		double days = TickConverter.ticksToDays(incubationDiff);
+		if (days < INFECTION_MIN) {
 			return false;
 		}
-		double days = TickConverter.ticksToDays(incubationShift);
 		double p = gamma.pdf(days - INFECTION_MIN);
 		return r < p;
 	}
@@ -189,65 +191,15 @@ public abstract class Probabilities {
 	/**
 	 * Get random wake up time (unit: hours). Reference: <pending>
 	 */
-	public static double getRandomWakeUpTime(Shift workShift) {
-		int[] travels;
-		int displacement;
-		if (workShift == Shift.DAY) {
-			travels = Arrays.copyOfRange(DAILY_TRAVELS, 4, 10);
-			displacement = 3;
-		} else {
-			travels = Arrays.copyOfRange(DAILY_TRAVELS, 18, 22);
-			displacement = 17;
-		}
-		int sum = 0;
-		for (int t : travels) {
-			sum += t;
-		}
-		double r = RandomHelper.nextDoubleFromTo(0, 1);
-		int acum = 0;
-		for (int i = 0; i < travels.length; i++) {
-			acum += travels[i];
-			if (r <= acum / sum) {
-				return RandomHelper.nextDoubleFromTo(0, 1) + i + displacement;
-			}
-		}
-		return -1;
+	public static double getRandomWakeUpTime() {
+		return RandomHelper.nextDoubleFromTo(MIN_WAKE_UP_TIME, MAX_WAKE_UP_TIME);
 	}
 
 	/**
-	 * Get random return to home time (unit: hours). Reference: <pending>
+	 * Get random returning home time (unit: hours). Reference: <pending>
 	 */
-	public static double getRandomReturnToHomeTime(Shift workShift) {
-		int[] travels;
-		int displacement;
-		if (workShift == Shift.DAY) {
-			travels = Arrays.copyOfRange(DAILY_TRAVELS, 13, 19);
-			displacement = 12;
-		} else {
-			travels = Arrays.copyOfRange(DAILY_TRAVELS, 1, 6);
-			displacement = 1;
-		}
-		int sum = 0;
-		for (int t : travels) {
-			sum += t;
-		}
-		double r = RandomHelper.nextDoubleFromTo(0, 1);
-		int acum = 0;
-		for (int i = 0; i < travels.length; i++) {
-			acum += travels[i];
-			if (r <= acum / sum) {
-				return RandomHelper.nextDoubleFromTo(0, 1) + i + displacement;
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * Get random work shift. Reference: <pending>
-	 */
-	public static Shift getRandomWorkShift() {
-		double random = RandomHelper.nextDoubleFromTo(0, 1);
-		return (random < Probabilities.DAY_SHIFT_PROBABILITY) ? Shift.DAY : Shift.NIGHT;
+	public static double getRandomReturningHomeTime() {
+		return RandomHelper.nextDoubleFromTo(MIN_RETURN_HOME_TIME, MAX_RETURN_HOME_TIME);
 	}
 
 }

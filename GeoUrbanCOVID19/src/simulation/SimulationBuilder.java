@@ -1,19 +1,16 @@
 package simulation;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import org.opengis.feature.simple.SimpleFeature;
-import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.MultiPolygon;
-import com.vividsolutions.jts.geom.Point;
-import geography.Border;
-import geography.Zone;
+import config.Paths;
+import datasource.Reader;
+import gis.GISPolygon;
 import model.Citizen;
-import model.DiseaseStage;
+import model.Compartment;
 import model.Heuristics;
 import model.Policy;
 import model.PolicyEnforcer;
@@ -23,158 +20,153 @@ import repast.simphony.context.space.gis.GeographyFactory;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
-import util.TickConverter;
 
 public class SimulationBuilder implements ContextBuilder<Object> {
 
+	/**
+	 * Geography projection id
+	 */
+	public static final String GEOGRAPHY_PROJECTION_ID = "city";
+
+	/**
+	 * Reference to geography projection
+	 */
+	public Geography<Object> geography;
+
+	/**
+	 * City
+	 */
+	public HashMap<String, GISPolygon> city;
+
+	/**
+	 * Neighborhoods
+	 */
+	public HashMap<String, GISPolygon> neighborhoods;
+
+	/**
+	 * Policy enforcer
+	 */
+	public PolicyEnforcer policyEnforcer;
+
+	/**
+	 * Build simulation
+	 * 
+	 * @param context Simulation context
+	 */
 	@Override
 	public Context<Object> build(Context<Object> context) {
-		context.setId("covid19ABMS");
-
-		// Read Aburra Valley border geometry
-		List<SimpleFeature> borderFeatures = Reader
-				.loadGeometryFromShapefile("../sit-zone-information/maps/EOD_border.shp");
-		Geometry borderGeometry = (MultiPolygon) borderFeatures.get(0).getDefaultGeometry();
-		/*
-		 * AffineTransformation transformation = new AffineTransformation();
-		 * transformation.scale(2, 2); borderGeometry =
-		 * transformation.transform(borderGeometry);
-		 */
-
-		// Read EOD matrix
-		HashMap<String, Object> eod = Reader.loadEODMatrix("../sit-zone-information/eod_2017.csv");
-		HashMap<String, Object> walks = Reader.loadEODWalksMatrix("../sit-zone-information/eod_2017_walks.csv");
-
-		// Read SIT zones and create list with zones
-		List<SimpleFeature> zonesFeatures = Reader.loadGeometryFromShapefile("../sit-zone-information/maps/EOD.shp");
-		ArrayList<Zone> zoneList = new ArrayList<Zone>();
-		HashMap<Integer, Integer> rows = (HashMap<Integer, Integer>) walks.get("rows");
-		ArrayList<Double> averageWalks = (ArrayList<Double>) walks.get("walks");
-		double maxWalk = Collections.max(averageWalks);
-		double sumWalks = 0;
-		for (Double d : averageWalks) {
-			sumWalks += d;
+		context.setId("GeoUrbanCOVID19");
+		// Create geography projection
+		this.geography = createGeographyProjection(context);
+		// Initialize city
+		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE);
+		for (GISPolygon cityElement : this.city.values()) {
+			context.add(cityElement);
 		}
-		double averageWalk = sumWalks / averageWalks.size();
-		for (SimpleFeature feature : zonesFeatures) {
-			Geometry zoneGeometry = (MultiPolygon) feature.getDefaultGeometry();
-			// zoneGeometry = transformation.transform(zoneGeometry);
-			int id = Integer.parseInt((String) feature.getAttribute("SIT_2017"));
-			double walk = 0;
-			if (rows.containsKey(id)) {
-				walk = averageWalks.get(rows.get(id));
-			} else {
-				walk = averageWalk;
+		// Initialize neighborhoods
+		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_FACILITIES_GEOMETRY_SHAPEFILE);
+		for (GISPolygon neighborhood : this.neighborhoods.values()) {
+			context.add(neighborhood);
+		}
+		// Add students to simulation
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		ArrayList<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
+				simParams.getInteger("infectedCount"));
+		for (Citizen citizen : citizens) {
+			context.add(citizen);
+		}
+		// Assign families
+		ArrayList<Citizen> familyProxies = new ArrayList<Citizen>();
+		for (Citizen citizen : citizens) {
+			if (citizen.getFamily().isEmpty()) {
+				Heuristics.assignFamily(citizen, citizens);
+				familyProxies.add(citizen);
 			}
-			double zoneWalk = Citizen.MAX_MOVEMENT_IN_DESTINATION * walk / maxWalk;
-			zoneList.add(new Zone(id, zoneGeometry, zoneWalk));
 		}
+		// Assign a house to each family
+		for (Citizen proxy : familyProxies) {
+			Heuristics.assignHouse(proxy, this.neighborhoods);
+		}
+		// Assign workplaces
+		for (Citizen citizen : citizens) {
+			NdPoint workplace = Heuristics.getSODBasedWorkplace();
+			citizen.setWorkplace(workplace);
+		}
+		// Initialize output manager
+		OutputManager outputManager = new OutputManager();
+		context.add(outputManager);
+		// Schedule policies
+		this.policyEnforcer = schedulePolicies(Paths.POLICIES_DATABASE);
+		context.add(policyEnforcer);
+		return context;
+	}
 
-		// Geography projection
+	/**
+	 * Create geography projection
+	 * 
+	 * @param context Simulation context
+	 */
+	private Geography<Object> createGeographyProjection(Context<Object> context) {
 		GeographyParameters<Object> params = new GeographyParameters<Object>();
 		GeographyFactory geographyFactory = GeographyFactoryFinder.createGeographyFactory(null);
-		Geography<Object> geography = geographyFactory.createGeography("Valle de Aburra", context, params);
+		Geography<Object> geography = geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID, context, params);
+		return geography;
+	}
 
-		// Add border to context and projection
-		Border border = new Border(borderGeometry);
-		border.setGeometryInGeography(geography);
-		context.add(border);
-
-		// Add zones to context and projection
-		for (Zone zone : zoneList) {
-			zone.setGeometryInGeography(geography);
-			context.add(zone);
+	/**
+	 * Read polygons
+	 * 
+	 * @param geometryPath Path to geometry file
+	 */
+	private HashMap<String, GISPolygon> readPolygons(String geometryPath) {
+		HashMap<String, GISPolygon> polygons = new HashMap<>();
+		List<SimpleFeature> features = Reader.loadGeometryFromShapefile(geometryPath);
+		for (SimpleFeature feature : features) {
+			MultiPolygon multiPolygon = (MultiPolygon) feature.getDefaultGeometry();
+			Geometry geometry = multiPolygon.getGeometryN(0);
+			String id = (String) feature.getAttribute(1);
+			GISPolygon polygon = new GISPolygon(id);
+			polygon.setGeometryInGeography(this.geography, geometry);
+			polygons.put(id, polygon);
 		}
+		return polygons;
+	}
 
-		// Get simulation parameters
-		Parameters simParams = RunEnvironment.getInstance().getParameters();
-
-		// Schedule policies
-		PolicyEnforcer policyEnforcer = new PolicyEnforcer();
-		String selectedPolicy = simParams.getString("policy");
-		int policyStart = simParams.getInteger("policyStart");
-		int policyEnd = simParams.getInteger("policyEnd");
-		Policy policy = null;
-		switch (selectedPolicy) {
-		case "full-quarantine":
-			policy = Policy.FULL_QUARANTINE;
-			break;
-		case "id-based-curfew":
-			policy = Policy.ID_BASED_CURFEW;
-		default:
-			break;
-		}
-		if (policy != null) {
-			policyEnforcer.schedulePolicy(policy, policyStart, policyEnd);
-		}
-		context.add(policyEnforcer);
-
-		// Susceptible citizens
-		int susceptibleCount = simParams.getInteger("susceptibleCount");
-		for (int i = 0; i < susceptibleCount; i++) {
-			Citizen citizen = new Citizen(geography, DiseaseStage.SUSCEPTIBLE, policyEnforcer);
-			context.add(citizen);
-		}
-
-		// Infected citizens
-		int infectedCount = simParams.getInteger("infectedCount");
+	/**
+	 * Create citizens
+	 * 
+	 * @param susceptibleCount Number of susceptible citizens
+	 * @param infectedCount    Number of infected citizens
+	 */
+	private ArrayList<Citizen> createCitizens(int susceptibleCount, int infectedCount) {
+		ArrayList<Citizen> citizens = new ArrayList<>();
 		for (int i = 0; i < infectedCount; i++) {
-			Citizen citizen = new Citizen(geography, DiseaseStage.INFECTED, policyEnforcer);
-			context.add(citizen);
+			Citizen citizen = new Citizen(this, Compartment.INFECTED);
+			citizens.add(citizen);
 		}
-
-		// Create citizen list
-		ArrayList<Citizen> citizenList = new ArrayList<Citizen>();
-		for (Object obj : context) {
-			if (obj instanceof Citizen) {
-				Citizen citizen = (Citizen) obj;
-				citizenList.add(citizen);
-			}
+		for (int i = 0; i < susceptibleCount; i++) {
+			Citizen citizen = new Citizen(this, Compartment.SUSCEPTIBLE);
+			citizens.add(citizen);
 		}
+		return citizens;
+	}
 
-		// Create geometry for agents
-		List<Coordinate> agentCoordinates = GeometryUtil.generateRandomPointsInPolygon(borderGeometry,
-				citizenList.size());
-		GeometryFactory geometryFactory = new GeometryFactory();
-		for (int i = 0; i < agentCoordinates.size(); i++) {
-			Citizen citizen = citizenList.get(i);
-			Coordinate coordinate = agentCoordinates.get(i);
-			Point pointAgent = geometryFactory.createPoint(coordinate);
-			geography.move(citizen, pointAgent);
-			citizen.setGeometry(geography.getGeometry(citizen));
+	/**
+	 * Schedule policies
+	 * 
+	 * @param policiesPath Path to policies file
+	 */
+	private PolicyEnforcer schedulePolicies(String policiesPath) {
+		PolicyEnforcer policyEnforcer = new PolicyEnforcer();
+		ArrayList<Policy> policies = Reader.readPoliciesDatabase(policiesPath);
+		for (Policy policy : policies) {
+			policyEnforcer.schedulePolicy(policy);
 		}
-
-		// Create families
-		ArrayList<Citizen> uniqueFamilies = new ArrayList<Citizen>();
-		for (Citizen citizen : citizenList) {
-			if (citizen.getFamily().isEmpty()) {
-				Heuristics.getFamily(citizen, citizenList);
-				uniqueFamilies.add(citizen);
-			}
-		}
-
-		// Create houses for each family
-		HashMap<Zone, ArrayList<NdPoint>> houses = new HashMap<Zone, ArrayList<NdPoint>>();
-		for (Citizen citizen : uniqueFamilies) {
-			Heuristics.createHouse(citizen, houses, geography, zoneList);
-		}
-
-		// Assign workplaces
-		for (Citizen citizen : citizenList) {
-			Heuristics.assignWorkplace(citizen, eod, zoneList);
-		}
-
-		OutputManager outputManager = new OutputManager(citizenList);
-		context.add(outputManager);
-
-		RunEnvironment.getInstance().endAt(3 * 30 * TickConverter.TICKS_PER_DAY);
-
-		return context;
+		return policyEnforcer;
 	}
 
 }

@@ -1,25 +1,53 @@
 package util;
 
-/**
- * Tick converter
- * 
- * @author Paula Escudero
- * @author Mateo Bonnett
- * @author David Plazas
- * @author Juan Sebastián Cárdenas
- * @author David Andrés Romero
- */
+import repast.simphony.util.collections.Pair;
+
 public class TickConverter {
+
+	/**
+	 * Ticks per minute (unit: ticks)
+	 */
+	public static final double TICKS_PER_MINUTE = 1.0 / 60;
 
 	/**
 	 * Ticks per week (unit: ticks)
 	 */
-	public static final int TICKS_PER_WEEK = 7;
+	public static final int TICKS_PER_WEEK = 168;
 
 	/**
 	 * Ticks per day (unit: ticks)
 	 */
 	public static final int TICKS_PER_DAY = 24;
+
+	/**
+	 * Day and time to ticks
+	 * 
+	 * @param day  Day
+	 * @param time Time
+	 */
+	public static double dayTimeToTicks(int day, double time) {
+		return (day - 1) * TICKS_PER_DAY + time;
+	}
+
+	/**
+	 * Tick to day and time
+	 * 
+	 * @param tick Tick
+	 */
+	public static Pair<Double, Double> tickToDayTime(double tick) {
+		double day = Math.floor(((tick / TICKS_PER_DAY) % 7) + 1);
+		double time = (((tick / TICKS_PER_DAY) % 7) + 1 - day) * TICKS_PER_DAY;
+		return new Pair<Double, Double>(day, time);
+	}
+
+	/**
+	 * Minutes to ticks
+	 * 
+	 * @param minutes Minutes
+	 */
+	public static double minutesToTicks(double minutes) {
+		return minutes * TICKS_PER_MINUTE;
+	}
 
 	/**
 	 * Days to ticks

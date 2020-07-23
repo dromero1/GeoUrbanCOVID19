@@ -1,7 +1,7 @@
 package styles;
 
 import model.Citizen;
-import model.DiseaseStage;
+import model.Compartment;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
@@ -56,7 +56,7 @@ public class CitizenStyle implements MarkStyle<Citizen> {
 
 	@Override
 	public WWTexture getTexture(Citizen citizen, WWTexture texture) {
-		DiseaseStage diseaseStage = citizen.getDiseaseStage();
+		Compartment diseaseStage = citizen.getDiseaseStage();
 		switch (diseaseStage) {
 		case DEAD:
 			return textureMap.get("black circle");

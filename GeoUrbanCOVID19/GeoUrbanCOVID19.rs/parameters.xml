@@ -1,48 +1,18 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <parameters>
-					<parameter name="randomSeed" displayName="Default Random Seed" type="int" 
-						defaultValue="930489635" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-				<parameter name="infectedCount" displayName="Infected count" type="int" 
-						defaultValue="25" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-				<parameter name="policyEnd" displayName="Policy end (day)" type="int" 
-						defaultValue="80" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-				<parameter name="infectionRadius" displayName="Infection radius (meters)" type="double" 
-						defaultValue="100.0" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
-									
-		/>
-				<parameter name="policyStart" displayName="Policy start (day)" type="int" 
-						defaultValue="10" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-				<parameter name="susceptibleCount" displayName="Susceptible count" type="int" 
-						defaultValue="5000" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$IntConverter"
-									
-		/>
-				<parameter name="policy" displayName="Policy" type="java.lang.String" 
-						defaultValue="none" 
-						isReadOnly="false" 
-						converter="repast.simphony.parameter.StringConverterFactory$StringStringConverter"
-									values="none full-quarantine id-based-curfew "
-						
-		/>
-		</parameters>
-
-
+	<parameter name="randomSeed"
+		displayName="Default Random Seed" type="int" defaultValue="930489635"
+		isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="infectedCount" displayName="Infected count"
+		type="int" defaultValue="25" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="infectionRadius"
+		displayName="Infection radius (meters)" type="double"
+		defaultValue="100.0" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
+	<parameter name="susceptibleCount"
+		displayName="Susceptible count" type="int" defaultValue="5000"
+		isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+</parameters>

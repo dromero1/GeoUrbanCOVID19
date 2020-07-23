@@ -5,21 +5,12 @@ import repast.simphony.essentials.RepastEssentials;
 import simulation.EventScheduler;
 import util.TickConverter;
 
-/**
- * Policy enforcer
- * 
- * @author Paula Escudero
- * @author Mateo Bonnett
- * @author David Plazas
- * @author Juan Sebastián Cárdenas
- * @author David Andrés Romero
- */
 public class PolicyEnforcer {
 
 	/**
 	 * Current policies
 	 */
-	private ArrayList<Policy> currentPolicies;
+	private ArrayList<PolicyType> currentPolicies;
 
 	/**
 	 * Curfew IDs for each day. Reference: <pending>
@@ -30,21 +21,19 @@ public class PolicyEnforcer {
 	 * Create a new policy enforcer
 	 */
 	public PolicyEnforcer() {
-		this.currentPolicies = new ArrayList<Policy>();
+		this.currentPolicies = new ArrayList<PolicyType>();
 	}
 
 	/**
 	 * Schedule policy
 	 * 
-	 * @param policy   Policy
-	 * @param startDay Start day
-	 * @param endDay   End day
+	 * @param policy Policy
 	 */
-	public void schedulePolicy(Policy policy, double startDay, double endDay) {
+	public void schedulePolicy(Policy policy) {
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		double startTick = TickConverter.daysToTicks(startDay);
+		double startTick = TickConverter.daysToTicks(policy.getBeginDay());
 		eventScheduler.scheduleOneTimeEvent(startTick, this, "addPolicy", policy);
-		double endTick = TickConverter.daysToTicks(endDay);
+		double endTick = TickConverter.daysToTicks(policy.getEndDay());
 		eventScheduler.scheduleOneTimeEvent(endTick, this, "removePolicy", policy);
 	}
 
@@ -53,7 +42,7 @@ public class PolicyEnforcer {
 	 * 
 	 * @param policy Policy
 	 */
-	public void addPolicy(Policy policy) {
+	public void addPolicy(PolicyType policy) {
 		this.currentPolicies.add(policy);
 	}
 
@@ -62,7 +51,7 @@ public class PolicyEnforcer {
 	 * 
 	 * @param policy Policy
 	 */
-	public void removePolicy(Policy policy) {
+	public void removePolicy(PolicyType policy) {
 		this.currentPolicies.remove(policy);
 	}
 
@@ -73,10 +62,10 @@ public class PolicyEnforcer {
 	 */
 	public boolean isAllowedToGoOut(Citizen citizen) {
 		boolean allowed = true;
-		if (this.currentPolicies.contains(Policy.FULL_QUARANTINE)) {
+		if (this.currentPolicies.contains(PolicyType.FULL_QUARANTINE)) {
 			allowed = false;
 		}
-		if (this.currentPolicies.contains(Policy.ID_BASED_CURFEW)) {
+		if (this.currentPolicies.contains(PolicyType.ID_BASED_CURFEW)) {
 			int id = citizen.getId();
 			double ticks = Math.max(RepastEssentials.GetTickCount(), 0);
 			int day = (int) TickConverter.ticksToDays(ticks) % 7;

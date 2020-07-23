@@ -2,104 +2,121 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import com.vividsolutions.jts.geom.Coordinate;
-import geography.Zone;
+import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.GeometryFactory;
+import com.vividsolutions.jts.geom.Point;
+
+import gis.GISPolygon;
 import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
+import util.PolygonUtil;
 
 public abstract class Heuristics {
 
-	public static final int familyProbs[] = { 19, 23, 24, 19, 8, 7 };
-	public static final int houseRadius = 0;
+	/**
+	 * Probabilities of a family having up to i members (i = 1,...,6)
+	 */
+	public static final double FAMILY_PROBABILITIES[] = { 0.19, 0.23, 0.24, 0.19, 0.8, 0.7 };
 
-	public static void getFamily(Citizen toSelect, ArrayList<Citizen> citizenList) {
+	/**
+	 * House radius
+	 */
+	public static final int HOUSE_RADIUS = 0;
+
+	/**
+	 * Assign family
+	 * 
+	 * @param citizen  Citizen
+	 * @param citizens Citizens
+	 */
+	public static void assignFamily(Citizen citizen, ArrayList<Citizen> citizens) {
 		ArrayList<Citizen> family = new ArrayList<Citizen>();
-		family.add(toSelect);
-
-		if (toSelect.getAge() < 18) {
+		family.add(citizen);
+		if (citizen.getAge() < 18) {
 			// Conditional probability
-			double familyProbsKids[] = new double[familyProbs.length - 1];
-			double sumProb = 100 - familyProbs[0];
+			double familyProbsKids[] = new double[FAMILY_PROBABILITIES.length - 1];
+			double sumProb = 1 - FAMILY_PROBABILITIES[0];
 			double sumPartial = 0;
 			for (int j = 1; j < familyProbsKids.length; j++) {
-				familyProbsKids[j] = familyProbs[j + 1] * 100 / sumProb;
+				familyProbsKids[j] = FAMILY_PROBABILITIES[j + 1] / sumProb;
 				sumPartial += familyProbsKids[j];
 			}
-			familyProbsKids[0] = 100 - sumPartial;
-
-			// How much people are in the family
+			familyProbsKids[0] = 1 - sumPartial;
+			// How many people are in the family?
 			int acum = 0;
-			double r = RandomHelper.nextDoubleFromTo(0, 1) * 100;
-			int numberFamily = 0;
+			double r = RandomHelper.nextDoubleFromTo(0, 1);
+			int familyCount = 0;
 			for (int i = 0; i < familyProbsKids.length; i++) {
 				acum += familyProbsKids[i];
 				if (r < acum) {
-					numberFamily = i;
+					familyCount = i;
 					break;
 				}
 			}
-
 			// Select family
 			Citizen adult = null;
 			int indexAdult = 0;
-			for (Citizen citizen : citizenList) {
-				if (citizen.getAge() >= 18 && citizen.getFamily().size() == 0) {
-					adult = citizen;
+			for (Citizen otherCitizen : citizens) {
+				if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().size() == 0) {
+					adult = otherCitizen;
 					break;
 				}
 				indexAdult += 1;
 			}
-
 			if (adult == null) {
-				// Case in which every adult has a family
-				for (Citizen citizen : citizenList) {
-					if (citizen.getAge() >= 18 && citizen.getFamily().size() != 0) {
-						family = citizen.getFamily();
-						family.add(toSelect);
+				// Case: Every adult has a family
+				for (Citizen otherCitizen : citizens) {
+					if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().size() != 0) {
+						family = otherCitizen.getFamily();
+						family.add(citizen);
 						break;
 					}
 				}
 			} else {
-				// Case in which I have an adult in my family
+				// Case: The citizen has an adult in my family
 				family.add(adult);
-
-				if (numberFamily > 0) {
-					for (int i = 0; i < citizenList.size(); i++) {
-						if (i == indexAdult || citizenList.get(i).equals(toSelect))
+				if (familyCount > 0) {
+					for (int i = 0; i < citizens.size(); i++) {
+						if (i == indexAdult || citizens.get(i).equals(citizen)) {
 							continue;
-
-						if (citizenList.get(i).getFamily().size() == 0)
-							family.add(citizenList.get(i));
-
-						if (numberFamily == family.size() - 2)
+						}
+						if (citizens.get(i).getFamily().size() == 0) {
+							family.add(citizens.get(i));
+						}
+						if (familyCount == family.size() - 2) {
 							break;
+						}
 					}
 				}
 			}
 		} else {
 			int acum = 0;
-			double r = RandomHelper.nextDoubleFromTo(0, 1) * 100;
-			int numberFamily = 0;
-			for (int i = 0; i < familyProbs.length; i++) {
-				acum += familyProbs[i];
+			double r = RandomHelper.nextDoubleFromTo(0, 1);
+			int familyCount = 0;
+			for (int i = 0; i < FAMILY_PROBABILITIES.length; i++) {
+				acum += FAMILY_PROBABILITIES[i];
 				if (r < acum) {
-					numberFamily = i;
+					familyCount = i;
 					break;
 				}
 			}
-			// How much people are in the family
-			if (numberFamily > 0) {
-				for (int i = 0; i < citizenList.size(); i++) {
-					if (citizenList.get(i).equals(toSelect))
+			// How many people are in the family?
+			if (familyCount > 0) {
+				for (int i = 0; i < citizens.size(); i++) {
+					if (citizens.get(i).equals(citizen)) {
 						continue;
-
-					if (citizenList.get(i).getFamily().size() == 0)
-						family.add(citizenList.get(i));
-
-					if (numberFamily == family.size() - 1)
+					}
+					if (citizens.get(i).getFamily().size() == 0) {
+						family.add(citizens.get(i));
+					}
+					if (familyCount == family.size() - 1) {
 						break;
+					}
 				}
 			}
 		}
@@ -108,64 +125,45 @@ public abstract class Heuristics {
 		}
 	}
 
-	public static void createHouse(Citizen citizen, HashMap<Zone, ArrayList<NdPoint>> houses,
-			Geography<Object> geography, ArrayList<Zone> zoneList) {
-
-		// Select random zone
-		int zoneIndex = RandomHelper.nextIntFromTo(0, zoneList.size() - 1);
-		Zone selectedZone = zoneList.get(zoneIndex);
-
-		Coordinate coordinate = GeometryUtil.generateRandomPointsInPolygon(selectedZone.getGeometry(), 1).get(0);
-		NdPoint houseSelected = new NdPoint(coordinate.x, coordinate.y);
-
-		// Have disjointed houses
-		if (houses.containsKey(selectedZone)) {
-			int i = 0;
-			while (i < houses.get(selectedZone).size()) {
-				NdPoint house = houses.get(selectedZone).get(i);
-				double distance = Math.pow((house.getX() - houseSelected.getX()), 2);
-				distance += Math.pow((house.getY() - houseSelected.getY()), 2);
-				int count = 0;
-				i++;
-				while (Math.sqrt(distance) < 2 * houseRadius) {
-					coordinate = GeometryUtil.generateRandomPointsInPolygon(selectedZone.getGeometry(), 1).get(0);
-					houseSelected = new NdPoint(coordinate.x, coordinate.y);
-					distance = Math.pow((house.getX() - houseSelected.getX()), 2);
-					distance += Math.pow((house.getY() - houseSelected.getY()), 2);
-					if (count == 10) {
-						i = 0;
-						zoneIndex = RandomHelper.nextIntFromTo(0, zoneList.size());
-						selectedZone = zoneList.get(zoneIndex);
-						break;
-					}
-					count++;
-				}
-			}
-		} else {
-			houses.put(selectedZone, new ArrayList<NdPoint>());
+	/**
+	 * Assign house to a family
+	 * 
+	 * @param proxy         Family proxy
+	 * @param neighborhoods Neighborhoods
+	 */
+	public static void assignHouse(Citizen proxy, HashMap<String, GISPolygon> neighborhoods) {
+		ArrayList<GISPolygon> neighborhoodsList = new ArrayList<>();
+		for (GISPolygon neighborhood : neighborhoods.values()) {
+			neighborhoodsList.add(neighborhood);
 		}
-
-		houses.get(selectedZone).add(houseSelected);
-
-		// Select house for family
-		double positionX;
-		double positionY;
-		for (Citizen citizenFamily : citizen.getFamily()) {
-			citizenFamily.setHomeplace(houseSelected);
-			positionX = houseSelected.getX() - houseRadius / 2 + RandomHelper.nextDoubleFromTo(0, houseRadius);
-			positionY = houseSelected.getY() - houseRadius / 2 + RandomHelper.nextDoubleFromTo(0, houseRadius);
-			citizenFamily.relocate(new NdPoint(positionX, positionY));
-			citizenFamily.setCurrentZone(selectedZone);
+		// Select random neighborhood
+		int index = RandomHelper.nextIntFromTo(0, neighborhoodsList.size() - 1);
+		GISPolygon selectedNeighborhood = neighborhoodsList.get(index);
+		// Generate random point inside selected neighborhood
+		NdPoint selectedHouse = PolygonUtil.getRandomPoint(selectedNeighborhood);
+		// Assign same household to all family members
+		for (Citizen member : proxy.getFamily()) {
+			member.setLivingNeighborhood(selectedNeighborhood);
+			member.setHomeplace(selectedHouse);
 		}
 	}
 
-	public static void assignWorkplace(Citizen citizen, HashMap<String, Object> eod, ArrayList<Zone> zoneList) {
-		int zoneId = citizen.getCurrentZone().getId();
-		HashMap<Integer, Integer> rows = (HashMap<Integer, Integer>) eod.get("rows");
+	/**
+	 * Get SOD-based workplace
+	 * 
+	 * @param sod                SOD matrix
+	 * @param livingNeighborhood Living neighborhood
+	 * @param neighborhoods      Neighborhoods
+	 */
+	public static NdPoint getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
+			HashMap<String, GISPolygon> neighborhoods) {
+		String livingNeighborhoodId = livingNeighborhood.getId();
+		String workingNeighborhoodId = "";
 
-		if (rows.containsKey(zoneId)) {
-			int row = rows.get(zoneId);
-			ArrayList<ArrayList<Double>> eodMatrix = (ArrayList<ArrayList<Double>>) eod.get("eod");
+		HashMap<String, Integer> rows = (HashMap<String, Integer>) sod.get("rows");
+		if (rows.containsKey(livingNeighborhoodId)) {
+			int row = rows.get(livingNeighborhoodId);
+			ArrayList<ArrayList<Double>> eodMatrix = (ArrayList<ArrayList<Double>>) sod.get("eod");
 			ArrayList<Double> travels = eodMatrix.get(row);
 
 			int player1 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
@@ -183,19 +181,20 @@ public abstract class Heuristics {
 				}
 			}
 
-			HashMap<Integer, Integer> columns = (HashMap<Integer, Integer>) eod.get("columns");
+			HashMap<Integer, Integer> columns = (HashMap<Integer, Integer>) sod.get("columns");
 			int id = columns.get(player1);
-			for (Zone zone : zoneList) {
+			for (GISNeighbourhood zone : zoneList) {
 				if (zone.getId() == id) {
 					Coordinate coordinate = GeometryUtil.generateRandomPointsInPolygon(zone.getGeometry(), 1).get(0);
 					citizen.setWorkplace(new NdPoint(coordinate.x, coordinate.y));
 					return;
 				}
 			}
+		} else {
+			workingNeighborhoodId = livingNeighborhoodId;
 		}
-		Coordinate coordinate = GeometryUtil.generateRandomPointsInPolygon(citizen.getCurrentZone().getGeometry(), 1)
-				.get(0);
-		citizen.setWorkplace(new NdPoint(coordinate.x, coordinate.y));
+		GISPolygon selectedNeighborhood = neighborhoods.get(workingNeighborhoodId);
+		return PolygonUtil.getRandomPoint(selectedNeighborhood);
 	}
 
 }

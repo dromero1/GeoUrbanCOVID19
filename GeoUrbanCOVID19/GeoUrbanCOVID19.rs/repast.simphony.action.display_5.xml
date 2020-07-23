@@ -1,5 +1,5 @@
 <repast.simphony.gis.visualization.engine.GISDisplayDescriptor simphonyVersion="2.7.0">
-  <name>MedellinCity</name>
+  <name>City</name>
   <type>GIS 3D</type>
   <styles>
     <entry>
@@ -7,11 +7,7 @@
       <string>styles.CitizenStyle</string>
     </entry>
     <entry>
-      <string>geography.Zone</string>
-      <string>styles.GISPolygonStyle</string>
-    </entry>
-    <entry>
-      <string>geography.Border</string>
+      <string>geography.GISPolygon</string>
       <string>styles.GISPolygonStyle</string>
     </entry>
   </styles>

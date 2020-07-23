@@ -1,5 +1,5 @@
-<context id="covid19ABMS"
+<context id="GeoUrbanCOVID19"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:noNamespaceSchemaLocation="http://repast.org/scenario/context">
-	<projection type="geography" id="Valle de Aburra" />
+	<projection type="geography" id="city" />
 </context>

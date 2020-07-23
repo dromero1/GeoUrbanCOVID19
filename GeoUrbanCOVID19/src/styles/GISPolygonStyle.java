@@ -3,7 +3,8 @@ package styles;
 import gov.nasa.worldwind.render.SurfacePolyline;
 import gov.nasa.worldwind.render.SurfaceShape;
 import java.awt.Color;
-import geography.GISPolygon;
+
+import gis.GISPolygon;
 import repast.simphony.visualization.gis3D.style.SurfaceShapeStyle;
 
 /**
