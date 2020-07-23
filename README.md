@@ -1,6 +1,6 @@
 # GeoUrbanCOVID19
 
-An agent-based model of community dynamics on a university campus during a pandemic scenario.
+An agent-based model of COVID-19's propagation in an urban setting.
 
 ## Getting Started
 
@@ -40,7 +40,9 @@ End with an example of getting some data out of the system or using it for a lit
 
 1. Paula Escudero, PhD.
 2. David Romero
-3. Mariana Gómez
+3. David Plazas
+4. Juan Sebastián Cárdenas
+5. Mateo Bonnet
 
 See also the list of [contributors](https://github.com/dromero1/GeoCampusPandemic/contributors) who participated in this project.
 
