@@ -52,4 +52,4 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 
 ## Acknowledgments
 
-* Universidad EAFIT
+* Juan Carlos Duque Cardona (Research in Spatial Economics - RiSE)
