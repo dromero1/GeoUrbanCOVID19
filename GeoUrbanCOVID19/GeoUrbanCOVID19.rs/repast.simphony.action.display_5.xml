@@ -7,21 +7,17 @@
       <string>styles.CitizenStyle</string>
     </entry>
     <entry>
-      <string>geography.GISPolygon</string>
+      <string>gis.GISPolygon</string>
       <string>styles.GISPolygonStyle</string>
     </entry>
   </styles>
   <editedStyles>
     <entry>
       <string>model.Citizen</string>
-      <string>model.Citizen.style_3.xml</string>
-    </entry>
-    <entry>
-      <string>geography.Zone</string>
       <null/>
     </entry>
     <entry>
-      <string>geography.Border</string>
+      <string>gis.GISPolygon</string>
       <null/>
     </entry>
   </editedStyles>
@@ -35,33 +31,41 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>397753443</hashCode>
+    <hashCode>-2139096761</hashCode>
   </schedParams>
   <layoutInterval>0</layoutInterval>
   <layerOrder>
     <entry>
       <string>model.Citizen</string>
+      <int>4</int>
+    </entry>
+    <entry>
+      <string>Scale bar</string>
       <int>2</int>
     </entry>
     <entry>
-      <string>geography.Zone</string>
+      <string>World Map</string>
       <int>1</int>
     </entry>
     <entry>
-      <string>geography.Border</string>
+      <string>Compass</string>
       <int>0</int>
+    </entry>
+    <entry>
+      <string>gis.GISPolygon</string>
+      <int>3</int>
     </entry>
   </layerOrder>
   <projections>
     <repast.simphony.scenario.data.ProjectionData>
-      <id>Valle de Aburra</id>
+      <id>city</id>
       <attributes/>
       <type>geography</type>
     </repast.simphony.scenario.data.ProjectionData>
   </projections>
   <projectionDescriptors>
     <entry>
-      <string>Valle de Aburra</string>
+      <string>city</string>
       <repast.simphony.visualization.gis.GisProjectionDescriptor>
         <proj reference="../../../../projections/repast.simphony.scenario.data.ProjectionData"/>
         <props/>

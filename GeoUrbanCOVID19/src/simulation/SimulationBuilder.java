@@ -63,12 +63,12 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Create geography projection
 		this.geography = createGeographyProjection(context);
 		// Initialize city
-		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE);
+		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, "0");
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
 		// Initialize neighborhoods
-		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_FACILITIES_GEOMETRY_SHAPEFILE);
+		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_FACILITIES_GEOMETRY_SHAPEFILE, "SIT_2017");
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
 			context.add(neighborhood);
 		}
@@ -122,14 +122,15 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * Read polygons
 	 * 
 	 * @param geometryPath Path to geometry file
+	 * @param attribute    Attribute
 	 */
-	private HashMap<String, GISPolygon> readPolygons(String geometryPath) {
+	private HashMap<String, GISPolygon> readPolygons(String geometryPath, String attribute) {
 		HashMap<String, GISPolygon> polygons = new HashMap<>();
 		List<SimpleFeature> features = Reader.loadGeometryFromShapefile(geometryPath);
 		for (SimpleFeature feature : features) {
 			MultiPolygon multiPolygon = (MultiPolygon) feature.getDefaultGeometry();
 			Geometry geometry = multiPolygon.getGeometryN(0);
-			String id = (String) feature.getAttribute(1);
+			String id = "" + feature.getAttribute(attribute);
 			GISPolygon polygon = new GISPolygon(id);
 			polygon.setGeometryInGeography(this.geography, geometry);
 			polygons.put(id, polygon);

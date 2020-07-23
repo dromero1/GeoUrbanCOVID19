@@ -2,18 +2,10 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-
-import com.vividsolutions.jts.geom.Coordinate;
-import com.vividsolutions.jts.geom.Geometry;
-import com.vividsolutions.jts.geom.GeometryFactory;
-import com.vividsolutions.jts.geom.Point;
-
 import gis.GISPolygon;
-import repast.simphony.gis.util.GeometryUtil;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.NdPoint;
-import repast.simphony.space.gis.Geography;
+import repast.simphony.util.collections.Pair;
 import util.PolygonUtil;
 
 public abstract class Heuristics {
@@ -22,11 +14,6 @@ public abstract class Heuristics {
 	 * Probabilities of a family having up to i members (i = 1,...,6)
 	 */
 	public static final double FAMILY_PROBABILITIES[] = { 0.19, 0.23, 0.24, 0.19, 0.8, 0.7 };
-
-	/**
-	 * House radius
-	 */
-	public static final int HOUSE_RADIUS = 0;
 
 	/**
 	 * Assign family
@@ -159,37 +146,26 @@ public abstract class Heuristics {
 			HashMap<String, GISPolygon> neighborhoods) {
 		String livingNeighborhoodId = livingNeighborhood.getId();
 		String workingNeighborhoodId = "";
-
-		HashMap<String, Integer> rows = (HashMap<String, Integer>) sod.get("rows");
-		if (rows.containsKey(livingNeighborhoodId)) {
-			int row = rows.get(livingNeighborhoodId);
-			ArrayList<ArrayList<Double>> eodMatrix = (ArrayList<ArrayList<Double>>) sod.get("eod");
-			ArrayList<Double> travels = eodMatrix.get(row);
-
+		if (sod.containsOrigin(livingNeighborhoodId)) {
+			ArrayList<Pair<String, Double>> travels = sod.getTravelsFromOrigin(livingNeighborhoodId);
 			int player1 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
 			for (int i = 0; i < 10; i++) {
 				int player2 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
 				double decision = RandomHelper.nextDoubleFromTo(0, 1);
-				double sum = travels.get(player1) + travels.get(player2);
-				if (travels.get(player1) < travels.get(player2)) {
+				double travelsP1 = travels.get(player1).getSecond();
+				double travelsP2 = travels.get(player2).getSecond();
+				double sum = travelsP1 + travelsP2;
+				if (travelsP1 < travelsP2) {
 					int temp = player1;
 					player1 = player2;
 					player2 = temp;
 				}
-				if (decision >= travels.get(player1) / sum) {
+				if (decision >= travelsP1 / sum) {
 					player1 = player2;
 				}
 			}
-
-			HashMap<Integer, Integer> columns = (HashMap<Integer, Integer>) sod.get("columns");
-			int id = columns.get(player1);
-			for (GISNeighbourhood zone : zoneList) {
-				if (zone.getId() == id) {
-					Coordinate coordinate = GeometryUtil.generateRandomPointsInPolygon(zone.getGeometry(), 1).get(0);
-					citizen.setWorkplace(new NdPoint(coordinate.x, coordinate.y));
-					return;
-				}
-			}
+			Pair<String, Double> destination = travels.get(player1);
+			workingNeighborhoodId = destination.getFirst();
 		} else {
 			workingNeighborhoodId = livingNeighborhoodId;
 		}
