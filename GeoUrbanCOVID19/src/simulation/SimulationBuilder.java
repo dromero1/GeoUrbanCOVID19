@@ -63,7 +63,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Create geography projection
 		this.geography = createGeographyProjection(context);
 		// Initialize city
-		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, "0");
+		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, "Id");
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
@@ -94,8 +94,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
 			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
-			NdPoint workplace = Heuristics.getSODBasedWorkplace(null, livingNeighborhood, this.neighborhoods);
-			citizen.setWorkplace(workplace);
+			//NdPoint workplace = Heuristics.getSODBasedWorkplace(null, livingNeighborhood, this.neighborhoods);
+			//citizen.setWorkplace(workplace);
 		}
 		// Initialize output manager
 		OutputManager outputManager = new OutputManager();
