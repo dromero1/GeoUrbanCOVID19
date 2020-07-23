@@ -3,19 +3,9 @@ package styles;
 import gov.nasa.worldwind.render.SurfacePolyline;
 import gov.nasa.worldwind.render.SurfaceShape;
 import java.awt.Color;
-
 import gis.GISPolygon;
 import repast.simphony.visualization.gis3D.style.SurfaceShapeStyle;
 
-/**
- * Polygon style
- * 
- * @author Paula Escudero
- * @author Mateo Bonnett
- * @author David Plazas
- * @author Juan Sebastián Cárdenas
- * @author David Andrés Romero
- */
 public class GISPolygonStyle implements SurfaceShapeStyle<GISPolygon> {
 
 	/**

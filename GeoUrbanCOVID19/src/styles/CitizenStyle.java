@@ -19,126 +19,207 @@ import repast.simphony.visualization.gis3D.style.MarkStyle;
 
 public class CitizenStyle implements MarkStyle<Citizen> {
 
+	/**
+	 * Standard scale
+	 */
+	private static final float STANDARD_SCALE = 1.5f;
+
+	/**
+	 * Dimension width
+	 */
+	private static final int WIDTH = 3;
+
+	/**
+	 * Dimension height
+	 */
+	private static final int HEIGHT = 3;
+
+	/**
+	 * Texture map
+	 */
 	private Map<String, WWTexture> textureMap;
-	private static final float MAX_SCALE = 2f;
 
+	/**
+	 * Create a new citizen style
+	 */
 	public CitizenStyle() {
-		textureMap = new HashMap<String, WWTexture>();
-
-		Dimension dimension = new Dimension(3, 3);
-
-		// Create colors
-		// Black
-		BufferedImage image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE,
+		Dimension dimension = new Dimension(WIDTH, HEIGHT);
+		this.textureMap = new HashMap<String, WWTexture>();
+		// Black circle
+		BufferedImage image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE,
 				Color.BLACK);
-		textureMap.put("black circle", new BasicWWTexture(image));
-
-		// Orange
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE, Color.ORANGE);
-		textureMap.put("orange circle", new BasicWWTexture(image));
-
-		// Green
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE, Color.GREEN);
-		textureMap.put("green circle", new BasicWWTexture(image));
-
-		// Red
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE, Color.RED);
-		textureMap.put("red circle", new BasicWWTexture(image));
-
-		// Blue
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE, Color.BLUE);
-		textureMap.put("blue circle", new BasicWWTexture(image));
-
-		// Gray color
-		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, MAX_SCALE, Color.GRAY);
-		textureMap.put("gray circle", new BasicWWTexture(image));
+		this.textureMap.put("black-circle", new BasicWWTexture(image));
+		// Orange circle
+		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE, Color.ORANGE);
+		this.textureMap.put("orange-circle", new BasicWWTexture(image));
+		// Green circle
+		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE, Color.GREEN);
+		this.textureMap.put("green-circle", new BasicWWTexture(image));
+		// Red circle
+		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE, Color.RED);
+		this.textureMap.put("red-circle", new BasicWWTexture(image));
+		// Blue circle
+		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE, Color.BLUE);
+		textureMap.put("blue-circle", new BasicWWTexture(image));
+		// Gray circle
+		image = PatternFactory.createPattern(PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE, Color.GRAY);
+		this.textureMap.put("gray-circle", new BasicWWTexture(image));
 	}
 
+	/**
+	 * Get texture
+	 * 
+	 * @param citizen Citizen
+	 * @param texture Texture
+	 */
 	@Override
 	public WWTexture getTexture(Citizen citizen, WWTexture texture) {
-		Compartment diseaseStage = citizen.getDiseaseStage();
-		switch (diseaseStage) {
+		Compartment compartment = citizen.getCompartment();
+		switch (compartment) {
 		case DEAD:
-			return textureMap.get("black circle");
+			return textureMap.get("black-circle");
 		case EXPOSED:
-			return textureMap.get("orange circle");
+			return textureMap.get("orange-circle");
 		case IMMUNE:
-			return textureMap.get("green circle");
+			return textureMap.get("green-circle");
 		case INFECTED:
-			return textureMap.get("red circle");
+			return textureMap.get("red-circle");
 		case SUSCEPTIBLE:
-			return textureMap.get("blue circle");
+			return textureMap.get("blue-circle");
 		default:
-			return textureMap.get("gray circle");
+			return textureMap.get("gray-circle");
 		}
 	}
 
+	/**
+	 * Get scale
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
 	public double getScale(Citizen citizen) {
-		return MAX_SCALE;
+		Compartment compartment = citizen.getCompartment();
+		switch (compartment) {
+		case SUSCEPTIBLE:
+		case DEAD:
+		case IMMUNE:
+			return STANDARD_SCALE;
+		case EXPOSED:
+		case INFECTED:
+			return STANDARD_SCALE * 2;
+		default:
+			return 0;
+		}
 	}
 
+	/**
+	 * Get icon offset
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public Offset getIconOffset(Citizen obj) {
+	public Offset getIconOffset(Citizen citizen) {
 		return Offset.CENTER;
 	}
 
+	/**
+	 * Get label offset
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public Offset getLabelOffset(Citizen obj) {
+	public Offset getLabelOffset(Citizen citizen) {
 		return null;
 	}
 
+	/**
+	 * Get place mark
+	 * 
+	 * @param citizen Citizen
+	 * @param mark    Place mark
+	 */
 	@Override
-	public PlaceMark getPlaceMark(Citizen object, PlaceMark mark) {
-
-		// PlaceMark is null on first call.
-		if (mark == null)
+	public PlaceMark getPlaceMark(Citizen citizen, PlaceMark mark) {
+		if (mark == null) {
 			mark = new PlaceMark();
-
+		}
 		mark.setAltitudeMode(WorldWind.CLAMP_TO_GROUND);
 		mark.setLineEnabled(false);
-
 		return mark;
 	}
 
+	/**
+	 * Get elevation
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public double getElevation(Citizen obj) {
-		// TODO Auto-generated method stub
+	public double getElevation(Citizen citizen) {
 		return 0;
 	}
 
+	/**
+	 * Get heading
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public double getHeading(Citizen obj) {
+	public double getHeading(Citizen citizen) {
 		return 0;
 	}
 
+	/**
+	 * Get label color
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public Color getLabelColor(Citizen obj) {
+	public Color getLabelColor(Citizen citizen) {
 		return null;
 	}
 
+	/**
+	 * Get line width
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public double getLineWidth(Citizen obj) {
+	public double getLineWidth(Citizen citizen) {
 		return 1;
 	}
 
+	/**
+	 * Get label font
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public Font getLabelFont(Citizen obj) {
-		// TODO Auto-generated method stub
+	public Font getLabelFont(Citizen citizen) {
 		return null;
 	}
 
+	/**
+	 * Get label
+	 * 
+	 * @param citizen Citizen
+	 */
 	@Override
-	public String getLabel(Citizen obj) {
-		// TODO Auto-generated method stub
+	public String getLabel(Citizen citizen) {
 		return null;
 	}
 
+	/**
+	 * Get line material
+	 * 
+	 * @param citizen      Citizen
+	 * @param lineMaterial Line material
+	 */
 	@Override
-	public Material getLineMaterial(Citizen obj, Material lineMaterial) {
+	public Material getLineMaterial(Citizen citizen, Material lineMaterial) {
 		if (lineMaterial == null) {
 			lineMaterial = new Material(Color.RED);
 		}
 		return lineMaterial;
 	}
+
 }
