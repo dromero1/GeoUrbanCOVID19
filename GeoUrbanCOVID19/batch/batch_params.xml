@@ -1,3 +1,9 @@
-<?xml version="1.0"?>
+<?xml version="1.0" ?>
 <sweep runs="1">
+	<parameter name="infectedCount" type="constant"
+		constant_type="int" value="5"></parameter>
+	<parameter name="infectionRadius" type="constant"
+		constant_type="double" value="20.0"></parameter>
+	<parameter name="susceptibleCount" type="constant"
+		constant_type="int" value="5000"></parameter>
 </sweep>
