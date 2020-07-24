@@ -1,2 +1,3 @@
 policy type;begin day;end day
-full-quarantine;20;30
+full-quarantine;10;12
+full-quarantine;18;20
