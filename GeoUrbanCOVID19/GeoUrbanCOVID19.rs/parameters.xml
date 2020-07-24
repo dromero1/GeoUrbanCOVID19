@@ -13,7 +13,7 @@
 									
 		/>
 				<parameter name="infectionRadius" displayName="Infection radius (meters)" type="double" 
-						defaultValue="10.0" 
+						defaultValue="2.0" 
 						isReadOnly="false" 
 						converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter"
 									

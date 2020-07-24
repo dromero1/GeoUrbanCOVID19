@@ -10,7 +10,7 @@ public class PolicyEnforcer {
 	/**
 	 * Current policies
 	 */
-	private ArrayList<PolicyType> currentPolicies;
+	private ArrayList<Policy> currentPolicies;
 
 	/**
 	 * Curfew IDs for each day. Reference: <pending>
@@ -21,7 +21,7 @@ public class PolicyEnforcer {
 	 * Create a new policy enforcer
 	 */
 	public PolicyEnforcer() {
-		this.currentPolicies = new ArrayList<PolicyType>();
+		this.currentPolicies = new ArrayList<>();
 	}
 
 	/**
@@ -42,7 +42,7 @@ public class PolicyEnforcer {
 	 * 
 	 * @param policy Policy
 	 */
-	public void addPolicy(PolicyType policy) {
+	public void addPolicy(Policy policy) {
 		this.currentPolicies.add(policy);
 	}
 
@@ -51,7 +51,7 @@ public class PolicyEnforcer {
 	 * 
 	 * @param policy Policy
 	 */
-	public void removePolicy(PolicyType policy) {
+	public void removePolicy(Policy policy) {
 		this.currentPolicies.remove(policy);
 	}
 

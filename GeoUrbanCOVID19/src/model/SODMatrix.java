@@ -11,7 +11,7 @@ public class SODMatrix {
 	 * @param origin Origin
 	 */
 	public boolean containsOrigin(String origin) {
-		return true;
+		return false;
 	}
 	
 	/**
