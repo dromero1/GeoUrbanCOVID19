@@ -1,6 +1,6 @@
 package styles;
 
-import gov.nasa.worldwind.render.SurfacePolyline;
+import gov.nasa.worldwind.render.SurfacePolygon;
 import gov.nasa.worldwind.render.SurfaceShape;
 import java.awt.Color;
 import gis.GISPolygon;
@@ -16,7 +16,7 @@ public class GISPolygonStyle implements SurfaceShapeStyle<GISPolygon> {
 	 */
 	@Override
 	public SurfaceShape getSurfaceShape(GISPolygon polygon, SurfaceShape shape) {
-		return new SurfacePolyline();
+		return new SurfacePolygon();
 	}
 
 	/**
@@ -26,7 +26,7 @@ public class GISPolygonStyle implements SurfaceShapeStyle<GISPolygon> {
 	 */
 	@Override
 	public Color getFillColor(GISPolygon polygon) {
-		return Color.black;
+		return Color.WHITE;
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class GISPolygonStyle implements SurfaceShapeStyle<GISPolygon> {
 	 */
 	@Override
 	public Color getLineColor(GISPolygon polygon) {
-		return Color.black;
+		return Color.BLACK;
 	}
 
 	/**
