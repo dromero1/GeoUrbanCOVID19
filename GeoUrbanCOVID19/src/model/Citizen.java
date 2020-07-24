@@ -10,6 +10,7 @@ import com.vividsolutions.jts.geom.Point;
 import gis.GISPolygon;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ISchedulableAction;
+import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.gis.util.GeometryUtil;
@@ -205,7 +206,7 @@ public class Citizen {
 	 */
 	public void transitionToImmune() {
 		this.compartment = Compartment.IMMUNE;
-		this.scheduledActions.remove(SchedulableAction.EXPEL_PARTICLES);
+		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
 	/**
@@ -213,10 +214,10 @@ public class Citizen {
 	 */
 	public void die() {
 		this.compartment = Compartment.DEAD;
-		this.scheduledActions.remove(SchedulableAction.STEP);
-		this.scheduledActions.remove(SchedulableAction.WAKE_UP);
-		this.scheduledActions.remove(SchedulableAction.RETURN_HOME);
-		this.scheduledActions.remove(SchedulableAction.EXPEL_PARTICLES);
+		unscheduleAction(SchedulableAction.STEP);
+		unscheduleAction(SchedulableAction.WAKE_UP);
+		unscheduleAction(SchedulableAction.RETURN_HOME);
+		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
 	/**
@@ -416,6 +417,18 @@ public class Citizen {
 		Coordinate coordinate = new Coordinate(destination.getX(), destination.getY());
 		Point point = geometryFactory.createPoint(coordinate);
 		this.simulationBuilder.geography.move(this, point);
+	}
+
+	/**
+	 * Unschedule action
+	 * 
+	 * @param schedulableAction Action to unschedule
+	 */
+	private void unscheduleAction(SchedulableAction schedulableAction) {
+		ISchedulableAction action = this.scheduledActions.get(schedulableAction);
+		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
+		schedule.removeAction(action);
+		this.scheduledActions.remove(schedulableAction);
 	}
 
 }
