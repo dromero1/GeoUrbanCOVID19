@@ -118,14 +118,10 @@ public abstract class Heuristics {
 	 * @param proxy         Family proxy
 	 * @param neighborhoods Neighborhoods
 	 */
-	public static void assignHouse(Citizen proxy, HashMap<String, GISPolygon> neighborhoods) {
-		ArrayList<GISPolygon> neighborhoodsList = new ArrayList<>();
-		for (GISPolygon neighborhood : neighborhoods.values()) {
-			neighborhoodsList.add(neighborhood);
-		}
+	public static void assignHouse(Citizen proxy, ArrayList<GISPolygon> neighborhoods) {
 		// Select random neighborhood
-		int index = RandomHelper.nextIntFromTo(0, neighborhoodsList.size() - 1);
-		GISPolygon selectedNeighborhood = neighborhoodsList.get(index);
+		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
+		GISPolygon selectedNeighborhood = neighborhoods.get(index);
 		// Generate random point inside selected neighborhood
 		NdPoint selectedHouse = PolygonUtil.getRandomPoint(selectedNeighborhood);
 		// Assign same household to all family members

@@ -70,7 +70,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_FACILITIES_GEOMETRY_SHAPEFILE, "SIT_2017");
+		ArrayList<GISPolygon> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
+			neighborhoodsList.add(neighborhood);
 			context.add(neighborhood);
 		}
 		// Add students to simulation
@@ -90,10 +92,10 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Assign a house to each family
 		for (Citizen proxy : familyProxies) {
-			Heuristics.assignHouse(proxy, this.neighborhoods);
+			Heuristics.assignHouse(proxy, neighborhoodsList);
 		}
 		// Initialize SOD matrix
-		SODMatrix sod = new SODMatrix();
+		SODMatrix sod = Reader.readSODMatrix(Paths.SOD_MATRIX);
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
 			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
@@ -115,7 +117,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * @param context Simulation context
 	 */
 	private Geography<Object> createGeographyProjection(Context<Object> context) {
-		GeographyParameters<Object> params = new GeographyParameters<Object>();
+		GeographyParameters<Object> params = new GeographyParameters<>();
 		GeographyFactory geographyFactory = GeographyFactoryFinder.createGeographyFactory(null);
 		Geography<Object> geography = geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID, context, params);
 		return geography;
