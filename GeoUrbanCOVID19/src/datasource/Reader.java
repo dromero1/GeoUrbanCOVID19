@@ -13,10 +13,9 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import config.DBFeatures;
-import model.PolicyType;
 import model.SODMatrix;
 import policy.Policy;
-import util.PolicyUtil;
+import policy.PolicyFactory;
 
 public class Reader {
 
@@ -62,13 +61,13 @@ public class Reader {
 					first = false;
 				} else {
 					String[] elements = data.split(";");
-					String policyClass = null;
+					String policyType = null;
 					int beginDay = 0;
 					int endDay = 0;
 					for (int i = 0; i < elements.length; i++) {
 						switch (i) {
 						case DBFeatures.POLICIES_TYPE_COLUMN:
-							policyClass = elements[i];
+							policyType = elements[i];
 							break;
 						case DBFeatures.POLICIES_BEGIN_DAY_COLUMN:
 							beginDay = Integer.parseInt(elements[i]);
@@ -80,8 +79,7 @@ public class Reader {
 							break;
 						}
 					}
-					PolicyType policyType = PolicyUtil.convertToInnerFormat(policyClass);
-					Policy policy = new Policy(policyType, beginDay, endDay);
+					Policy policy = PolicyFactory.makePolicy(policyType, beginDay, endDay);
 					policies.add(policy);
 				}
 			}
