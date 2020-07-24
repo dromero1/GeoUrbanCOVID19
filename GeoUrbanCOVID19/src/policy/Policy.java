@@ -1,11 +1,8 @@
-package model;
+package policy;
 
-public class Policy {
+import model.Citizen;
 
-	/**
-	 * Policy type
-	 */
-	private PolicyType policyType;
+public abstract class Policy {
 
 	/**
 	 * Begin day (unit: days)
@@ -20,22 +17,20 @@ public class Policy {
 	/**
 	 * Create a new policy
 	 * 
-	 * @param policyType Policy type
-	 * @param beginDay   Begin day
-	 * @param endDay     End day
+	 * @param beginDay Begin day
+	 * @param endDay   End day
 	 */
-	public Policy(PolicyType policyType, int beginDay, int endDay) {
-		this.policyType = policyType;
+	public Policy(int beginDay, int endDay) {
 		this.beginDay = beginDay;
 		this.endDay = endDay;
 	}
 
 	/**
-	 * Get policy type
+	 * Is the citizen allowed to go out?
+	 * 
+	 * @param citizen Citizen
 	 */
-	public PolicyType getPolicyType() {
-		return policyType;
-	}
+	protected abstract boolean isAllowedToGoOut(Citizen citizen);
 
 	/**
 	 * Get begin day

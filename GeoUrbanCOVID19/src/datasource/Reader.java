@@ -13,9 +13,9 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import config.DBFeatures;
-import model.Policy;
 import model.PolicyType;
 import model.SODMatrix;
+import policy.Policy;
 import util.PolicyUtil;
 
 public class Reader {
