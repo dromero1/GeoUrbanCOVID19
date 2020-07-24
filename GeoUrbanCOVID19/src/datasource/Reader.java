@@ -62,7 +62,7 @@ public class Reader {
 					first = false;
 				} else {
 					String[] elements = data.split(";");
-					String policyClass = "";
+					String policyClass = null;
 					int beginDay = 0;
 					int endDay = 0;
 					for (int i = 0; i < elements.length; i++) {

@@ -141,7 +141,7 @@ public abstract class Heuristics {
 	public static NdPoint getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
 			HashMap<String, GISPolygon> neighborhoods) {
 		String livingNeighborhoodId = livingNeighborhood.getId();
-		String workingNeighborhoodId = "";
+		String workingNeighborhoodId = null;
 		if (sod.containsOrigin(livingNeighborhoodId)) {
 			ArrayList<Pair<String, Double>> travels = sod.getTravelsFromOrigin(livingNeighborhoodId);
 			int player1 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
@@ -162,10 +162,11 @@ public abstract class Heuristics {
 			}
 			Pair<String, Double> destination = travels.get(player1);
 			workingNeighborhoodId = destination.getFirst();
-		} else {
-			workingNeighborhoodId = livingNeighborhoodId;
 		}
 		GISPolygon selectedNeighborhood = neighborhoods.get(workingNeighborhoodId);
+		if (selectedNeighborhood == null) {
+			selectedNeighborhood = neighborhoods.get(livingNeighborhoodId);
+		}
 		return PolygonUtil.getRandomPoint(selectedNeighborhood);
 	}
 
