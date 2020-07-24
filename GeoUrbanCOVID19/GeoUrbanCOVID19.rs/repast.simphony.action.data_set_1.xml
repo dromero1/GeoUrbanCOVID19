@@ -2,7 +2,7 @@
   <name>ActiveCasesTimeSeries</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
-  <inclBatchRun>false</inclBatchRun>
+  <inclBatchRun>true</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
   <scheduleParams>
     <start>1.0</start>

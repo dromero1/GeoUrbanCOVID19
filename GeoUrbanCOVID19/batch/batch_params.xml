@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<sweep runs="1">
+<sweep runs="10">
 	<parameter name="infectedCount" type="constant"
 		constant_type="int" value="5"></parameter>
 	<parameter name="infectionRadius" type="constant"
