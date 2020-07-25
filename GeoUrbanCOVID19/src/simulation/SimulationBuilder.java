@@ -32,7 +32,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * End tick (unit: hours)
 	 */
 	public static final double END_TICK = 1460;
-	
+
 	/**
 	 * Geography projection id
 	 */
@@ -59,6 +59,11 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	public PolicyEnforcer policyEnforcer;
 
 	/**
+	 * Output manager
+	 */
+	public OutputManager outputManager;
+
+	/**
 	 * Build simulation
 	 * 
 	 * @param context Simulation context
@@ -80,6 +85,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			neighborhoodsList.add(neighborhood);
 			context.add(neighborhood);
 		}
+		// Initialize output manager
+		this.outputManager = new OutputManager();
+		context.add(this.outputManager);
 		// Add students to simulation
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		ArrayList<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
@@ -107,12 +115,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			NdPoint workplace = Heuristics.getSODBasedWorkplace(sod, livingNeighborhood, this.neighborhoods);
 			citizen.setWorkplace(workplace);
 		}
-		// Initialize output manager
-		OutputManager outputManager = new OutputManager();
-		context.add(outputManager);
 		// Schedule policies
 		this.policyEnforcer = schedulePolicies(Paths.POLICIES_DATABASE);
-		context.add(policyEnforcer);
+		context.add(this.policyEnforcer);
 		// Set end tick
 		RunEnvironment.getInstance().endAt(END_TICK);
 		return context;

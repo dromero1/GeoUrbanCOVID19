@@ -403,6 +403,7 @@ public class Citizen {
 		for (Citizen citizen : citizens) {
 			if (citizen.compartment == Compartment.SUSCEPTIBLE && Probabilities.isGettingExposed(incubationDiff)) {
 				citizen.transitionToExposed();
+				this.simulationBuilder.outputManager.onNewCase();
 			}
 		}
 	}
