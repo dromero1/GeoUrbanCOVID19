@@ -1,5 +1,5 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.7.0">
-  <name>DailyNewCasesTimeSerie</name>
+  <name>DailyStatisticsTimeSeries</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>true</inclBatchRun>
@@ -11,16 +11,34 @@
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>187539591</hashCode>
+    <hashCode>-1317847891</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>newCases</string>
+      <string>cases</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>newCases</id>
+        <id>cases</id>
         <className>output.OutputManager</className>
         <methodName>countNewCases</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>deaths</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>deaths</id>
+        <className>output.OutputManager</className>
+        <methodName>countNewDeaths</methodName>
+        <aggType>SUM</aggType>
+      </repast.simphony.data2.engine.MethodDataSourceDefinition>
+    </entry>
+    <entry>
+      <string>immune</string>
+      <repast.simphony.data2.engine.MethodDataSourceDefinition>
+        <id>immune</id>
+        <className>output.OutputManager</className>
+        <methodName>countNewImmune</methodName>
         <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>

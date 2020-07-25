@@ -1,9 +1,9 @@
 <repast.simphony.chart2.engine.TimeSeriesChartDescriptor simphonyVersion="2.7.0">
-  <name>Daily New Cases Time Series Chart</name>
-  <dataSet>DailyNewCasesTimeSerie</dataSet>
+  <name>Active Cases Time Series Chart</name>
+  <dataSet>ActiveCasesTimeSeries</dataSet>
   <xAxisLabel>hours</xAxisLabel>
   <yAxisLabel>cases</yAxisLabel>
-  <chartTitle>Daily New Cases Time Series</chartTitle>
+  <chartTitle>Active Cases Time Series</chartTitle>
   <type>TIME_SERIES</type>
   <background>
     <red>255</red>
@@ -21,9 +21,9 @@
   <showLegend>false</showLegend>
   <seriesIds>
     <entry>
-      <string>newCases</string>
+      <string>activeCases</string>
       <SeriesData>
-        <label>newCases</label>
+        <label>activeCases</label>
         <color>
           <red>0</red>
           <green>0</green>

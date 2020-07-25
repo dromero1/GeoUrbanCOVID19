@@ -206,6 +206,7 @@ public class Citizen {
 	 */
 	public void transitionToImmune() {
 		this.compartment = Compartment.IMMUNE;
+		this.simulationBuilder.outputManager.onNewImmune();
 		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
@@ -214,6 +215,7 @@ public class Citizen {
 	 */
 	public void die() {
 		this.compartment = Compartment.DEAD;
+		this.simulationBuilder.outputManager.onNewDeath();
 		unscheduleAction(SchedulableAction.STEP);
 		unscheduleAction(SchedulableAction.WAKE_UP);
 		unscheduleAction(SchedulableAction.RETURN_HOME);

@@ -1,9 +1,9 @@
 <repast.simphony.chart2.engine.TimeSeriesChartDescriptor simphonyVersion="2.7.0">
-  <name>Epidemic Time Series Chart</name>
-  <dataSet>ComparmentsTimeSeries</dataSet>
+  <name>Compartments Time Series Chart</name>
+  <dataSet>CompartmentsTimeSeries</dataSet>
   <xAxisLabel>hours</xAxisLabel>
   <yAxisLabel>people</yAxisLabel>
-  <chartTitle>Epidemic Time Series</chartTitle>
+  <chartTitle>Compartments Time Series</chartTitle>
   <type>TIME_SERIES</type>
   <background>
     <red>255</red>
@@ -33,13 +33,13 @@
       </SeriesData>
     </entry>
     <entry>
-      <string>recovered</string>
+      <string>immune</string>
       <SeriesData>
-        <label>recovered</label>
+        <label>immune</label>
         <color>
-          <red>51</red>
+          <red>102</red>
           <green>255</green>
-          <blue>51</blue>
+          <blue>102</blue>
           <alpha>255</alpha>
         </color>
       </SeriesData>
