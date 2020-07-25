@@ -3,7 +3,7 @@
 	<parameter name="infectedCount" type="constant"
 		constant_type="int" value="5"></parameter>
 	<parameter name="infectionRadius" type="constant"
-		constant_type="double" value="20.0"></parameter>
+		constant_type="double" value="10.0"></parameter>
 	<parameter name="susceptibleCount" type="constant"
-		constant_type="int" value="5000"></parameter>
+		constant_type="int" value="10000"></parameter>
 </sweep>
