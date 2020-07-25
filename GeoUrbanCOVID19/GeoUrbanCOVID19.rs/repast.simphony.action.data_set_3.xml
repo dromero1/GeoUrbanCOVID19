@@ -1,44 +1,35 @@
 <repast.simphony.data2.engine.DataSetDescriptor simphonyVersion="2.7.0">
-  <name>CompartmentsTimeSeries</name>
+  <name>DailyStatisticsTimeSeries</name>
   <type>AGGREGATE</type>
   <inclTick>true</inclTick>
   <inclBatchRun>true</inclBatchRun>
   <inclRandomSeed>false</inclRandomSeed>
   <scheduleParams>
     <start>1.0</start>
-    <interval>1.0</interval>
+    <interval>24.0</interval>
     <priority>-Infinity</priority>
     <pType>LAST</pType>
     <duration>-1.0</duration>
     <frequency>REPEAT</frequency>
-    <hashCode>1089474840</hashCode>
+    <hashCode>-1317847891</hashCode>
   </scheduleParams>
   <atEnd>false</atEnd>
   <methodDataSources class="linked-hash-map">
     <entry>
-      <string>susceptible</string>
+      <string>cases</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>susceptible</id>
-        <className>model.Citizen</className>
-        <methodName>isSusceptible</methodName>
+        <id>cases</id>
+        <className>output.OutputManager</className>
+        <methodName>countNewCases</methodName>
         <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
     <entry>
-      <string>exposed</string>
+      <string>deaths</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>exposed</id>
-        <className>model.Citizen</className>
-        <methodName>isExposed</methodName>
-        <aggType>SUM</aggType>
-      </repast.simphony.data2.engine.MethodDataSourceDefinition>
-    </entry>
-    <entry>
-      <string>infected</string>
-      <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>infected</id>
-        <className>model.Citizen</className>
-        <methodName>isInfected</methodName>
+        <id>deaths</id>
+        <className>output.OutputManager</className>
+        <methodName>countNewDeaths</methodName>
         <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
@@ -46,17 +37,8 @@
       <string>immune</string>
       <repast.simphony.data2.engine.MethodDataSourceDefinition>
         <id>immune</id>
-        <className>model.Citizen</className>
-        <methodName>isImmune</methodName>
-        <aggType>SUM</aggType>
-      </repast.simphony.data2.engine.MethodDataSourceDefinition>
-    </entry>
-    <entry>
-      <string>dead</string>
-      <repast.simphony.data2.engine.MethodDataSourceDefinition>
-        <id>dead</id>
-        <className>model.Citizen</className>
-        <methodName>isDead</methodName>
+        <className>output.OutputManager</className>
+        <methodName>countNewImmune</methodName>
         <aggType>SUM</aggType>
       </repast.simphony.data2.engine.MethodDataSourceDefinition>
     </entry>
