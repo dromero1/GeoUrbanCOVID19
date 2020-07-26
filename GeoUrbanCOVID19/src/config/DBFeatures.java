@@ -3,7 +3,7 @@ package config;
 public class DBFeatures {
 
 	/**
-	 * Policies database - policy type column
+	 * Policies database - type column
 	 */
 	public static final int POLICIES_TYPE_COLUMN = 0;
 

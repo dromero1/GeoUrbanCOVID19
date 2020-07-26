@@ -24,14 +24,9 @@ import util.TickConverter;
 public class Citizen {
 
 	/**
-	 * Displacement factor
+	 * Displacement per step (unit: meters). Reference: <pending>
 	 */
-	public static final double DISPLACEMENT_FACTOR = 0.0001;
-
-	/**
-	 * Maximum displacement per step (unit: meters). Reference: <pending>
-	 */
-	public static final double MAX_DISPLACEMENT_PER_STEP = 50;
+	public static final double DISPLACEMENT_PER_STEP = 50;
 
 	/**
 	 * Particle expulsion interval (unit: minutes)
@@ -54,7 +49,7 @@ public class Citizen {
 	private Compartment compartment;
 
 	/**
-	 * Incubation end (unit: hours)
+	 * Time to incubation end (unit: hours)
 	 */
 	protected double incubationEnd;
 
@@ -346,7 +341,7 @@ public class Citizen {
 	 * Is active case?
 	 */
 	public int isActiveCase() {
-		return this.compartment == Compartment.EXPOSED || this.compartment == Compartment.INFECTED ? 1 : 0;
+		return (this.compartment == Compartment.EXPOSED || this.compartment == Compartment.INFECTED) ? 1 : 0;
 	}
 
 	/**
@@ -385,10 +380,8 @@ public class Citizen {
 	 * Walk randomly
 	 */
 	private void randomWalk() {
-		double distance = MAX_DISPLACEMENT_PER_STEP * DISPLACEMENT_FACTOR;
-		double x = RandomHelper.nextDoubleFromTo(-distance, distance);
-		double y = RandomHelper.nextDoubleFromTo(-distance, distance);
-		this.simulationBuilder.geography.moveByDisplacement(this, x, y);
+		double angle = RandomHelper.nextDoubleFromTo(0, 2 * Math.PI);
+		this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
 	}
 
 	/**

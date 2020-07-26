@@ -10,7 +10,7 @@ public final class Paths {
 	/**
 	 * Neighborhoods geometry
 	 */
-	public static final String NEIGHBORHOODS_FACILITIES_GEOMETRY_SHAPEFILE = "./data/maps/Neighborhoods-polygon.shp";
+	public static final String NEIGHBORHOODS_GEOMETRY_SHAPEFILE = "./data/maps/Neighborhoods-polygon.shp";
 
 	/**
 	 * SOD matrix
