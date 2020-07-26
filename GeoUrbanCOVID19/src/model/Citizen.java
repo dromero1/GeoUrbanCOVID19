@@ -7,6 +7,7 @@ import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Point;
+import gis.GISNeighborhood;
 import gis.GISPolygon;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.engine.schedule.ISchedulableAction;
@@ -52,6 +53,11 @@ public class Citizen {
 	 * Time to incubation end (unit: hours)
 	 */
 	protected double incubationEnd;
+
+	/**
+	 * Current location
+	 */
+	private Geometry location;
 
 	/**
 	 * Homeplace
@@ -380,7 +386,7 @@ public class Citizen {
 	 */
 	private void randomWalk() {
 		double angle = RandomHelper.nextDoubleFromTo(0, 2 * Math.PI);
-		Geometry location = this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
+		this.location = this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
 	}
 
 	/**
@@ -398,8 +404,24 @@ public class Citizen {
 			if (citizen.compartment == Compartment.SUSCEPTIBLE && Randomizer.isGettingExposed(incubationDiff)) {
 				citizen.transitionToExposed();
 				this.simulationBuilder.outputManager.onNewCase();
+				GISNeighborhood currentNeighborhood = getCurrentNeighborhood();
+				currentNeighborhood.onNewCase();
 			}
 		}
+	}
+
+	/**
+	 * Get current neighborhood
+	 */
+	private GISNeighborhood getCurrentNeighborhood() {
+		for (String neighborhoodId : this.simulationBuilder.neighborhoods.keySet()) {
+			GISNeighborhood neighborhood = (GISNeighborhood) this.simulationBuilder.neighborhoods.get(neighborhoodId);
+			Geometry geometry = neighborhood.getGeometry();
+			if (geometry.contains(this.location)) {
+				return neighborhood;
+			}
+		}
+		return null;
 	}
 
 	/**
