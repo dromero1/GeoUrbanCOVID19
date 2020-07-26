@@ -2,6 +2,8 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import gis.GISNeighborhood;
 import gis.GISPolygon;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.NdPoint;
@@ -118,10 +120,10 @@ public abstract class Heuristics {
 	 * @param proxy         Family proxy
 	 * @param neighborhoods Neighborhoods
 	 */
-	public static void assignHouse(Citizen proxy, ArrayList<GISPolygon> neighborhoods) {
+	public static void assignHouse(Citizen proxy, ArrayList<GISNeighborhood> neighborhoods) {
 		// Select random neighborhood
 		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
-		GISPolygon selectedNeighborhood = neighborhoods.get(index);
+		GISNeighborhood selectedNeighborhood = neighborhoods.get(index);
 		// Generate random point inside selected neighborhood
 		NdPoint selectedHouse = PolygonUtil.getRandomPoint(selectedNeighborhood);
 		// Assign same household to all family members

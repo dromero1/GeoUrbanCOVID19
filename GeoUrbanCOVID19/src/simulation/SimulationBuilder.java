@@ -83,9 +83,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
 				"SIT_2017");
-		ArrayList<GISPolygon> neighborhoodsList = new ArrayList<>();
+		ArrayList<GISNeighborhood> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
-			neighborhoodsList.add(neighborhood);
+			neighborhoodsList.add((GISNeighborhood) neighborhood);
 			context.add(neighborhood);
 		}
 		// Initialize output manager

@@ -87,7 +87,17 @@ public class Citizen {
 	/**
 	 * Living neighborhood
 	 */
-	private GISPolygon livingNeighborhood;
+	private GISNeighborhood livingNeighborhood;
+
+	/**
+	 * Working neighborhood
+	 */
+	private GISNeighborhood workingNeighborhood;
+
+	/**
+	 * Current neighborhood
+	 */
+	private GISNeighborhood currentNeighborhood;
 
 	/**
 	 * Reference to simulation builder
@@ -122,6 +132,7 @@ public class Citizen {
 	 */
 	@ScheduledMethod(start = 0)
 	public void init() {
+		this.currentNeighborhood = this.livingNeighborhood;
 		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();
@@ -149,6 +160,7 @@ public class Citizen {
 	public void wakeUp() {
 		if (this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this)) {
 			this.atHome = false;
+			this.currentNeighborhood = this.workingNeighborhood;
 			relocate(this.workplace);
 		}
 	}
@@ -159,6 +171,7 @@ public class Citizen {
 	public void returnHome() {
 		if (!this.atHome) {
 			this.atHome = true;
+			this.currentNeighborhood = this.livingNeighborhood;
 			relocate(this.homeplace);
 		}
 	}
@@ -202,6 +215,7 @@ public class Citizen {
 	public void transitionToImmune() {
 		this.compartment = Compartment.IMMUNE;
 		this.simulationBuilder.outputManager.onNewImmune();
+		this.currentNeighborhood.onNewImmune();
 		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
@@ -211,6 +225,7 @@ public class Citizen {
 	public void die() {
 		this.compartment = Compartment.DEAD;
 		this.simulationBuilder.outputManager.onNewDeath();
+		this.currentNeighborhood.onNewDeath();
 		unscheduleAction(SchedulableAction.STEP);
 		unscheduleAction(SchedulableAction.WAKE_UP);
 		unscheduleAction(SchedulableAction.RETURN_HOME);
@@ -289,7 +304,7 @@ public class Citizen {
 	/**
 	 * Get living neighborhood
 	 */
-	public GISPolygon getLivingNeighborhood() {
+	public GISNeighborhood getLivingNeighborhood() {
 		return this.livingNeighborhood;
 	}
 
@@ -298,8 +313,24 @@ public class Citizen {
 	 * 
 	 * @param neighborhood Neighborhood
 	 */
-	public void setLivingNeighborhood(GISPolygon neighborhood) {
+	public void setLivingNeighborhood(GISNeighborhood neighborhood) {
 		this.livingNeighborhood = neighborhood;
+	}
+
+	/**
+	 * Get working neighborhood
+	 */
+	public GISPolygon getWorkingNeighborhood() {
+		return this.workingNeighborhood;
+	}
+
+	/**
+	 * Set working neighborhood
+	 * 
+	 * @param neighborhood Neighborhood
+	 */
+	public void setWorkingNeighborhood(GISNeighborhood neighborhood) {
+		this.workingNeighborhood = neighborhood;
 	}
 
 	/**
@@ -399,6 +430,7 @@ public class Citizen {
 			if (citizen.compartment == Compartment.SUSCEPTIBLE && Randomizer.isGettingExposed(incubationDiff)) {
 				citizen.transitionToExposed();
 				this.simulationBuilder.outputManager.onNewCase();
+				this.currentNeighborhood.onNewCase();
 			}
 		}
 	}
