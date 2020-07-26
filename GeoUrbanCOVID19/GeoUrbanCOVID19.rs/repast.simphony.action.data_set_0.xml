@@ -1,36 +1,28 @@
 <repast.simphony.data2.engine.DataSetDescriptor
 	simphonyVersion="2.7.0">
-	<name>NeighborhoodStatisticsTimeSeries</name>
-	<type>NON_AGGREGATE</type>
-	<sourceType>gis.GISNeighborhood</sourceType>
+	<name>ActiveCasesTimeSeries</name>
+	<type>AGGREGATE</type>
 	<inclTick>true</inclTick>
 	<inclBatchRun>true</inclBatchRun>
 	<inclRandomSeed>false</inclRandomSeed>
 	<scheduleParams>
 		<start>1.0</start>
-		<interval>24.0</interval>
+		<interval>1.0</interval>
 		<priority>-Infinity</priority>
 		<pType>LAST</pType>
 		<duration>-1.0</duration>
 		<frequency>REPEAT</frequency>
-		<hashCode>184802015</hashCode>
+		<hashCode>-467186068</hashCode>
 	</scheduleParams>
 	<atEnd>false</atEnd>
 	<methodDataSources class="linked-hash-map">
 		<entry>
-			<string>neighborhood</string>
+			<string>activeCases</string>
 			<repast.simphony.data2.engine.MethodDataSourceDefinition>
-				<id>neighborhood</id>
-				<className>gis.GISNeighborhood</className>
-				<methodName>getId</methodName>
-			</repast.simphony.data2.engine.MethodDataSourceDefinition>
-		</entry>
-		<entry>
-			<string>cases</string>
-			<repast.simphony.data2.engine.MethodDataSourceDefinition>
-				<id>cases</id>
-				<className>gis.GISNeighborhood</className>
-				<methodName>countNewCases</methodName>
+				<id>activeCases</id>
+				<className>model.Citizen</className>
+				<methodName>isActiveCase</methodName>
+				<aggType>SUM</aggType>
 			</repast.simphony.data2.engine.MethodDataSourceDefinition>
 		</entry>
 	</methodDataSources>

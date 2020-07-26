@@ -439,7 +439,7 @@ public class Citizen {
 	/**
 	 * Unschedule action
 	 * 
-	 * @param schedulableAction Action to unschedule
+	 * @param schedulableAction Action to unscheduled
 	 */
 	private void unscheduleAction(SchedulableAction schedulableAction) {
 		ISchedulableAction action = this.scheduledActions.get(schedulableAction);
