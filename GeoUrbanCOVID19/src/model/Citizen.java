@@ -402,6 +402,10 @@ public class Citizen {
 			}
 		}
 	}
+	
+	private GISPolygon getCurrentNeighborhood() {
+		return null;
+	}
 
 	/**
 	 * Relocate to destination
