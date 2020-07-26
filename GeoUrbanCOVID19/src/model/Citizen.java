@@ -105,7 +105,6 @@ public class Citizen {
 	 * @param compartment       Compartment
 	 */
 	public Citizen(SimulationBuilder simulationBuilder, Compartment compartment) {
-		super();
 		this.simulationBuilder = simulationBuilder;
 		this.compartment = compartment;
 		this.id = Randomizer.getRandomId();
