@@ -8,7 +8,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import config.Paths;
 import datasource.Reader;
+import gis.GISNeighborhood;
 import gis.GISPolygon;
+import gis.GISPolygonType;
 import model.Citizen;
 import model.Compartment;
 import model.Heuristics;
@@ -74,12 +76,13 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Create geography projection
 		this.geography = createGeographyProjection(context);
 		// Initialize city
-		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, "Id");
+		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, GISPolygonType.SIMPLE, "Id");
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
 		// Initialize neighborhoods
-		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, "SIT_2017");
+		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
+				"SIT_2017");
 		ArrayList<GISPolygon> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
 			neighborhoodsList.add(neighborhood);
@@ -139,16 +142,26 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * Read polygons
 	 * 
 	 * @param geometryPath Path to geometry file
+	 * @param polygonType  Polygon type
 	 * @param attribute    Attribute
 	 */
-	private HashMap<String, GISPolygon> readPolygons(String geometryPath, String attribute) {
+	private HashMap<String, GISPolygon> readPolygons(String geometryPath, GISPolygonType polygonType,
+			String attribute) {
 		HashMap<String, GISPolygon> polygons = new HashMap<>();
 		List<SimpleFeature> features = Reader.loadGeometryFromShapefile(geometryPath);
 		for (SimpleFeature feature : features) {
 			MultiPolygon multiPolygon = (MultiPolygon) feature.getDefaultGeometry();
 			Geometry geometry = multiPolygon.getGeometryN(0);
 			String id = "" + feature.getAttribute(attribute);
-			GISPolygon polygon = new GISPolygon(id);
+			GISPolygon polygon = null;
+			switch (polygonType) {
+			case NEIGHBORHOOD:
+				polygon = new GISNeighborhood(id);
+				break;
+			default:
+				polygon = new GISPolygon(id);
+				break;
+			}
 			polygon.setGeometryInGeography(this.geography, geometry);
 			polygons.put(id, polygon);
 		}

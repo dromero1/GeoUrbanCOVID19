@@ -8,6 +8,10 @@
 			<string>styles.CitizenStyle</string>
 		</entry>
 		<entry>
+			<string>gis.GISNeighborhood</string>
+			<string>styles.GISPolygonStyle</string>
+		</entry>
+		<entry>
 			<string>gis.GISPolygon</string>
 			<string>styles.GISPolygonStyle</string>
 		</entry>
@@ -15,6 +19,10 @@
 	<editedStyles>
 		<entry>
 			<string>model.Citizen</string>
+			<null />
+		</entry>
+		<entry>
+			<string>gis.GISNeighborhood</string>
 			<null />
 		</entry>
 		<entry>
@@ -32,13 +40,13 @@
 		<pType>LAST</pType>
 		<duration>-1.0</duration>
 		<frequency>REPEAT</frequency>
-		<hashCode>-2139096761</hashCode>
+		<hashCode>-1849290617</hashCode>
 	</schedParams>
 	<layoutInterval>0</layoutInterval>
 	<layerOrder>
 		<entry>
 			<string>model.Citizen</string>
-			<int>4</int>
+			<int>5</int>
 		</entry>
 		<entry>
 			<string>Scale bar</string>
@@ -51,6 +59,10 @@
 		<entry>
 			<string>Compass</string>
 			<int>0</int>
+		</entry>
+		<entry>
+			<string>gis.GISNeighborhood</string>
+			<int>4</int>
 		</entry>
 		<entry>
 			<string>gis.GISPolygon</string>

@@ -380,7 +380,7 @@ public class Citizen {
 	 */
 	private void randomWalk() {
 		double angle = RandomHelper.nextDoubleFromTo(0, 2 * Math.PI);
-		this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
+		Geometry location = this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
 	}
 
 	/**
