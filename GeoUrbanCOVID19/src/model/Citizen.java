@@ -108,11 +108,11 @@ public class Citizen {
 		super();
 		this.simulationBuilder = simulationBuilder;
 		this.compartment = compartment;
-		this.id = Probabilities.getRandomId();
-		this.age = Probabilities.getRandomAge();
+		this.id = Randomizer.getRandomId();
+		this.age = Randomizer.getRandomAge();
 		this.atHome = true;
-		this.wakeUpTime = Probabilities.getRandomWakeUpTime();
-		this.returningHomeTime = Probabilities.getRandomReturningHomeTime();
+		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
+		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new HashMap<>();
 	}
@@ -168,8 +168,8 @@ public class Citizen {
 	 */
 	public void transitionToExposed() {
 		this.compartment = Compartment.EXPOSED;
-		double incubationPeriod = Probabilities.getRandomIncubationPeriod();
-		double infectiousPeriod = Math.max(incubationPeriod + Probabilities.INFECTION_MIN, 1);
+		double incubationPeriod = Randomizer.getRandomIncubationPeriod();
+		double infectiousPeriod = Math.max(incubationPeriod + Randomizer.INFECTION_MIN, 1);
 		this.incubationEnd = RepastEssentials.GetTickCount() + TickConverter.daysToTicks(incubationPeriod);
 		double ticks = TickConverter.daysToTicks(infectiousPeriod);
 		EventScheduler eventScheduler = EventScheduler.getInstance();
@@ -181,7 +181,7 @@ public class Citizen {
 	 */
 	public void transitionToInfected() {
 		this.compartment = Compartment.INFECTED;
-		PatientType patientType = Probabilities.getRandomPatientType();
+		PatientType patientType = Randomizer.getRandomPatientType();
 		// Schedule regular expulsion
 		EventScheduler eventScheduler = EventScheduler.getInstance();
 		double expelInterval = TickConverter.minutesToTicks(PARTICLE_EXPULSION_INTERVAL);
@@ -189,10 +189,10 @@ public class Citizen {
 				"expelParticles");
 		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES, expelAction);
 		// Schedule removal
-		boolean isDying = Probabilities.isGoingToDie(patientType);
+		boolean isDying = Randomizer.isGoingToDie(patientType);
 		String removalMethod = (isDying) ? "die" : "transitionToImmune";
-		double timeToDischarge = Probabilities.getRandomTimeToDischarge();
-		double ticksToRemoval = TickConverter.daysToTicks(timeToDischarge - Probabilities.INFECTION_MIN);
+		double timeToDischarge = Randomizer.getRandomTimeToDischarge();
+		double ticksToRemoval = TickConverter.daysToTicks(timeToDischarge - Randomizer.INFECTION_MIN);
 		eventScheduler.scheduleOneTimeEvent(ticksToRemoval, this, removalMethod);
 	}
 
@@ -353,7 +353,7 @@ public class Citizen {
 			transitionToExposed();
 			break;
 		case INFECTED:
-			this.incubationEnd = -TickConverter.daysToTicks(Probabilities.INFECTION_MIN);
+			this.incubationEnd = -TickConverter.daysToTicks(Randomizer.INFECTION_MIN);
 			transitionToInfected();
 			break;
 		default:
@@ -396,7 +396,7 @@ public class Citizen {
 		Iterable<Citizen> citizens = this.simulationBuilder.geography.getObjectsWithin(searchEnvelope, Citizen.class);
 		double incubationDiff = RepastEssentials.GetTickCount() - this.incubationEnd;
 		for (Citizen citizen : citizens) {
-			if (citizen.compartment == Compartment.SUSCEPTIBLE && Probabilities.isGettingExposed(incubationDiff)) {
+			if (citizen.compartment == Compartment.SUSCEPTIBLE && Randomizer.isGettingExposed(incubationDiff)) {
 				citizen.transitionToExposed();
 				this.simulationBuilder.outputManager.onNewCase();
 			}

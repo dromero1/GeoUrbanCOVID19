@@ -22,7 +22,7 @@ public abstract class Heuristics {
 	 * @param citizens Citizens
 	 */
 	public static void assignFamily(Citizen citizen, ArrayList<Citizen> citizens) {
-		ArrayList<Citizen> family = new ArrayList<Citizen>();
+		ArrayList<Citizen> family = new ArrayList<>();
 		family.add(citizen);
 		if (citizen.getAge() < 18) {
 			// Conditional probability

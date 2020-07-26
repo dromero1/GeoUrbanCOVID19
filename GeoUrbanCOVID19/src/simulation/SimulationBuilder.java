@@ -96,7 +96,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			context.add(citizen);
 		}
 		// Assign families
-		ArrayList<Citizen> familyProxies = new ArrayList<Citizen>();
+		ArrayList<Citizen> familyProxies = new ArrayList<>();
 		for (Citizen citizen : citizens) {
 			if (citizen.getFamily().isEmpty()) {
 				Heuristics.assignFamily(citizen, citizens);
