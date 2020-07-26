@@ -10,6 +10,6 @@
 		<string>neighborhood</string>
 		<string>cases</string>
 	</sourceIds>
-	<fileName>Ouput_NeighborhoodStatistics.csv</fileName>
+	<fileName>output/Ouput_NeighborhoodStatistics.csv</fileName>
 	<addTimeStamp>false</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>
