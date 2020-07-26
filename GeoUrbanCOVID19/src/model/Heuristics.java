@@ -140,7 +140,7 @@ public abstract class Heuristics {
 	 * @param livingNeighborhood Living neighborhood
 	 * @param neighborhoods      Neighborhoods
 	 */
-	public static NdPoint getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
+	public static Pair<NdPoint, GISNeighborhood> getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
 			HashMap<String, GISPolygon> neighborhoods) {
 		String livingNeighborhoodId = livingNeighborhood.getId();
 		String workingNeighborhoodId = null;
@@ -169,7 +169,8 @@ public abstract class Heuristics {
 		if (selectedNeighborhood == null) {
 			selectedNeighborhood = neighborhoods.get(livingNeighborhoodId);
 		}
-		return PolygonUtil.getRandomPoint(selectedNeighborhood);
+		NdPoint workplace = PolygonUtil.getRandomPoint(selectedNeighborhood);
+		return new Pair<>(workplace, (GISNeighborhood) selectedNeighborhood);
 	}
 
 }

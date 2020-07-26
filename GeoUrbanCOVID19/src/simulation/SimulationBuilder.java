@@ -27,6 +27,7 @@ import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
+import repast.simphony.util.collections.Pair;
 
 public class SimulationBuilder implements ContextBuilder<Object> {
 
@@ -115,8 +116,10 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
 			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
-			NdPoint workplace = Heuristics.getSODBasedWorkplace(sod, livingNeighborhood, this.neighborhoods);
-			citizen.setWorkplace(workplace);
+			Pair<NdPoint, GISNeighborhood> workplace = Heuristics.getSODBasedWorkplace(sod, livingNeighborhood,
+					this.neighborhoods);
+			citizen.setWorkplace(workplace.getFirst());
+			citizen.setWorkingNeighborhood(workplace.getSecond());
 		}
 		// Schedule policies
 		this.policyEnforcer = schedulePolicies(Paths.POLICIES_DATABASE);

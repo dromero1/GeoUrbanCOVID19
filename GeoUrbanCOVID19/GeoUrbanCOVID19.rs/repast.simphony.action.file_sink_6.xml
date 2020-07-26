@@ -9,6 +9,8 @@
 		<string>tick</string>
 		<string>neighborhood</string>
 		<string>cases</string>
+		<string>deaths</string>
+		<string>immune</string>
 	</sourceIds>
 	<fileName>output/Ouput_NeighborhoodStatistics.csv</fileName>
 	<addTimeStamp>false</addTimeStamp>
