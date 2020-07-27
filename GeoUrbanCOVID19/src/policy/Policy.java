@@ -36,14 +36,14 @@ public abstract class Policy {
 	 * Get begin day
 	 */
 	public int getBeginDay() {
-		return beginDay;
+		return this.beginDay;
 	}
 
 	/**
 	 * Get end day
 	 */
 	public int getEndDay() {
-		return endDay;
+		return this.endDay;
 	}
 
 }

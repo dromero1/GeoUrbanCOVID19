@@ -2,7 +2,6 @@ package model;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import gis.GISNeighborhood;
 import gis.GISPolygon;
 import repast.simphony.random.RandomHelper;

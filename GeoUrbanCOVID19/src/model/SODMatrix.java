@@ -41,7 +41,7 @@ public class SODMatrix {
 	 * @param origin Origin
 	 */
 	public boolean containsOrigin(String origin) {
-		return rows.containsKey(origin);
+		return this.rows.containsKey(origin);
 	}
 
 	/**
@@ -51,10 +51,10 @@ public class SODMatrix {
 	 */
 	public ArrayList<Pair<String, Double>> getTravelsFromOrigin(String origin) {
 		ArrayList<Pair<String, Double>> tfo = new ArrayList<>();
-		int i = rows.get(origin);
-		ArrayList<Double> fromOrigin = sod.get(i);
+		int i = this.rows.get(origin);
+		ArrayList<Double> fromOrigin = this.sod.get(i);
 		for (int j = 0; j < fromOrigin.size(); j++) {
-			String destination = columns.get(j);
+			String destination = this.columns.get(j);
 			double travels = fromOrigin.get(j);
 			if (travels > 0) {
 				tfo.add(new Pair<String, Double>(destination, travels));
