@@ -50,11 +50,6 @@ public class Citizen {
 	private Compartment compartment;
 
 	/**
-	 * Time to incubation end (unit: hours)
-	 */
-	protected double incubationEnd;
-
-	/**
 	 * Homeplace
 	 */
 	private NdPoint homeplace;
@@ -78,6 +73,16 @@ public class Citizen {
 	 * Currently at home
 	 */
 	private boolean atHome;
+
+	/**
+	 * Time to incubation end (unit: hours)
+	 */
+	protected double incubationEnd;
+
+	/**
+	 * Mask usage. Whether the citizen wears a mask or not.
+	 */
+	protected boolean maskUsage;
 
 	/**
 	 * Family
@@ -123,6 +128,7 @@ public class Citizen {
 		this.atHome = true;
 		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
 		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
+		this.maskUsage = Randomizer.getRandomMaskUsage();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new HashMap<>();
 	}
@@ -427,10 +433,12 @@ public class Citizen {
 		Iterable<Citizen> citizens = this.simulationBuilder.geography.getObjectsWithin(searchEnvelope, Citizen.class);
 		double incubationDiff = RepastEssentials.GetTickCount() - this.incubationEnd;
 		for (Citizen citizen : citizens) {
-			if (citizen.compartment == Compartment.SUSCEPTIBLE && Randomizer.isGettingExposed(incubationDiff)) {
-				citizen.transitionToExposed();
-				this.simulationBuilder.outputManager.onNewCase();
-				this.currentNeighborhood.onNewCase();
+			if (citizen.compartment == Compartment.SUSCEPTIBLE) {
+				if (Randomizer.isGettingExposed(incubationDiff, this.maskUsage, citizen.maskUsage)) {
+					citizen.transitionToExposed();
+					this.simulationBuilder.outputManager.onNewCase();
+					this.currentNeighborhood.onNewCase();
+				}
 			}
 		}
 	}

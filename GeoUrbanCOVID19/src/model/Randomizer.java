@@ -2,6 +2,8 @@ package model;
 
 import cern.jet.random.Gamma;
 import cern.jet.random.Normal;
+import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import util.TickConverter;
 
@@ -74,6 +76,21 @@ public abstract class Randomizer {
 	 * <pending>
 	 */
 	public static final double STD_INCUBATION_PERIOD = 2.41;
+
+	/**
+	 * Default mask factor. Reference: <pending>
+	 */
+	public static final double DEFAULT_MASK_FACTOR = 0.5;
+
+	/**
+	 * Maximum mask factor. Reference: <pending>
+	 */
+	public static final double MAX_MASK_FACTOR = 1;
+
+	/**
+	 * Minimum mask factor. Reference: <pending>
+	 */
+	public static final double MIN_MASK_FACTOR = 0;
 
 	/**
 	 * Get random number based on a triangular distribution
@@ -164,9 +181,12 @@ public abstract class Randomizer {
 	/**
 	 * Is the citizen getting exposed? Reference: <pending>
 	 * 
-	 * @param incubationDiff Incubation difference
+	 * @param incubationDiff       Incubation difference
+	 * @param maskUsageInfected    Mask usage of infected citizen
+	 * @param maskUsageSusceptible Mask usage of susceptible citizen
 	 */
-	public static boolean isGettingExposed(double incubationDiff) {
+	public static boolean isGettingExposed(double incubationDiff, boolean maskUsageInfected,
+			boolean maskUsageSusceptible) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		Gamma gamma = RandomHelper.createGamma(INFECTION_ALPHA, 1.0 / INFECTION_BETA);
 		double days = TickConverter.ticksToDays(incubationDiff);
@@ -174,6 +194,13 @@ public abstract class Randomizer {
 			return false;
 		}
 		double p = gamma.pdf(days - INFECTION_MIN);
+		double maskFactor = DEFAULT_MASK_FACTOR;
+		if (maskUsageInfected && maskUsageSusceptible) {
+			maskFactor = MAX_MASK_FACTOR;
+		} else if (!maskUsageInfected && !maskUsageSusceptible) {
+			maskFactor = MIN_MASK_FACTOR;
+		}
+		p *= (1 - maskFactor);
 		return r < p;
 	}
 
@@ -183,6 +210,16 @@ public abstract class Randomizer {
 	public static double getRandomTimeToDischarge() {
 		Gamma gamma = RandomHelper.createGamma(DISCHARGE_ALPHA, 1.0 / DISCHARGE_BETA);
 		return gamma.nextDouble();
+	}
+
+	/**
+	 * Get random mask usage. Reference: <pending>
+	 */
+	public static boolean getRandomMaskUsage() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		double p = simParams.getDouble("maskUsage");
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		return r < p;
 	}
 
 	/**

@@ -5,14 +5,17 @@
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="infectedCount" displayName="Infected count"
-		type="int" defaultValue="3" isReadOnly="false"
+		type="int" defaultValue="25" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="infectionRadius"
 		displayName="Infection radius (meters)" type="double"
 		defaultValue="10.0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="susceptibleCount"
-		displayName="Susceptible count" type="int" defaultValue="20000"
+		displayName="Susceptible count" type="int" defaultValue="5000"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="maskUsage" displayName="Mask usage (%)"
+		type="double" defaultValue="0.1" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>
