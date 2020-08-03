@@ -21,6 +21,10 @@ public class PolicyFactory {
 			return new SchoolClosuresPolicy(beginDay, endDay);
 		case "university-closures":
 			return new UniversityClosuresPolicy(beginDay, endDay);
+		case "case-isolation":
+			return new CaseIsolationPolicy(beginDay, endDay);
+		case "voluntary-home-isolation":
+			return new VoluntaryHomeIsolationPolicy(beginDay, endDay);
 		default:
 			break;
 		}
