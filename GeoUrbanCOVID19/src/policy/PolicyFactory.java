@@ -15,6 +15,12 @@ public class PolicyFactory {
 			return new FullQuarantinePolicy(beginDay, endDay);
 		case "id-based-curfew":
 			return new IdBasedCurfewPolicy(beginDay, endDay);
+		case "elderly-quarantine":
+			return new ElderlyQuarantinePolicy(beginDay, endDay);
+		case "school-closures":
+			return new SchoolClosuresPolicy(beginDay, endDay);
+		case "university-closures":
+			return new UniversityClosuresPolicy(beginDay, endDay);
 		default:
 			break;
 		}
