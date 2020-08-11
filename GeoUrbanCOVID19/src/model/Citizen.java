@@ -77,12 +77,12 @@ public class Citizen {
 	/**
 	 * Time to incubation end (unit: hours)
 	 */
-	protected double incubationEnd;
+	private double incubationEnd;
 
 	/**
 	 * Mask usage. Whether the citizen wears a mask or not.
 	 */
-	protected boolean maskUsage;
+	private boolean maskUsage;
 
 	/**
 	 * Family
@@ -107,7 +107,7 @@ public class Citizen {
 	/**
 	 * Reference to simulation builder
 	 */
-	protected SimulationBuilder simulationBuilder;
+	private SimulationBuilder simulationBuilder;
 
 	/**
 	 * Scheduled actions
@@ -201,7 +201,7 @@ public class Citizen {
 	public void transitionToInfected() {
 		this.compartment = Compartment.INFECTED;
 		PatientType patientType = Randomizer.getRandomPatientType();
-		// Schedule regular expulsion
+		// Schedule regular particle expulsion
 		EventScheduler eventScheduler = EventScheduler.getInstance();
 		double expelInterval = TickConverter.minutesToTicks(PARTICLE_EXPULSION_INTERVAL);
 		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(1, this, expelInterval,
