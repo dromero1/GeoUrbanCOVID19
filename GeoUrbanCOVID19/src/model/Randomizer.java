@@ -223,6 +223,16 @@ public abstract class Randomizer {
 	}
 
 	/**
+	 * Get random policy compliance. Reference: <pending>
+	 */
+	public static boolean getRandomPolicyCompliance() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		double p = simParams.getDouble("policyCompliance");
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		return r < p;
+	}
+	
+	/**
 	 * Get random wake up time (unit: hours). Reference: <pending>
 	 */
 	public static double getRandomWakeUpTime() {

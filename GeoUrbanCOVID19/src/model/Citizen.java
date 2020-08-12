@@ -85,6 +85,12 @@ public class Citizen {
 	private boolean maskUsage;
 
 	/**
+	 * Policy compliance. Whether the citizen complies with external policies or
+	 * not.
+	 */
+	private boolean policyCompliance;
+
+	/**
 	 * Family
 	 */
 	private ArrayList<Citizen> family;
@@ -129,6 +135,7 @@ public class Citizen {
 		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
 		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
 		this.maskUsage = Randomizer.getRandomMaskUsage();
+		this.policyCompliance = Randomizer.getRandomPolicyCompliance();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new HashMap<>();
 	}
@@ -148,7 +155,8 @@ public class Citizen {
 	 * Step
 	 */
 	public void step() {
-		if (this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this)) {
+		boolean allowed = this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this);
+		if (allowed || !this.policyCompliance) {
 			randomWalk();
 		}
 	}
@@ -164,7 +172,8 @@ public class Citizen {
 	 * Wake up and go to workplace
 	 */
 	public void wakeUp() {
-		if (this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this)) {
+		boolean allowed = this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this);
+		if (allowed || !this.policyCompliance) {
 			this.atHome = false;
 			this.currentNeighborhood = this.workingNeighborhood;
 			relocate(this.workplace);
