@@ -231,7 +231,7 @@ public abstract class Randomizer {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		return r < p;
 	}
-	
+
 	/**
 	 * Get random wake up time (unit: hours). Reference: <pending>
 	 */
