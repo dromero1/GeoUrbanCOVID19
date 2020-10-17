@@ -28,6 +28,16 @@ public final class SourceFeatures {
 	public static final int COMMUNES_POPULATION_COLUMN = 2;
 
 	/**
+	 * Neighborhoods database - id column
+	 */
+	public static final int NEIGHBORHOODS_ID_COLUMN = 0;
+
+	/**
+	 * Neighborhoods database - commune column
+	 */
+	public static final int NEIGHBORHOODS_COMMUNE_COLUMN = 1;
+
+	/**
 	 * Private constructor
 	 */
 	private SourceFeatures() {

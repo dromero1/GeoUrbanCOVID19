@@ -16,6 +16,7 @@ import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import config.SourceFeatures;
 import gis.GISCommune;
+import gis.GISNeighborhoodDetail;
 import model.SODMatrix;
 import policy.Policy;
 import policy.PolicyFactory;
@@ -141,6 +142,46 @@ public class Reader {
 			fnfe.printStackTrace();
 		}
 		return communes;
+	}
+
+	/**
+	 * Read neighborhoods database
+	 * 
+	 * @param filename File name
+	 */
+	public static Map<String, GISNeighborhoodDetail> readNeighborhoodsDatabase(String filename) {
+		Map<String, GISNeighborhoodDetail> neighborhoods = new HashMap<>();
+		File file = new File(filename);
+		try (Scanner scanner = new Scanner(file)) {
+			boolean first = true;
+			while (scanner.hasNextLine()) {
+				String data = scanner.nextLine();
+				if (first) {
+					first = false;
+				} else {
+					String[] elements = data.split(SOURCE_SPLIT_REGEX);
+					String id = null;
+					String communeId = null;
+					for (int i = 0; i < elements.length; i++) {
+						switch (i) {
+						case SourceFeatures.NEIGHBORHOODS_ID_COLUMN:
+							id = elements[i];
+							break;
+						case SourceFeatures.NEIGHBORHOODS_COMMUNE_COLUMN:
+							communeId = elements[i];
+							break;
+						default:
+							break;
+						}
+					}
+					GISNeighborhoodDetail detail = new GISNeighborhoodDetail(id, communeId);
+					neighborhoods.put(id, detail);
+				}
+			}
+		} catch (FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
+		}
+		return neighborhoods;
 	}
 
 	/**

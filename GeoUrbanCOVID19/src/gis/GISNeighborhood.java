@@ -3,6 +3,16 @@ package gis;
 public class GISNeighborhood extends GISPolygon {
 
 	/**
+	 * Commune
+	 */
+	private GISCommune commune;
+
+	/**
+	 * Detail
+	 */
+	private GISNeighborhoodDetail detail;
+
+	/**
 	 * New cases (unit: people)
 	 */
 	private int newCases;
@@ -72,6 +82,39 @@ public class GISNeighborhood extends GISPolygon {
 		int immune = this.newImmune;
 		this.newImmune = 0;
 		return immune;
+	}
+
+	/**
+	 * Get commune
+	 */
+	public GISCommune getCommune() {
+		return this.commune;
+	}
+
+	/**
+	 * Get detail
+	 */
+	public GISNeighborhoodDetail getDetail() {
+		return this.detail;
+	}
+
+	/**
+	 * Set commune
+	 * 
+	 * @param commune Commune
+	 */
+	public void setCommune(GISCommune commune) {
+		this.commune = commune;
+		this.commune.addNeighborhood(this);
+	}
+
+	/**
+	 * Set detail
+	 * 
+	 * @param detail Neighborhood detail
+	 */
+	public void setDetail(GISNeighborhoodDetail detail) {
+		this.detail = detail;
 	}
 
 }

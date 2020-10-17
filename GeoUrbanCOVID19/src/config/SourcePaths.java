@@ -26,12 +26,17 @@ public final class SourcePaths {
 	 * Communes database
 	 */
 	public static final String COMMUNES_DATABASE = "./data/databases/communes.csv";
-	
+
+	/**
+	 * Neighborhoods database
+	 */
+	public static final String NEIGHBORHOODS_DATABASE = "./data/databases/neighborhoods.csv";
+
 	/**
 	 * Private constructor
 	 */
 	private SourcePaths() {
 		throw new UnsupportedOperationException("Utility class");
 	}
-	
+
 }

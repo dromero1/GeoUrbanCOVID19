@@ -11,6 +11,7 @@ import config.SourcePaths;
 import datasource.Reader;
 import gis.GISCommune;
 import gis.GISNeighborhood;
+import gis.GISNeighborhoodDetail;
 import gis.GISPolygon;
 import gis.GISPolygonType;
 import model.Citizen;
@@ -93,6 +94,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
 				"SIT_2017");
+		// Fill neighborhoods
+		fillNeighborhoods();
+		// Add neighborhoods to the simulation
 		List<GISNeighborhood> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
 			neighborhoodsList.add((GISNeighborhood) neighborhood);
@@ -101,7 +105,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Initialize output manager
 		this.outputManager = new OutputManager();
 		context.add(this.outputManager);
-		// Add students to simulation
+		// Add students to the simulation
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		List<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
 				simParams.getInteger("infectedCount"));
@@ -174,6 +178,23 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			polygons.put(id, polygon);
 		}
 		return polygons;
+	}
+
+	/**
+	 * Fill neighborhoods
+	 */
+	private void fillNeighborhoods() {
+		Map<String, GISNeighborhoodDetail> details = Reader
+				.readNeighborhoodsDatabase(SourcePaths.NEIGHBORHOODS_DATABASE);
+		for (Map.Entry<String, GISNeighborhoodDetail> detailEntry : details.entrySet()) {
+			String neighborhoodId = detailEntry.getKey();
+			GISNeighborhoodDetail detail = detailEntry.getValue();
+			GISNeighborhood neighborhood = (GISNeighborhood) this.neighborhoods.get(neighborhoodId);
+			String communeId = detail.getCommuneId();
+			GISCommune commune = this.communes.get(communeId);
+			neighborhood.setCommune(commune);
+			neighborhood.setDetail(detailEntry.getValue());
+		}
 	}
 
 	/**
