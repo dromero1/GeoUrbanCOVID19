@@ -18,13 +18,6 @@ public class OutputManager {
 	private int newImmune;
 
 	/**
-	 * Measure the current effective reproductive number
-	 */
-	public double measureRe() {
-		return 0.0;
-	}
-
-	/**
 	 * Handle the 'onNewCase' event
 	 */
 	public void onNewCase() {

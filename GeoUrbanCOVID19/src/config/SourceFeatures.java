@@ -1,6 +1,6 @@
 package config;
 
-public class DBFeatures {
+public final class SourceFeatures {
 
 	/**
 	 * Policies database - type column
@@ -16,5 +16,12 @@ public class DBFeatures {
 	 * Policies database - end day column
 	 */
 	public static final int POLICIES_END_DAY_COLUMN = 2;
+
+	/**
+	 * Private constructor
+	 */
+	private SourceFeatures() {
+		throw new UnsupportedOperationException("Utility class");
+	}
 
 }

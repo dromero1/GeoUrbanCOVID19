@@ -1,12 +1,13 @@
 package simulation;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import org.opengis.feature.simple.SimpleFeature;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
-import config.Paths;
+import config.SourcePaths;
 import datasource.Reader;
 import gis.GISNeighborhood;
 import gis.GISPolygon;
@@ -49,12 +50,12 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	/**
 	 * City
 	 */
-	public HashMap<String, GISPolygon> city;
+	public Map<String, GISPolygon> city;
 
 	/**
 	 * Neighborhoods
 	 */
-	public HashMap<String, GISPolygon> neighborhoods;
+	public Map<String, GISPolygon> neighborhoods;
 
 	/**
 	 * Policy enforcer
@@ -77,14 +78,14 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Create geography projection
 		this.geography = createGeographyProjection(context);
 		// Initialize city
-		this.city = readPolygons(Paths.CITY_GEOMETRY_SHAPEFILE, GISPolygonType.SIMPLE, "Id");
+		this.city = readPolygons(SourcePaths.CITY_GEOMETRY_SHAPEFILE, GISPolygonType.SIMPLE, "Id");
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
 		// Initialize neighborhoods
-		this.neighborhoods = readPolygons(Paths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
+		this.neighborhoods = readPolygons(SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
 				"SIT_2017");
-		ArrayList<GISNeighborhood> neighborhoodsList = new ArrayList<>();
+		List<GISNeighborhood> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
 			neighborhoodsList.add((GISNeighborhood) neighborhood);
 			context.add(neighborhood);
@@ -94,13 +95,13 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		context.add(this.outputManager);
 		// Add students to simulation
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
-		ArrayList<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
+		List<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
 				simParams.getInteger("infectedCount"));
 		for (Citizen citizen : citizens) {
 			context.add(citizen);
 		}
 		// Assign families
-		ArrayList<Citizen> familyProxies = new ArrayList<>();
+		List<Citizen> familyProxies = new ArrayList<>();
 		for (Citizen citizen : citizens) {
 			if (citizen.getFamily().isEmpty()) {
 				Heuristics.assignFamily(citizen, citizens);
@@ -112,7 +113,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			Heuristics.assignHouse(proxy, neighborhoodsList);
 		}
 		// Initialize SOD matrix
-		SODMatrix sod = Reader.readSODMatrix(Paths.SOD_MATRIX);
+		SODMatrix sod = Reader.readSODMatrix(SourcePaths.SOD_MATRIX);
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
 			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
@@ -122,7 +123,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			citizen.setWorkingNeighborhood(workplace.getSecond());
 		}
 		// Schedule policies
-		this.policyEnforcer = schedulePolicies(Paths.POLICIES_DATABASE);
+		this.policyEnforcer = new PolicyEnforcer();
+		schedulePolicies(SourcePaths.POLICIES_DATABASE);
 		context.add(this.policyEnforcer);
 		// Set end tick
 		RunEnvironment.getInstance().endAt(END_TICK);
@@ -137,8 +139,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	private Geography<Object> createGeographyProjection(Context<Object> context) {
 		GeographyParameters<Object> params = new GeographyParameters<>();
 		GeographyFactory geographyFactory = GeographyFactoryFinder.createGeographyFactory(null);
-		Geography<Object> geography = geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID, context, params);
-		return geography;
+		return geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID, context, params);
 	}
 
 	/**
@@ -148,22 +149,18 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * @param polygonType  Polygon type
 	 * @param attribute    Attribute
 	 */
-	private HashMap<String, GISPolygon> readPolygons(String geometryPath, GISPolygonType polygonType,
-			String attribute) {
-		HashMap<String, GISPolygon> polygons = new HashMap<>();
+	private Map<String, GISPolygon> readPolygons(String geometryPath, GISPolygonType polygonType, String attribute) {
+		Map<String, GISPolygon> polygons = new HashMap<>();
 		List<SimpleFeature> features = Reader.loadGeometryFromShapefile(geometryPath);
 		for (SimpleFeature feature : features) {
 			MultiPolygon multiPolygon = (MultiPolygon) feature.getDefaultGeometry();
 			Geometry geometry = multiPolygon.getGeometryN(0);
 			String id = "" + feature.getAttribute(attribute);
 			GISPolygon polygon = null;
-			switch (polygonType) {
-			case NEIGHBORHOOD:
+			if (polygonType == GISPolygonType.NEIGHBORHOOD) {
 				polygon = new GISNeighborhood(id);
-				break;
-			default:
+			} else {
 				polygon = new GISPolygon(id);
-				break;
 			}
 			polygon.setGeometryInGeography(this.geography, geometry);
 			polygons.put(id, polygon);
@@ -177,8 +174,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * @param susceptibleCount Number of susceptible citizens
 	 * @param infectedCount    Number of infected citizens
 	 */
-	private ArrayList<Citizen> createCitizens(int susceptibleCount, int infectedCount) {
-		ArrayList<Citizen> citizens = new ArrayList<>();
+	private List<Citizen> createCitizens(int susceptibleCount, int infectedCount) {
+		List<Citizen> citizens = new ArrayList<>();
 		for (int i = 0; i < infectedCount; i++) {
 			Citizen citizen = new Citizen(this, Compartment.INFECTED);
 			citizens.add(citizen);
@@ -195,13 +192,11 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * 
 	 * @param policiesPath Path to policies file
 	 */
-	private PolicyEnforcer schedulePolicies(String policiesPath) {
-		PolicyEnforcer policyEnforcer = new PolicyEnforcer();
-		ArrayList<Policy> policies = Reader.readPoliciesDatabase(policiesPath);
+	private void schedulePolicies(String policiesPath) {
+		List<Policy> policies = Reader.readPoliciesDatabase(policiesPath);
 		for (Policy policy : policies) {
-			policyEnforcer.schedulePolicy(policy);
+			this.policyEnforcer.schedulePolicy(policy);
 		}
-		return policyEnforcer;
 	}
 
 }

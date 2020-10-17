@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
@@ -12,7 +13,7 @@ import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
-import config.DBFeatures;
+import config.SourceFeatures;
 import model.SODMatrix;
 import policy.Policy;
 import policy.PolicyFactory;
@@ -20,11 +21,23 @@ import policy.PolicyFactory;
 public class Reader {
 
 	/**
+	 * Source split regular expression
+	 */
+	private static final String SOURCE_SPLIT_REGEX = ";";
+
+	/**
+	 * Private constructor
+	 */
+	private Reader() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
+	/**
 	 * Load geometry from shapefile
 	 * 
 	 * @param filename File name
 	 */
-	public static ArrayList<SimpleFeature> loadGeometryFromShapefile(String filename) {
+	public static List<SimpleFeature> loadGeometryFromShapefile(String filename) {
 		File file = new File(filename);
 		try {
 			FileDataStore store = FileDataStoreFinder.getDataStore(file);
@@ -38,10 +51,10 @@ public class Reader {
 			featureIterator.close();
 			store.dispose();
 			return simpleFeatures;
-		} catch (IOException e) {
-			e.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	/**
@@ -49,30 +62,29 @@ public class Reader {
 	 * 
 	 * @param filename File name
 	 */
-	public static ArrayList<Policy> readPoliciesDatabase(String filename) {
-		ArrayList<Policy> policies = new ArrayList<>();
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
+	public static List<Policy> readPoliciesDatabase(String filename) {
+		List<Policy> policies = new ArrayList<>();
+		File file = new File(filename);
+		try (Scanner scanner = new Scanner(file)) {
 			boolean first = true;
 			while (scanner.hasNextLine()) {
 				String data = scanner.nextLine();
 				if (first) {
 					first = false;
 				} else {
-					String[] elements = data.split(";");
+					String[] elements = data.split(SOURCE_SPLIT_REGEX);
 					String policyType = null;
 					int beginDay = 0;
 					int endDay = 0;
 					for (int i = 0; i < elements.length; i++) {
 						switch (i) {
-						case DBFeatures.POLICIES_TYPE_COLUMN:
+						case SourceFeatures.POLICIES_TYPE_COLUMN:
 							policyType = elements[i];
 							break;
-						case DBFeatures.POLICIES_BEGIN_DAY_COLUMN:
+						case SourceFeatures.POLICIES_BEGIN_DAY_COLUMN:
 							beginDay = Integer.parseInt(elements[i]);
 							break;
-						case DBFeatures.POLICIES_END_DAY_COLUMN:
+						case SourceFeatures.POLICIES_END_DAY_COLUMN:
 							endDay = Integer.parseInt(elements[i]);
 							break;
 						default:
@@ -83,9 +95,8 @@ public class Reader {
 					policies.add(policy);
 				}
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
 		}
 		return policies;
 	}
@@ -96,22 +107,21 @@ public class Reader {
 	 * @param filename File name
 	 */
 	public static SODMatrix readSODMatrix(String filename) {
-		ArrayList<ArrayList<Double>> sod = new ArrayList<>();
+		List<List<Double>> sod = new ArrayList<>();
 		HashMap<String, Integer> rows = new HashMap<>();
 		HashMap<Integer, String> columns = new HashMap<>();
-		try {
-			File file = new File(filename);
-			Scanner scanner = new Scanner(file);
+		File file = new File(filename);
+		try (Scanner scanner = new Scanner(file)) {
 			int i = 0;
 			while (scanner.hasNextLine()) {
 				String data = scanner.nextLine();
-				String[] elements = data.split(";");
+				String[] elements = data.split(SOURCE_SPLIT_REGEX);
 				if (i == 0) {
 					for (int j = 1; j < elements.length; j++) {
 						columns.put(j - 1, elements[j]);
 					}
 				} else {
-					ArrayList<Double> row = new ArrayList<>();
+					List<Double> row = new ArrayList<>();
 					for (int j = 0; j < elements.length; j++) {
 						if (j == 0) {
 							rows.put(elements[j], i - 1);
@@ -123,9 +133,8 @@ public class Reader {
 				}
 				i++;
 			}
-			scanner.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+		} catch (FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
 		}
 		return new SODMatrix(sod, rows, columns);
 	}

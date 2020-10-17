@@ -1,7 +1,9 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Envelope;
 import com.vividsolutions.jts.geom.Geometry;
@@ -93,7 +95,7 @@ public class Citizen {
 	/**
 	 * Family
 	 */
-	private ArrayList<Citizen> family;
+	private List<Citizen> family;
 
 	/**
 	 * Living neighborhood
@@ -118,7 +120,7 @@ public class Citizen {
 	/**
 	 * Scheduled actions
 	 */
-	private HashMap<SchedulableAction, ISchedulableAction> scheduledActions;
+	private Map<SchedulableAction, ISchedulableAction> scheduledActions;
 
 	/**
 	 * Create a new citizen agent
@@ -137,7 +139,7 @@ public class Citizen {
 		this.maskUsage = Randomizer.getRandomMaskUsage();
 		this.policyCompliance = Randomizer.getRandomPolicyCompliance();
 		this.family = new ArrayList<>();
-		this.scheduledActions = new HashMap<>();
+		this.scheduledActions = new EnumMap<>(SchedulableAction.class);
 	}
 
 	/**
@@ -303,7 +305,7 @@ public class Citizen {
 	/**
 	 * Get family
 	 */
-	public ArrayList<Citizen> getFamily() {
+	public List<Citizen> getFamily() {
 		return this.family;
 	}
 
@@ -312,7 +314,7 @@ public class Citizen {
 	 * 
 	 * @param family List of family members
 	 */
-	public void setFamily(ArrayList<Citizen> family) {
+	public void setFamily(List<Citizen> family) {
 		this.family = family;
 	}
 
@@ -442,12 +444,11 @@ public class Citizen {
 		Iterable<Citizen> citizens = this.simulationBuilder.geography.getObjectsWithin(searchEnvelope, Citizen.class);
 		double incubationDiff = RepastEssentials.GetTickCount() - this.incubationEnd;
 		for (Citizen citizen : citizens) {
-			if (citizen.compartment == Compartment.SUSCEPTIBLE) {
-				if (Randomizer.isGettingExposed(incubationDiff, this.maskUsage, citizen.maskUsage)) {
-					citizen.transitionToExposed();
-					this.simulationBuilder.outputManager.onNewCase();
-					this.currentNeighborhood.onNewCase();
-				}
+			if (citizen.compartment == Compartment.SUSCEPTIBLE
+					&& Randomizer.isGettingExposed(incubationDiff, this.maskUsage, citizen.maskUsage)) {
+				citizen.transitionToExposed();
+				this.simulationBuilder.outputManager.onNewCase();
+				this.currentNeighborhood.onNewCase();
 			}
 		}
 	}

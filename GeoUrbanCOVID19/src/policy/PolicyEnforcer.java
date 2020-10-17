@@ -1,6 +1,7 @@
 package policy;
 
 import java.util.ArrayList;
+import java.util.List;
 import model.Citizen;
 import simulation.EventScheduler;
 import util.TickConverter;
@@ -10,7 +11,7 @@ public class PolicyEnforcer {
 	/**
 	 * Current policies
 	 */
-	private ArrayList<Policy> currentPolicies;
+	private List<Policy> currentPolicies;
 
 	/**
 	 * Create a new policy enforcer

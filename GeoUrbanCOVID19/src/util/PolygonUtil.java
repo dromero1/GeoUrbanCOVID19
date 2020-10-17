@@ -10,6 +10,13 @@ import repast.simphony.space.continuous.NdPoint;
 public class PolygonUtil {
 
 	/**
+	 * Private constructor
+	 */
+	private PolygonUtil() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+	
+	/**
 	 * Get random point from polygon
 	 * 
 	 * @param polygon Polygon

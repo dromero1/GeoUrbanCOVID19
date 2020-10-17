@@ -1,7 +1,8 @@
 package model;
 
+import java.util.List;
+import java.util.Map;
 import java.util.ArrayList;
-import java.util.HashMap;
 import repast.simphony.util.collections.Pair;
 
 public class SODMatrix {
@@ -9,17 +10,17 @@ public class SODMatrix {
 	/**
 	 * SOD matrix
 	 */
-	private ArrayList<ArrayList<Double>> sod;
+	private List<List<Double>> sod;
 
 	/**
 	 * Rows mapping
 	 */
-	private HashMap<String, Integer> rows;
+	private Map<String, Integer> rows;
 
 	/**
 	 * Columns mapping
 	 */
-	private HashMap<Integer, String> columns;
+	private Map<Integer, String> columns;
 
 	/**
 	 * Create a new SOD matrix
@@ -28,8 +29,7 @@ public class SODMatrix {
 	 * @param rows    Rows mapping
 	 * @param columns Columns mapping
 	 */
-	public SODMatrix(ArrayList<ArrayList<Double>> sod, HashMap<String, Integer> rows,
-			HashMap<Integer, String> columns) {
+	public SODMatrix(List<List<Double>> sod, Map<String, Integer> rows, Map<Integer, String> columns) {
 		this.sod = sod;
 		this.rows = rows;
 		this.columns = columns;
@@ -49,15 +49,15 @@ public class SODMatrix {
 	 * 
 	 * @param origin Origin
 	 */
-	public ArrayList<Pair<String, Double>> getTravelsFromOrigin(String origin) {
-		ArrayList<Pair<String, Double>> tfo = new ArrayList<>();
+	public List<Pair<String, Double>> getTravelsFromOrigin(String origin) {
+		List<Pair<String, Double>> tfo = new ArrayList<>();
 		int i = this.rows.get(origin);
-		ArrayList<Double> fromOrigin = this.sod.get(i);
+		List<Double> fromOrigin = this.sod.get(i);
 		for (int j = 0; j < fromOrigin.size(); j++) {
 			String destination = this.columns.get(j);
 			double travels = fromOrigin.get(j);
 			if (travels > 0) {
-				tfo.add(new Pair<String, Double>(destination, travels));
+				tfo.add(new Pair<>(destination, travels));
 			}
 		}
 		return tfo;

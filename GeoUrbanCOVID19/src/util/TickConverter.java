@@ -20,6 +20,13 @@ public class TickConverter {
 	public static final int TICKS_PER_DAY = 24;
 
 	/**
+	 * Private constructor
+	 */
+	private TickConverter() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
+	/**
 	 * Day and time to ticks
 	 * 
 	 * @param day  Day

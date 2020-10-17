@@ -3,6 +3,13 @@ package policy;
 public class PolicyFactory {
 
 	/**
+	 * Private constructor
+	 */
+	private PolicyFactory() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
+	/**
 	 * Instantiate a new policy
 	 * 
 	 * @param policyType Policy type

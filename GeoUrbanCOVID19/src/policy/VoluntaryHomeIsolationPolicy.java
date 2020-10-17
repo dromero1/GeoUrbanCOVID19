@@ -1,6 +1,6 @@
 package policy;
 
-import java.util.ArrayList;
+import java.util.List;
 import model.Citizen;
 import model.Compartment;
 
@@ -23,7 +23,7 @@ public class VoluntaryHomeIsolationPolicy extends Policy {
 	 */
 	@Override
 	protected boolean isAllowedToGoOut(Citizen citizen) {
-		ArrayList<Citizen> family = citizen.getFamily();
+		List<Citizen> family = citizen.getFamily();
 		for (Citizen member : family) {
 			Compartment compartment = member.getCompartment();
 			if (!member.equals(citizen) && compartment == Compartment.INFECTED) {

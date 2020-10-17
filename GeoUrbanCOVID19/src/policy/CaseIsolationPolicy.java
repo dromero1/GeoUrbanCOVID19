@@ -23,7 +23,7 @@ public class CaseIsolationPolicy extends Policy {
 	@Override
 	protected boolean isAllowedToGoOut(Citizen citizen) {
 		Compartment compartment = citizen.getCompartment();
-		return !(compartment == Compartment.INFECTED);
+		return compartment != Compartment.INFECTED;
 	}
 
 }

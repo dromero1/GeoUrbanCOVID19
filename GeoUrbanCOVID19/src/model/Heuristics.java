@@ -1,7 +1,8 @@
 package model;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import gis.GISNeighborhood;
 import gis.GISPolygon;
 import repast.simphony.random.RandomHelper;
@@ -9,12 +10,19 @@ import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.util.collections.Pair;
 import util.PolygonUtil;
 
-public abstract class Heuristics {
+public final class Heuristics {
 
 	/**
 	 * Probabilities of a family having up to i members (i = 1,...,6)
 	 */
-	public static final double FAMILY_PROBABILITIES[] = { 0.19, 0.23, 0.24, 0.19, 0.8, 0.7 };
+	protected static final double[] FAMILY_PROBABILITIES = { 0.19, 0.23, 0.24, 0.19, 0.8, 0.7 };
+
+	/**
+	 * Private constructor
+	 */
+	private Heuristics() {
+		throw new UnsupportedOperationException("Utility class");
+	}
 
 	/**
 	 * Assign family
@@ -22,12 +30,12 @@ public abstract class Heuristics {
 	 * @param citizen  Citizen
 	 * @param citizens Citizens
 	 */
-	public static void assignFamily(Citizen citizen, ArrayList<Citizen> citizens) {
-		ArrayList<Citizen> family = new ArrayList<>();
+	public static void assignFamily(Citizen citizen, List<Citizen> citizens) {
+		List<Citizen> family = new ArrayList<>();
 		family.add(citizen);
 		if (citizen.getAge() < 18) {
 			// Conditional probability
-			double familyProbsKids[] = new double[FAMILY_PROBABILITIES.length - 1];
+			double[] familyProbsKids = new double[FAMILY_PROBABILITIES.length - 1];
 			double sumProb = 1 - FAMILY_PROBABILITIES[0];
 			double sumPartial = 0;
 			for (int j = 1; j < familyProbsKids.length; j++) {
@@ -50,7 +58,7 @@ public abstract class Heuristics {
 			Citizen adult = null;
 			int indexAdult = 0;
 			for (Citizen otherCitizen : citizens) {
-				if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().size() == 0) {
+				if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().isEmpty()) {
 					adult = otherCitizen;
 					break;
 				}
@@ -59,7 +67,7 @@ public abstract class Heuristics {
 			if (adult == null) {
 				// Case: Every adult has a family
 				for (Citizen otherCitizen : citizens) {
-					if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().size() != 0) {
+					if (otherCitizen.getAge() >= 18 && !otherCitizen.getFamily().isEmpty()) {
 						family = otherCitizen.getFamily();
 						family.add(citizen);
 						break;
@@ -73,7 +81,7 @@ public abstract class Heuristics {
 						if (i == indexAdult || citizens.get(i).equals(citizen)) {
 							continue;
 						}
-						if (citizens.get(i).getFamily().size() == 0) {
+						if (citizens.get(i).getFamily().isEmpty()) {
 							family.add(citizens.get(i));
 						}
 						if (familyCount == family.size() - 2) {
@@ -99,7 +107,7 @@ public abstract class Heuristics {
 					if (citizens.get(i).equals(citizen)) {
 						continue;
 					}
-					if (citizens.get(i).getFamily().size() == 0) {
+					if (citizens.get(i).getFamily().isEmpty()) {
 						family.add(citizens.get(i));
 					}
 					if (familyCount == family.size() - 1) {
@@ -119,7 +127,7 @@ public abstract class Heuristics {
 	 * @param proxy         Family proxy
 	 * @param neighborhoods Neighborhoods
 	 */
-	public static void assignHouse(Citizen proxy, ArrayList<GISNeighborhood> neighborhoods) {
+	public static void assignHouse(Citizen proxy, List<GISNeighborhood> neighborhoods) {
 		// Select random neighborhood
 		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
 		GISNeighborhood selectedNeighborhood = neighborhoods.get(index);
@@ -140,11 +148,11 @@ public abstract class Heuristics {
 	 * @param neighborhoods      Neighborhoods
 	 */
 	public static Pair<NdPoint, GISNeighborhood> getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
-			HashMap<String, GISPolygon> neighborhoods) {
+			Map<String, GISPolygon> neighborhoods) {
 		String livingNeighborhoodId = livingNeighborhood.getId();
 		String workingNeighborhoodId = null;
 		if (sod.containsOrigin(livingNeighborhoodId)) {
-			ArrayList<Pair<String, Double>> travels = sod.getTravelsFromOrigin(livingNeighborhoodId);
+			List<Pair<String, Double>> travels = sod.getTravelsFromOrigin(livingNeighborhoodId);
 			int player1 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
 			for (int i = 0; i < 10; i++) {
 				int player2 = RandomHelper.nextIntFromTo(0, travels.size() - 1);

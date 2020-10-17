@@ -22,7 +22,7 @@ public class SchoolClosuresPolicy extends Policy {
 	@Override
 	protected boolean isAllowedToGoOut(Citizen citizen) {
 		int age = citizen.getAge();
-		return !(age < 18);
+		return age >= 18;
 	}
 
 }

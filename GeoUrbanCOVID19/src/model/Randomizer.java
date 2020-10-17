@@ -7,19 +7,7 @@ import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import util.TickConverter;
 
-public abstract class Randomizer {
-
-	/**
-	 * Age ranges (unit: age). Reference: <pending>
-	 */
-	public static final int AGE_RANGES[][] = { { 0, 9 }, { 10, 19 }, { 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 },
-			{ 60, 69 }, { 70, 79 }, { 80, 121 } };
-
-	/**
-	 * Age probabilities (unit: probability). Reference: <pending>
-	 */
-	public static final double AGE_PROBABILITIES[] = { 0.1443, 0.169, 0.1728, 0.1487, 0.1221, 0.1104, 0.0728, 0.0393,
-			0.0206 };
+public final class Randomizer {
 
 	/**
 	 * Minimum wake up time (unit: hours). Reference: <pending>
@@ -93,6 +81,25 @@ public abstract class Randomizer {
 	public static final double MIN_MASK_FACTOR = 0;
 
 	/**
+	 * Age ranges (unit: age). Reference: <pending>
+	 */
+	protected static final int[][] AGE_RANGES = { { 0, 9 }, { 10, 19 }, { 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 },
+			{ 60, 69 }, { 70, 79 }, { 80, 121 } };
+
+	/**
+	 * Age probabilities (unit: probability). Reference: <pending>
+	 */
+	protected static final double[] AGE_PROBABILITIES = { 0.1443, 0.169, 0.1728, 0.1487, 0.1221, 0.1104, 0.0728, 0.0393,
+			0.0206 };
+
+	/**
+	 * Private constructor
+	 */
+	private Randomizer() {
+		throw new UnsupportedOperationException("Utility class");
+	}
+
+	/**
 	 * Get random number based on a triangular distribution
 	 * 
 	 * @param min  Minimum
@@ -102,7 +109,7 @@ public abstract class Randomizer {
 	public static double getRandomTriangular(double min, double mode, double max) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		double beta = (mode - min) / (max - min);
-		double t = 0.0;
+		double t;
 		if (r < beta) {
 			t = Math.sqrt(beta * r);
 		} else {
