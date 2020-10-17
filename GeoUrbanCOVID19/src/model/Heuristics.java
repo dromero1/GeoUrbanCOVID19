@@ -1,8 +1,10 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import gis.GISCommune;
 import gis.GISNeighborhood;
 import gis.GISPolygon;
 import repast.simphony.random.RandomHelper;
@@ -124,11 +126,30 @@ public final class Heuristics {
 	/**
 	 * Assign house to a family
 	 * 
-	 * @param proxy         Family proxy
-	 * @param neighborhoods Neighborhoods
+	 * @param proxy    Family proxy
+	 * @param communes Communes
 	 */
-	public static void assignHouse(Citizen proxy, List<GISNeighborhood> neighborhoods) {
+	public static void assignHouse(Citizen proxy, Collection<GISCommune> communes) {
+		// Get total population
+		double totalPopulation = 0;
+		for (GISCommune commune : communes) {
+			double population = commune.getPopulation();
+			totalPopulation += population;
+		}
+		// Select random commune
+		GISCommune selectedCommune = null;
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		double cummulativeProbability = 0;
+		for (GISCommune commune : communes) {
+			double population = commune.getPopulation();
+			cummulativeProbability += population / totalPopulation;
+			if (r <= cummulativeProbability) {
+				selectedCommune = commune;
+				break;
+			}
+		}
 		// Select random neighborhood
+		List<GISNeighborhood> neighborhoods = selectedCommune.getNeighborhoods();
 		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
 		GISNeighborhood selectedNeighborhood = neighborhoods.get(index);
 		// Generate random point inside selected neighborhood

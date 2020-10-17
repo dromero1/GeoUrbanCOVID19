@@ -97,9 +97,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Fill neighborhoods
 		fillNeighborhoods();
 		// Add neighborhoods to the simulation
-		List<GISNeighborhood> neighborhoodsList = new ArrayList<>();
 		for (GISPolygon neighborhood : this.neighborhoods.values()) {
-			neighborhoodsList.add((GISNeighborhood) neighborhood);
 			context.add(neighborhood);
 		}
 		// Initialize output manager
@@ -122,7 +120,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Assign a house to each family
 		for (Citizen proxy : familyProxies) {
-			Heuristics.assignHouse(proxy, neighborhoodsList);
+			Heuristics.assignHouse(proxy, communes.values());
 		}
 		// Initialize SOD matrix
 		SODMatrix sod = Reader.readSODMatrix(SourcePaths.SOD_MATRIX);
@@ -190,6 +188,9 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			String neighborhoodId = detailEntry.getKey();
 			GISNeighborhoodDetail detail = detailEntry.getValue();
 			GISNeighborhood neighborhood = (GISNeighborhood) this.neighborhoods.get(neighborhoodId);
+			if(neighborhood == null) {
+				continue;
+			}
 			String communeId = detail.getCommuneId();
 			GISCommune commune = this.communes.get(communeId);
 			neighborhood.setCommune(commune);

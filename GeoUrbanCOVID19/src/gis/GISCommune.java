@@ -47,6 +47,13 @@ public class GISCommune {
 	}
 
 	/**
+	 * Get neighborhoods
+	 */
+	public List<GISNeighborhood> getNeighborhoods() {
+		return this.neighborhoods;
+	}
+	
+	/**
 	 * Add neighborhood
 	 * 
 	 * @param neighborhood Neighborhood
