@@ -23,6 +23,11 @@ public final class SourcePaths {
 	public static final String POLICIES_DATABASE = "./data/databases/policies.csv";
 
 	/**
+	 * Communes database
+	 */
+	public static final String COMMUNES_DATABASE = "./data/databases/communes.csv";
+	
+	/**
 	 * Private constructor
 	 */
 	private SourcePaths() {

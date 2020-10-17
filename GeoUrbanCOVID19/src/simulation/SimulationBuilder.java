@@ -9,6 +9,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.MultiPolygon;
 import config.SourcePaths;
 import datasource.Reader;
+import gis.GISCommune;
 import gis.GISNeighborhood;
 import gis.GISPolygon;
 import gis.GISPolygonType;
@@ -53,6 +54,11 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	public Map<String, GISPolygon> city;
 
 	/**
+	 * Communes
+	 */
+	public Map<String, GISCommune> communes;
+
+	/**
 	 * Neighborhoods
 	 */
 	public Map<String, GISPolygon> neighborhoods;
@@ -82,6 +88,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
+		// Initialize communes
+		this.communes = Reader.readCommunesDatabase(SourcePaths.COMMUNES_DATABASE);
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
 				"SIT_2017");

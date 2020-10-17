@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import org.geotools.data.FileDataStore;
 import org.geotools.data.FileDataStoreFinder;
@@ -14,6 +15,7 @@ import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
 import org.opengis.feature.simple.SimpleFeature;
 import config.SourceFeatures;
+import gis.GISCommune;
 import model.SODMatrix;
 import policy.Policy;
 import policy.PolicyFactory;
@@ -99,6 +101,46 @@ public class Reader {
 			fnfe.printStackTrace();
 		}
 		return policies;
+	}
+
+	/**
+	 * Read communes database
+	 * 
+	 * @param filename File name
+	 */
+	public static Map<String, GISCommune> readCommunesDatabase(String filename) {
+		Map<String, GISCommune> communes = new HashMap<>();
+		File file = new File(filename);
+		try (Scanner scanner = new Scanner(file)) {
+			boolean first = true;
+			while (scanner.hasNextLine()) {
+				String data = scanner.nextLine();
+				if (first) {
+					first = false;
+				} else {
+					String[] elements = data.split(SOURCE_SPLIT_REGEX);
+					String id = null;
+					int population = 0;
+					for (int i = 0; i < elements.length; i++) {
+						switch (i) {
+						case SourceFeatures.COMMUNES_ID_COLUMN:
+							id = elements[i];
+							break;
+						case SourceFeatures.COMMUNES_POPULATION_COLUMN:
+							population = Integer.parseInt(elements[i]);
+							break;
+						default:
+							break;
+						}
+					}
+					GISCommune commune = new GISCommune(id, population);
+					communes.put(id, commune);
+				}
+			}
+		} catch (FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
+		}
+		return communes;
 	}
 
 	/**
