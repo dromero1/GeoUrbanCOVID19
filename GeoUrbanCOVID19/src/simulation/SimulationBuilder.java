@@ -65,6 +65,11 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	public Map<String, GISPolygon> neighborhoods;
 
 	/**
+	 * Policy compliance
+	 */
+	public Map<Integer, Double> policyCompliance;
+
+	/**
 	 * Policy enforcer
 	 */
 	public PolicyEnforcer policyEnforcer;
@@ -132,6 +137,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			citizen.setWorkplace(workplace.getFirst());
 			citizen.setWorkingNeighborhood(workplace.getSecond());
 		}
+		// Initialize stratum-based policy compliance
+		this.policyCompliance = Reader.readPolicyComplianceDatabase(SourcePaths.POLICY_COMPLIANCE_DATABASE);
 		// Schedule policies
 		this.policyEnforcer = new PolicyEnforcer();
 		schedulePolicies(SourcePaths.POLICIES_DATABASE);
@@ -188,7 +195,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 			String neighborhoodId = detailEntry.getKey();
 			GISNeighborhoodDetail detail = detailEntry.getValue();
 			GISNeighborhood neighborhood = (GISNeighborhood) this.neighborhoods.get(neighborhoodId);
-			if(neighborhood == null) {
+			if (neighborhood == null) {
 				continue;
 			}
 			String communeId = detail.getCommuneId();

@@ -153,7 +153,8 @@ public class Citizen {
 	public void init() {
 		this.currentNeighborhood = this.livingNeighborhood;
 		this.stratum = Randomizer.getRandomStratum(this.currentNeighborhood);
-		this.policyCompliance = Randomizer.getRandomPolicyCompliance(this.stratum);
+		double complianceProbability = this.simulationBuilder.policyCompliance.get(this.stratum);
+		this.policyCompliance = Randomizer.getRandomPolicyCompliance(complianceProbability);
 		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();

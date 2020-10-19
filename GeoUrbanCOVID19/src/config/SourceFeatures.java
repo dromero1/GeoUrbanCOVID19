@@ -66,6 +66,16 @@ public final class SourceFeatures {
 	public static final int NEIGHBORHOODS_COMMUNE_COLUMN = 1;
 
 	/**
+	 * Policy compliance database - stratum column
+	 */
+	public static final int POLICY_COMPLIANCE_STRATUM_COLUMN = 0;
+
+	/**
+	 * Policy compliance database - compliance share column
+	 */
+	public static final int POLICY_COMPLIANCE_SHARE_COLUMN = 1;
+
+	/**
 	 * Private constructor
 	 */
 	private SourceFeatures() {

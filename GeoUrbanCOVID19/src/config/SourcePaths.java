@@ -33,6 +33,11 @@ public final class SourcePaths {
 	public static final String NEIGHBORHOODS_DATABASE = "./data/databases/neighborhoods.csv";
 
 	/**
+	 * Policy compliance database
+	 */
+	public static final String POLICY_COMPLIANCE_DATABASE = "./data/databases/stratum-policy.csv";
+
+	/**
 	 * Private constructor
 	 */
 	private SourcePaths() {

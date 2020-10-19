@@ -83,6 +83,11 @@ public final class Randomizer {
 	public static final double MIN_MASK_FACTOR = 0;
 
 	/**
+	 * Percentage of compliance probability. Reference: <pending>
+	 */
+	public static final double COMPLIANCE_PROB_PCT = 0.10;
+
+	/**
 	 * Age ranges (unit: age). Reference: <pending>
 	 */
 	protected static final int[][] AGE_RANGES = { { 0, 9 }, { 10, 19 }, { 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 },
@@ -234,10 +239,13 @@ public final class Randomizer {
 	/**
 	 * Get random policy compliance. Reference: <pending>
 	 * 
-	 * @param stratum Stratum
+	 * @param complianceProbability Compliance probability
 	 */
-	public static boolean getRandomPolicyCompliance(int stratum) {
-		double p = 0.5;
+	public static boolean getRandomPolicyCompliance(double complianceProbability) {
+		double mu = complianceProbability;
+		double sigma = complianceProbability * COMPLIANCE_PROB_PCT;
+		Normal normal = RandomHelper.createNormal(mu, sigma);
+		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		return r < p;
 	}
@@ -270,7 +278,7 @@ public final class Randomizer {
 			double share = stratumShares[i];
 			cummulativeProbability += share;
 			if (r <= cummulativeProbability) {
-				return i;
+				return i + 1;
 			}
 		}
 		return -1;
