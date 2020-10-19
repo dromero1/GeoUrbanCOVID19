@@ -122,6 +122,7 @@ public class Reader {
 					String[] elements = data.split(SOURCE_SPLIT_REGEX);
 					String id = null;
 					int population = 0;
+					double[] stratumShares = new double[6];
 					for (int i = 0; i < elements.length; i++) {
 						switch (i) {
 						case SourceFeatures.COMMUNES_ID_COLUMN:
@@ -130,11 +131,29 @@ public class Reader {
 						case SourceFeatures.COMMUNES_POPULATION_COLUMN:
 							population = Integer.parseInt(elements[i]);
 							break;
+						case SourceFeatures.COMMUNES_STRATUM_1_SHARE_COLUMN:
+							stratumShares[0] = Double.parseDouble(elements[i]);
+							break;
+						case SourceFeatures.COMMUNES_STRATUM_2_SHARE_COLUMN:
+							stratumShares[1] = Double.parseDouble(elements[i]);
+							break;
+						case SourceFeatures.COMMUNES_STRATUM_3_SHARE_COLUMN:
+							stratumShares[2] = Double.parseDouble(elements[i]);
+							break;
+						case SourceFeatures.COMMUNES_STRATUM_4_SHARE_COLUMN:
+							stratumShares[3] = Double.parseDouble(elements[i]);
+							break;
+						case SourceFeatures.COMMUNES_STRATUM_5_SHARE_COLUMN:
+							stratumShares[4] = Double.parseDouble(elements[i]);
+							break;
+						case SourceFeatures.COMMUNES_STRATUM_6_SHARE_COLUMN:
+							stratumShares[5] = Double.parseDouble(elements[i]);
+							break;
 						default:
 							break;
 						}
 					}
-					GISCommune commune = new GISCommune(id, population);
+					GISCommune commune = new GISCommune(id, population, stratumShares);
 					communes.put(id, commune);
 				}
 			}

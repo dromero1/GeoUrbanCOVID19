@@ -16,6 +16,11 @@ public class GISCommune {
 	private int population;
 
 	/**
+	 * Stratum shares (unit: percentage)
+	 */
+	private double[] stratumShares;
+
+	/**
 	 * Neighborhood list
 	 */
 	private List<GISNeighborhood> neighborhoods;
@@ -23,12 +28,14 @@ public class GISCommune {
 	/**
 	 * Create a new commune
 	 * 
-	 * @param id         Commune id
-	 * @param population Population
+	 * @param id            Commune id
+	 * @param population    Population
+	 * @param stratumShares Stratum shares
 	 */
-	public GISCommune(String id, int population) {
+	public GISCommune(String id, int population, double[] stratumShares) {
 		this.id = id;
 		this.population = population;
+		this.stratumShares = stratumShares;
 		this.neighborhoods = new ArrayList<>();
 	}
 
@@ -52,7 +59,14 @@ public class GISCommune {
 	public List<GISNeighborhood> getNeighborhoods() {
 		return this.neighborhoods;
 	}
-	
+
+	/**
+	 * Get stratum shares
+	 */
+	public double[] getStratumShares() {
+		return this.stratumShares;
+	}
+
 	/**
 	 * Add neighborhood
 	 * 

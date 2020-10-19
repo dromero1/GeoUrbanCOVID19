@@ -2,6 +2,8 @@ package model;
 
 import cern.jet.random.Gamma;
 import cern.jet.random.Normal;
+import gis.GISCommune;
+import gis.GISNeighborhood;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
@@ -231,10 +233,11 @@ public final class Randomizer {
 
 	/**
 	 * Get random policy compliance. Reference: <pending>
+	 * 
+	 * @param stratum Stratum
 	 */
-	public static boolean getRandomPolicyCompliance() {
-		Parameters simParams = RunEnvironment.getInstance().getParameters();
-		double p = simParams.getDouble("policyCompliance");
+	public static boolean getRandomPolicyCompliance(int stratum) {
+		double p = 0.5;
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		return r < p;
 	}
@@ -251,6 +254,26 @@ public final class Randomizer {
 	 */
 	public static double getRandomReturningHomeTime() {
 		return RandomHelper.nextDoubleFromTo(MIN_RETURN_HOME_TIME, MAX_RETURN_HOME_TIME);
+	}
+
+	/**
+	 * Get random stratum. Reference: <pending>
+	 * 
+	 * @param neighborhood Neighborhood
+	 */
+	public static int getRandomStratum(GISNeighborhood neighborhood) {
+		GISCommune commune = neighborhood.getCommune();
+		double[] stratumShares = commune.getStratumShares();
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		double cummulativeProbability = 0;
+		for (int i = 0; i < stratumShares.length; i++) {
+			double share = stratumShares[i];
+			cummulativeProbability += share;
+			if (r <= cummulativeProbability) {
+				return i;
+			}
+		}
+		return -1;
 	}
 
 }

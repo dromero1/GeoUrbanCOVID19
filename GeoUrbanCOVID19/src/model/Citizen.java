@@ -113,6 +113,11 @@ public class Citizen {
 	private GISNeighborhood currentNeighborhood;
 
 	/**
+	 * Stratum
+	 */
+	private int stratum;
+
+	/**
 	 * Reference to simulation builder
 	 */
 	private SimulationBuilder simulationBuilder;
@@ -137,7 +142,6 @@ public class Citizen {
 		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
 		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
 		this.maskUsage = Randomizer.getRandomMaskUsage();
-		this.policyCompliance = Randomizer.getRandomPolicyCompliance();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new EnumMap<>(SchedulableAction.class);
 	}
@@ -148,6 +152,8 @@ public class Citizen {
 	@ScheduledMethod(start = 0)
 	public void init() {
 		this.currentNeighborhood = this.livingNeighborhood;
+		this.stratum = Randomizer.getRandomStratum(this.currentNeighborhood);
+		this.policyCompliance = Randomizer.getRandomPolicyCompliance(this.stratum);
 		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();

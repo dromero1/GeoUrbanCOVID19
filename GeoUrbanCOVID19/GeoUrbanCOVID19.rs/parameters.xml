@@ -18,8 +18,4 @@
 	<parameter name="maskUsage" displayName="Mask usage (%)"
 		type="double" defaultValue="0.1" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
-	<parameter name="policyCompliance"
-		displayName="Policy compliance (%)" type="double" defaultValue="0.9"
-		isReadOnly="false"
-		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>
