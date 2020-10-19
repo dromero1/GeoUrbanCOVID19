@@ -71,9 +71,19 @@ public final class SourceFeatures {
 	public static final int POLICY_COMPLIANCE_STRATUM_COLUMN = 0;
 
 	/**
-	 * Policy compliance database - compliance share column
+	 * Policy compliance database - share column
 	 */
 	public static final int POLICY_COMPLIANCE_SHARE_COLUMN = 1;
+
+	/**
+	 * Mask usage database - stratum column
+	 */
+	public static final int MASK_USAGE_STRATUM_COLUMN = 0;
+
+	/**
+	 * Mask usage database - share column
+	 */
+	public static final int MASK_USAGE_SHARE_COLUMN = 1;
 
 	/**
 	 * Private constructor

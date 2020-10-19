@@ -38,6 +38,11 @@ public final class SourcePaths {
 	public static final String POLICY_COMPLIANCE_DATABASE = "./data/databases/stratum-policy.csv";
 
 	/**
+	 * Mask usage database
+	 */
+	public static final String MASK_USAGE_DATABASE = "./data/databases/stratum-mask.csv";
+
+	/**
 	 * Private constructor
 	 */
 	private SourcePaths() {

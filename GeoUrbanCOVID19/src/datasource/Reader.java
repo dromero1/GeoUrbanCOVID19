@@ -280,4 +280,43 @@ public class Reader {
 		return policyCompliance;
 	}
 
+	/**
+	 * Read mask usage database
+	 * 
+	 * @param filename File name
+	 */
+	public static Map<Integer, Double> readMaskUsageDatabase(String filename) {
+		Map<Integer, Double> maskUsage = new HashMap<>();
+		File file = new File(filename);
+		try (Scanner scanner = new Scanner(file)) {
+			boolean first = true;
+			while (scanner.hasNextLine()) {
+				String data = scanner.nextLine();
+				if (first) {
+					first = false;
+				} else {
+					String[] elements = data.split(SOURCE_SPLIT_REGEX);
+					int stratum = 0;
+					double share = 0.0;
+					for (int i = 0; i < elements.length; i++) {
+						switch (i) {
+						case SourceFeatures.MASK_USAGE_STRATUM_COLUMN:
+							stratum = Integer.parseInt(elements[i]);
+							break;
+						case SourceFeatures.MASK_USAGE_SHARE_COLUMN:
+							share = Double.parseDouble(elements[i]);
+							break;
+						default:
+							break;
+						}
+					}
+					maskUsage.put(stratum, share);
+				}
+			}
+		} catch (FileNotFoundException fnfe) {
+			fnfe.printStackTrace();
+		}
+		return maskUsage;
+	}
+
 }
