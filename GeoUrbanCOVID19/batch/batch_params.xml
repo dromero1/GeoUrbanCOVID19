@@ -1,11 +1,9 @@
 <?xml version="1.0" ?>
-<sweep runs="5">
+<sweep runs="10">
 	<parameter name="infectedCount" type="constant"
 		constant_type="int" value="25"></parameter>
 	<parameter name="infectionRadius" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="susceptibleCount" type="constant"
 		constant_type="int" value="100000"></parameter>
-	<parameter name="maskUsage" type="constant"
-		constant_type="double" value="0.0"></parameter>
 </sweep>
