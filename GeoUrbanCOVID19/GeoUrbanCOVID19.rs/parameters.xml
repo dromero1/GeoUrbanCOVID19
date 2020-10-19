@@ -15,7 +15,4 @@
 		displayName="Susceptible count" type="int" defaultValue="10000"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="maskUsage" displayName="Mask usage (%)"
-		type="double" defaultValue="0.1" isReadOnly="false"
-		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>

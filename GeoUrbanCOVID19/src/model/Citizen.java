@@ -141,7 +141,6 @@ public class Citizen {
 		this.atHome = true;
 		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
 		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
-		this.maskUsage = Randomizer.getRandomMaskUsage();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new EnumMap<>(SchedulableAction.class);
 	}
@@ -155,6 +154,8 @@ public class Citizen {
 		this.stratum = Randomizer.getRandomStratum(this.currentNeighborhood);
 		double complianceProbability = this.simulationBuilder.policyCompliance.get(this.stratum);
 		this.policyCompliance = Randomizer.getRandomPolicyCompliance(complianceProbability);
+		double maskUsageProbability = this.simulationBuilder.maskUsage.get(this.stratum);
+		this.maskUsage = Randomizer.getRandomMaskUsage(maskUsageProbability);
 		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();

@@ -4,8 +4,6 @@ import cern.jet.random.Gamma;
 import cern.jet.random.Normal;
 import gis.GISCommune;
 import gis.GISNeighborhood;
-import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import util.TickConverter;
 
@@ -86,6 +84,11 @@ public final class Randomizer {
 	 * Percentage of compliance probability. Reference: <pending>
 	 */
 	public static final double COMPLIANCE_PROB_PCT = 0.10;
+
+	/**
+	 * Percentage of mask usage probability. Reference: <pending>
+	 */
+	public static final double MASK_USAGE_PROB_PCT = 0.10;
 
 	/**
 	 * Age ranges (unit: age). Reference: <pending>
@@ -228,10 +231,14 @@ public final class Randomizer {
 
 	/**
 	 * Get random mask usage. Reference: <pending>
+	 * 
+	 * @param maskUsageProbability Mask usage probability
 	 */
-	public static boolean getRandomMaskUsage() {
-		Parameters simParams = RunEnvironment.getInstance().getParameters();
-		double p = simParams.getDouble("maskUsage");
+	public static boolean getRandomMaskUsage(double maskUsageProbability) {
+		double mu = maskUsageProbability;
+		double sigma = maskUsageProbability * MASK_USAGE_PROB_PCT;
+		Normal normal = RandomHelper.createNormal(mu, sigma);
+		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		return r < p;
 	}

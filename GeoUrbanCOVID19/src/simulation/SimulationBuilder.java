@@ -70,6 +70,11 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	public Map<Integer, Double> policyCompliance;
 
 	/**
+	 * Mask usage
+	 */
+	public Map<Integer, Double> maskUsage;
+
+	/**
 	 * Policy enforcer
 	 */
 	public PolicyEnforcer policyEnforcer;
@@ -139,6 +144,8 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Initialize stratum-based policy compliance
 		this.policyCompliance = Reader.readPolicyComplianceDatabase(SourcePaths.POLICY_COMPLIANCE_DATABASE);
+		// Initialize stratum-based mask usage
+		this.maskUsage = Reader.readMaskUsageDatabase(SourcePaths.MASK_USAGE_DATABASE);
 		// Schedule policies
 		this.policyEnforcer = new PolicyEnforcer();
 		schedulePolicies(SourcePaths.POLICIES_DATABASE);
