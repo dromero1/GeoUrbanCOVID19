@@ -1,6 +1,6 @@
 # GeoUrbanCOVID19
 
-An agent-based model of COVID-19's propagation in an urban setting.
+*An agent-based model of COVID-19's propagation in an urban setting*
 
 ## Getting Started
 
