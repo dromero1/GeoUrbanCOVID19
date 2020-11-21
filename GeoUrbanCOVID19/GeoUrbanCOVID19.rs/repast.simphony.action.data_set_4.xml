@@ -1,0 +1,56 @@
+<repast.simphony.data2.engine.DataSetDescriptor
+	simphonyVersion="2.7.0">
+	<name>CommuneStatisticsTimeSeries</name>
+	<type>NON_AGGREGATE</type>
+	<sourceType>gis.GISCommune</sourceType>
+	<inclTick>true</inclTick>
+	<inclBatchRun>true</inclBatchRun>
+	<inclRandomSeed>false</inclRandomSeed>
+	<scheduleParams>
+		<start>0.0</start>
+		<interval>24.0</interval>
+		<priority>-Infinity</priority>
+		<pType>LAST</pType>
+		<duration>-1.0</duration>
+		<frequency>REPEAT</frequency>
+		<hashCode>-1053371246</hashCode>
+	</scheduleParams>
+	<atEnd>false</atEnd>
+	<methodDataSources class="linked-hash-map">
+		<entry>
+			<string>commune</string>
+			<repast.simphony.data2.engine.MethodDataSourceDefinition>
+				<id>commune</id>
+				<className>gis.GISCommune</className>
+				<methodName>getId</methodName>
+			</repast.simphony.data2.engine.MethodDataSourceDefinition>
+		</entry>
+		<entry>
+			<string>cases</string>
+			<repast.simphony.data2.engine.MethodDataSourceDefinition>
+				<id>cases</id>
+				<className>gis.GISCommune</className>
+				<methodName>countNewCases</methodName>
+			</repast.simphony.data2.engine.MethodDataSourceDefinition>
+		</entry>
+		<entry>
+			<string>deaths</string>
+			<repast.simphony.data2.engine.MethodDataSourceDefinition>
+				<id>deaths</id>
+				<className>gis.GISCommune</className>
+				<methodName>countNewDeaths</methodName>
+			</repast.simphony.data2.engine.MethodDataSourceDefinition>
+		</entry>
+		<entry>
+			<string>immune</string>
+			<repast.simphony.data2.engine.MethodDataSourceDefinition>
+				<id>immune</id>
+				<className>gis.GISCommune</className>
+				<methodName>countNewImmune</methodName>
+			</repast.simphony.data2.engine.MethodDataSourceDefinition>
+		</entry>
+	</methodDataSources>
+	<countSources class="linked-hash-map" />
+	<customNADataSources class="linked-hash-map" />
+	<customAggDataSources class="linked-hash-map" />
+</repast.simphony.data2.engine.DataSetDescriptor>

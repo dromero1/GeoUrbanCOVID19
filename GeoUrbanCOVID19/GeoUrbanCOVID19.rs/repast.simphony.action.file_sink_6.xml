@@ -1,17 +1,16 @@
 <repast.simphony.data2.engine.FileSinkDescriptor
 	simphonyVersion="2.7.0">
-	<name>NeighborhoodStatisticsFileSink</name>
-	<dataSet>NeighborhoodStatisticsTimeSeries</dataSet>
-	<delimiter>;</delimiter>
+	<name>DailyStatisticsFileSink</name>
+	<dataSet>DailyStatisticsTimeSeries</dataSet>
+	<delimiter>,</delimiter>
 	<format>TABULAR</format>
 	<sourceIds class="linked-hash-set">
 		<string>run</string>
 		<string>tick</string>
-		<string>neighborhood</string>
 		<string>cases</string>
 		<string>deaths</string>
 		<string>immune</string>
 	</sourceIds>
-	<fileName>output/Ouput_NeighborhoodStatistics.csv</fileName>
+	<fileName>output/Output_DailyStatistics.csv</fileName>
 	<addTimeStamp>false</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>

@@ -1,18 +1,17 @@
 <repast.simphony.data2.engine.FileSinkDescriptor
 	simphonyVersion="2.7.0">
-	<name>CompartmentsFileSink</name>
-	<dataSet>CompartmentsTimeSeries</dataSet>
-	<delimiter>;</delimiter>
+	<name>NeighborhoodStatisticsFileSink</name>
+	<dataSet>NeighborhoodStatisticsTimeSeries</dataSet>
+	<delimiter>,</delimiter>
 	<format>TABULAR</format>
 	<sourceIds class="linked-hash-set">
 		<string>run</string>
 		<string>tick</string>
-		<string>susceptible</string>
-		<string>exposed</string>
-		<string>infected</string>
+		<string>neighborhood</string>
+		<string>cases</string>
+		<string>deaths</string>
 		<string>immune</string>
-		<string>dead</string>
 	</sourceIds>
-	<fileName>output/Output_Compartments.csv</fileName>
+	<fileName>output/Ouput_NeighborhoodStatistics.csv</fileName>
 	<addTimeStamp>false</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>
