@@ -1,1 +1,1 @@
-policy type;begin day;end day
+policy type,begin day,end day
