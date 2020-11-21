@@ -41,6 +41,7 @@ public class GISNeighborhood extends GISPolygon {
 	 */
 	public void onNewCase() {
 		this.newCases++;
+		this.commune.onNewCase();
 	}
 
 	/**
@@ -48,6 +49,7 @@ public class GISNeighborhood extends GISPolygon {
 	 */
 	public void onNewDeath() {
 		this.newDeaths++;
+		this.commune.onNewDeath();
 	}
 
 	/**
@@ -55,6 +57,7 @@ public class GISNeighborhood extends GISPolygon {
 	 */
 	public void onNewImmune() {
 		this.newImmune++;
+		this.commune.onNewImmune();
 	}
 
 	/**
