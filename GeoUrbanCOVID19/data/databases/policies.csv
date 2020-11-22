@@ -1,2 +1,2 @@
 policy type,begin day,end day
-full-quarantine,0,30
+id-based-curfew,0,30
