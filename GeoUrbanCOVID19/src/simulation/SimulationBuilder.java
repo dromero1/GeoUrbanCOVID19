@@ -101,6 +101,10 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Initialize communes
 		this.communes = Reader.readCommunesDatabase(SourcePaths.COMMUNES_DATABASE);
+		// Add communes to the simulation
+		for (GISCommune commune : this.communes.values()) {
+			context.add(commune);
+		}
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
 				"SIT_2017");
