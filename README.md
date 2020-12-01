@@ -1,4 +1,4 @@
-# GeoUrbanCOVID19
+# geo-urban-covid19
 
 *An agent-based model of COVID-19's propagation in an urban setting*
 
