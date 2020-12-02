@@ -311,4 +311,14 @@ public final class Randomizer {
 		return r < walkerShare;
 	}
 
+	/**
+	 * Get random desire to go out. Reference: <pending>
+	 */
+	public static boolean getRandomDesireToGoOut() {
+		double departuresShare = ParametersAdapter
+				.getEffectiveDeparturesShare();
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		return r < departuresShare;
+	}
+
 }

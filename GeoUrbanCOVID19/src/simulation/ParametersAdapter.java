@@ -36,6 +36,11 @@ public class ParametersAdapter {
 	private static final String WALKER_SHARE_PARAM_ID = "walkerShare";
 
 	/**
+	 * Effective departures share parameter id
+	 */
+	private static final String EFFECTIVE_DEPARTURES_SHARE_PARAM_ID = "effectiveDeparturesShare";
+
+	/**
 	 * Get exposed count
 	 */
 	public static int getExposedCount() {
@@ -81,6 +86,14 @@ public class ParametersAdapter {
 	public static double getWalkerShare() {
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		return simParams.getDouble(WALKER_SHARE_PARAM_ID);
+	}
+
+	/**
+	 * Get effective departures share
+	 */
+	public static double getEffectiveDeparturesShare() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(EFFECTIVE_DEPARTURES_SHARE_PARAM_ID);
 	}
 
 	/**

@@ -98,6 +98,16 @@ public class Citizen {
 	private boolean compliesWithPolicies;
 
 	/**
+	 * Approval to go out. Whether the citizen is allowed to go out or not.
+	 */
+	private boolean allowedToGoOut;
+
+	/**
+	 * Desire to go out. Whether the citizen wants to go out or not.
+	 */
+	private boolean wantsToGoOut;
+
+	/**
 	 * Walker flag. Whether the citizen is a walker or not.
 	 */
 	private boolean walks;
@@ -182,12 +192,9 @@ public class Citizen {
 	 * Step
 	 */
 	public void step() {
-		if (this.walks && !this.asleep) {
-			boolean allowed = this.simulationBuilder.policyEnforcer
-					.isAllowedToGoOut(this);
-			if (allowed || !this.compliesWithPolicies) {
-				randomWalk();
-			}
+		if (this.walks && !this.asleep && this.wantsToGoOut
+				&& (this.allowedToGoOut || !this.compliesWithPolicies)) {
+			randomWalk();
 		}
 	}
 
@@ -207,9 +214,11 @@ public class Citizen {
 				.getRandomPolicyCompliance(this.policyComplianceProbability);
 		this.usesMask = Randomizer
 				.getRandomMaskUsage(this.maskUsageProbability);
-		boolean allowed = this.simulationBuilder.policyEnforcer
+		this.wantsToGoOut = Randomizer.getRandomDesireToGoOut();
+		this.allowedToGoOut = this.simulationBuilder.policyEnforcer
 				.isAllowedToGoOut(this);
-		if (allowed || !this.compliesWithPolicies) {
+		if (this.wantsToGoOut
+				&& (this.allowedToGoOut || !this.compliesWithPolicies)) {
 			this.atHome = false;
 			this.currentNeighborhood = this.workingNeighborhood;
 			relocate(this.workplace);
