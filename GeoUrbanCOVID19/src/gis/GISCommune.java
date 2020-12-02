@@ -39,7 +39,7 @@ public class GISCommune {
 	 * New immune (unit: people)
 	 */
 	private int newImmune;
-	
+
 	/**
 	 * Create a new commune
 	 * 
@@ -101,7 +101,7 @@ public class GISCommune {
 		this.newImmune = 0;
 		return immune;
 	}
-	
+
 	/**
 	 * Get commune id
 	 */

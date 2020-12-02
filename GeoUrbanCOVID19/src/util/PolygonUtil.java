@@ -15,7 +15,7 @@ public class PolygonUtil {
 	private PolygonUtil() {
 		throw new UnsupportedOperationException("Utility class");
 	}
-	
+
 	/**
 	 * Get random point from polygon
 	 * 
@@ -23,7 +23,8 @@ public class PolygonUtil {
 	 */
 	public static NdPoint getRandomPoint(GISPolygon polygon) {
 		Geometry geometry = polygon.getGeometry();
-		List<Coordinate> coordinates = GeometryUtil.generateRandomPointsInPolygon(geometry, 1);
+		List<Coordinate> coordinates = GeometryUtil
+				.generateRandomPointsInPolygon(geometry, 1);
 		Coordinate coordinate = coordinates.get(0);
 		return new NdPoint(coordinate.x, coordinate.y);
 	}

@@ -17,7 +17,8 @@ public final class Heuristics {
 	/**
 	 * Probabilities of a family having up to i members (i = 1,...,6)
 	 */
-	protected static final double[] FAMILY_PROBABILITIES = { 0.19, 0.23, 0.24, 0.19, 0.8, 0.7 };
+	protected static final double[] FAMILY_PROBABILITIES = { 0.19, 0.23, 0.24,
+			0.19, 0.8, 0.7 };
 
 	/**
 	 * Private constructor
@@ -37,7 +38,8 @@ public final class Heuristics {
 		family.add(citizen);
 		if (citizen.getAge() < 18) {
 			// Conditional probability
-			double[] familyProbsKids = new double[FAMILY_PROBABILITIES.length - 1];
+			double[] familyProbsKids = new double[FAMILY_PROBABILITIES.length
+					- 1];
 			double sumProb = 1 - FAMILY_PROBABILITIES[0];
 			double sumPartial = 0;
 			for (int j = 1; j < familyProbsKids.length; j++) {
@@ -60,7 +62,8 @@ public final class Heuristics {
 			Citizen adult = null;
 			int indexAdult = 0;
 			for (Citizen otherCitizen : citizens) {
-				if (otherCitizen.getAge() >= 18 && otherCitizen.getFamily().isEmpty()) {
+				if (otherCitizen.getAge() >= 18
+						&& otherCitizen.getFamily().isEmpty()) {
 					adult = otherCitizen;
 					break;
 				}
@@ -69,7 +72,8 @@ public final class Heuristics {
 			if (adult == null) {
 				// Case: Every adult has a family
 				for (Citizen otherCitizen : citizens) {
-					if (otherCitizen.getAge() >= 18 && !otherCitizen.getFamily().isEmpty()) {
+					if (otherCitizen.getAge() >= 18
+							&& !otherCitizen.getFamily().isEmpty()) {
 						family = otherCitizen.getFamily();
 						family.add(citizen);
 						break;
@@ -80,7 +84,8 @@ public final class Heuristics {
 				family.add(adult);
 				if (familyCount > 0) {
 					for (int i = 0; i < citizens.size(); i++) {
-						if (i == indexAdult || citizens.get(i).equals(citizen)) {
+						if (i == indexAdult
+								|| citizens.get(i).equals(citizen)) {
 							continue;
 						}
 						if (citizens.get(i).getFamily().isEmpty()) {
@@ -129,7 +134,8 @@ public final class Heuristics {
 	 * @param proxy    Family proxy
 	 * @param communes Communes
 	 */
-	public static void assignHouse(Citizen proxy, Collection<GISCommune> communes) {
+	public static void assignHouse(Citizen proxy,
+			Collection<GISCommune> communes) {
 		// Get total population
 		double totalPopulation = 0;
 		for (GISCommune commune : communes) {
@@ -149,11 +155,13 @@ public final class Heuristics {
 			}
 		}
 		// Select random neighborhood
-		List<GISNeighborhood> neighborhoods = selectedCommune.getNeighborhoods();
+		List<GISNeighborhood> neighborhoods = selectedCommune
+				.getNeighborhoods();
 		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
 		GISNeighborhood selectedNeighborhood = neighborhoods.get(index);
 		// Generate random point inside selected neighborhood
-		NdPoint selectedHouse = PolygonUtil.getRandomPoint(selectedNeighborhood);
+		NdPoint selectedHouse = PolygonUtil
+				.getRandomPoint(selectedNeighborhood);
 		// Assign same household to all family members
 		for (Citizen member : proxy.getFamily()) {
 			member.setLivingNeighborhood(selectedNeighborhood);
@@ -168,12 +176,14 @@ public final class Heuristics {
 	 * @param livingNeighborhood Living neighborhood
 	 * @param neighborhoods      Neighborhoods
 	 */
-	public static Pair<NdPoint, GISNeighborhood> getSODBasedWorkplace(SODMatrix sod, GISPolygon livingNeighborhood,
+	public static Pair<NdPoint, GISNeighborhood> getSODBasedWorkplace(
+			SODMatrix sod, GISPolygon livingNeighborhood,
 			Map<String, GISPolygon> neighborhoods) {
 		String livingNeighborhoodId = livingNeighborhood.getId();
 		String workingNeighborhoodId = null;
 		if (sod.containsOrigin(livingNeighborhoodId)) {
-			List<Pair<String, Double>> travels = sod.getTravelsFromOrigin(livingNeighborhoodId);
+			List<Pair<String, Double>> travels = sod
+					.getTravelsFromOrigin(livingNeighborhoodId);
 			int player1 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
 			for (int i = 0; i < 10; i++) {
 				int player2 = RandomHelper.nextIntFromTo(0, travels.size() - 1);
@@ -193,7 +203,8 @@ public final class Heuristics {
 			Pair<String, Double> destination = travels.get(player1);
 			workingNeighborhoodId = destination.getFirst();
 		}
-		GISPolygon selectedNeighborhood = neighborhoods.get(workingNeighborhoodId);
+		GISPolygon selectedNeighborhood = neighborhoods
+				.get(workingNeighborhoodId);
 		if (selectedNeighborhood == null) {
 			selectedNeighborhood = neighborhoods.get(livingNeighborhoodId);
 		}

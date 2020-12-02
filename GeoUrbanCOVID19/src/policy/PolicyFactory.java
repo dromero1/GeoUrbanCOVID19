@@ -16,7 +16,8 @@ public class PolicyFactory {
 	 * @param beginDay   Begin day
 	 * @param endDay     End day
 	 */
-	public static Policy makePolicy(String policyType, int beginDay, int endDay) {
+	public static Policy makePolicy(String policyType, int beginDay,
+			int endDay) {
 		switch (policyType) {
 		case "full-quarantine":
 			return new FullQuarantinePolicy(beginDay, endDay);

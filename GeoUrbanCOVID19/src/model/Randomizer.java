@@ -93,14 +93,15 @@ public final class Randomizer {
 	/**
 	 * Age ranges (unit: age). Reference: <pending>
 	 */
-	protected static final int[][] AGE_RANGES = { { 0, 9 }, { 10, 19 }, { 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 },
-			{ 60, 69 }, { 70, 79 }, { 80, 121 } };
+	protected static final int[][] AGE_RANGES = { { 0, 9 }, { 10, 19 },
+			{ 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 }, { 60, 69 },
+			{ 70, 79 }, { 80, 121 } };
 
 	/**
 	 * Age probabilities (unit: probability). Reference: <pending>
 	 */
-	protected static final double[] AGE_PROBABILITIES = { 0.1443, 0.169, 0.1728, 0.1487, 0.1221, 0.1104, 0.0728, 0.0393,
-			0.0206 };
+	protected static final double[] AGE_PROBABILITIES = { 0.1443, 0.169, 0.1728,
+			0.1487, 0.1221, 0.1104, 0.0728, 0.0393, 0.0206 };
 
 	/**
 	 * Private constructor
@@ -116,7 +117,8 @@ public final class Randomizer {
 	 * @param mode Mode
 	 * @param max  Maximum
 	 */
-	public static double getRandomTriangular(double min, double mode, double max) {
+	public static double getRandomTriangular(double min, double mode,
+			double max) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
 		double beta = (mode - min) / (max - min);
 		double t;
@@ -144,7 +146,8 @@ public final class Randomizer {
 		for (int i = 0; i < AGE_PROBABILITIES.length; i++) {
 			cummulativeProbability += AGE_PROBABILITIES[i];
 			if (r < cummulativeProbability) {
-				return RandomHelper.nextIntFromTo(AGE_RANGES[i][0], AGE_RANGES[i][1]);
+				return RandomHelper.nextIntFromTo(AGE_RANGES[i][0],
+						AGE_RANGES[i][1]);
 			}
 		}
 		return -1;
@@ -154,8 +157,10 @@ public final class Randomizer {
 	 * Get random incubation period (unit: days). Reference: <pending>
 	 */
 	public static double getRandomIncubationPeriod() {
-		double t = Math.pow(MEAN_INCUBATION_PERIOD, 2) + Math.pow(STD_INCUBATION_PERIOD, 2);
-		double mu = Math.log(Math.pow(MEAN_INCUBATION_PERIOD, 2) / Math.sqrt(t));
+		double t = Math.pow(MEAN_INCUBATION_PERIOD, 2)
+				+ Math.pow(STD_INCUBATION_PERIOD, 2);
+		double mu = Math
+				.log(Math.pow(MEAN_INCUBATION_PERIOD, 2) / Math.sqrt(t));
 		double sigma = Math.log(t / Math.pow(MEAN_INCUBATION_PERIOD, 2));
 		Normal normal = RandomHelper.createNormal(mu, sigma);
 		double y = normal.nextDouble();
@@ -202,10 +207,11 @@ public final class Randomizer {
 	 * @param maskUsageInfected    Mask usage of infected citizen
 	 * @param maskUsageSusceptible Mask usage of susceptible citizen
 	 */
-	public static boolean isGettingExposed(double incubationDiff, boolean maskUsageInfected,
-			boolean maskUsageSusceptible) {
+	public static boolean isGettingExposed(double incubationDiff,
+			boolean maskUsageInfected, boolean maskUsageSusceptible) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
-		Gamma gamma = RandomHelper.createGamma(INFECTION_ALPHA, 1.0 / INFECTION_BETA);
+		Gamma gamma = RandomHelper.createGamma(INFECTION_ALPHA,
+				1.0 / INFECTION_BETA);
 		double days = TickConverter.ticksToDays(incubationDiff);
 		if (days < INFECTION_MIN) {
 			return false;
@@ -225,7 +231,8 @@ public final class Randomizer {
 	 * Get random time to discharge (unit: days). Reference: <pending>
 	 */
 	public static double getRandomTimeToDischarge() {
-		Gamma gamma = RandomHelper.createGamma(DISCHARGE_ALPHA, 1.0 / DISCHARGE_BETA);
+		Gamma gamma = RandomHelper.createGamma(DISCHARGE_ALPHA,
+				1.0 / DISCHARGE_BETA);
 		return gamma.nextDouble();
 	}
 
@@ -248,7 +255,8 @@ public final class Randomizer {
 	 * 
 	 * @param complianceProbability Compliance probability
 	 */
-	public static boolean getRandomPolicyCompliance(double complianceProbability) {
+	public static boolean getRandomPolicyCompliance(
+			double complianceProbability) {
 		double mu = complianceProbability;
 		double sigma = complianceProbability * COMPLIANCE_PROB_PCT;
 		Normal normal = RandomHelper.createNormal(mu, sigma);
@@ -261,14 +269,16 @@ public final class Randomizer {
 	 * Get random wake up time (unit: hours). Reference: <pending>
 	 */
 	public static double getRandomWakeUpTime() {
-		return RandomHelper.nextDoubleFromTo(MIN_WAKE_UP_TIME, MAX_WAKE_UP_TIME);
+		return RandomHelper.nextDoubleFromTo(MIN_WAKE_UP_TIME,
+				MAX_WAKE_UP_TIME);
 	}
 
 	/**
 	 * Get random returning home time (unit: hours). Reference: <pending>
 	 */
 	public static double getRandomReturningHomeTime() {
-		return RandomHelper.nextDoubleFromTo(MIN_RETURN_HOME_TIME, MAX_RETURN_HOME_TIME);
+		return RandomHelper.nextDoubleFromTo(MIN_RETURN_HOME_TIME,
+				MAX_RETURN_HOME_TIME);
 	}
 
 	/**

@@ -26,7 +26,6 @@ import repast.simphony.context.space.gis.GeographyFactory;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.parameter.Parameters;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
@@ -95,19 +94,22 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Create geography projection
 		this.geography = createGeographyProjection(context);
 		// Initialize city
-		this.city = readPolygons(SourcePaths.CITY_GEOMETRY_SHAPEFILE, GISPolygonType.SIMPLE, "Id");
+		this.city = readPolygons(SourcePaths.CITY_GEOMETRY_SHAPEFILE,
+				GISPolygonType.SIMPLE, "Id");
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
 		// Initialize communes
-		this.communes = Reader.readCommunesDatabase(SourcePaths.COMMUNES_DATABASE);
+		this.communes = Reader
+				.readCommunesDatabase(SourcePaths.COMMUNES_DATABASE);
 		// Add communes to the simulation
 		for (GISCommune commune : this.communes.values()) {
 			context.add(commune);
 		}
 		// Initialize neighborhoods
-		this.neighborhoods = readPolygons(SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE, GISPolygonType.NEIGHBORHOOD,
-				"SIT_2017");
+		this.neighborhoods = readPolygons(
+				SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE,
+				GISPolygonType.NEIGHBORHOOD, "SIT_2017");
 		// Fill neighborhoods
 		fillNeighborhoods();
 		// Add neighborhoods to the simulation
@@ -118,9 +120,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		this.outputManager = new OutputManager();
 		context.add(this.outputManager);
 		// Add students to the simulation
-		Parameters simParams = RunEnvironment.getInstance().getParameters();
-		List<Citizen> citizens = createCitizens(simParams.getInteger("susceptibleCount"),
-				simParams.getInteger("infectedCount"));
+		List<Citizen> citizens = createCitizens();
 		for (Citizen citizen : citizens) {
 			context.add(citizen);
 		}
@@ -141,15 +141,18 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		// Assign workplaces
 		for (Citizen citizen : citizens) {
 			GISPolygon livingNeighborhood = citizen.getLivingNeighborhood();
-			Pair<NdPoint, GISNeighborhood> workplace = Heuristics.getSODBasedWorkplace(sod, livingNeighborhood,
-					this.neighborhoods);
+			Pair<NdPoint, GISNeighborhood> workplace = Heuristics
+					.getSODBasedWorkplace(sod, livingNeighborhood,
+							this.neighborhoods);
 			citizen.setWorkplace(workplace.getFirst());
 			citizen.setWorkingNeighborhood(workplace.getSecond());
 		}
 		// Initialize stratum-based policy compliance
-		this.policyCompliance = Reader.readPolicyComplianceDatabase(SourcePaths.POLICY_COMPLIANCE_DATABASE);
+		this.policyCompliance = Reader.readPolicyComplianceDatabase(
+				SourcePaths.POLICY_COMPLIANCE_DATABASE);
 		// Initialize stratum-based mask usage
-		this.maskUsage = Reader.readMaskUsageDatabase(SourcePaths.MASK_USAGE_DATABASE);
+		this.maskUsage = Reader
+				.readMaskUsageDatabase(SourcePaths.MASK_USAGE_DATABASE);
 		// Schedule policies
 		this.policyEnforcer = new PolicyEnforcer();
 		schedulePolicies(SourcePaths.POLICIES_DATABASE);
@@ -164,10 +167,13 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * 
 	 * @param context Simulation context
 	 */
-	private Geography<Object> createGeographyProjection(Context<Object> context) {
+	private Geography<Object> createGeographyProjection(
+			Context<Object> context) {
 		GeographyParameters<Object> params = new GeographyParameters<>();
-		GeographyFactory geographyFactory = GeographyFactoryFinder.createGeographyFactory(null);
-		return geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID, context, params);
+		GeographyFactory geographyFactory = GeographyFactoryFinder
+				.createGeographyFactory(null);
+		return geographyFactory.createGeography(GEOGRAPHY_PROJECTION_ID,
+				context, params);
 	}
 
 	/**
@@ -177,11 +183,14 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	 * @param polygonType  Polygon type
 	 * @param attribute    Attribute
 	 */
-	private Map<String, GISPolygon> readPolygons(String geometryPath, GISPolygonType polygonType, String attribute) {
+	private Map<String, GISPolygon> readPolygons(String geometryPath,
+			GISPolygonType polygonType, String attribute) {
 		Map<String, GISPolygon> polygons = new HashMap<>();
-		List<SimpleFeature> features = Reader.loadGeometryFromShapefile(geometryPath);
+		List<SimpleFeature> features = Reader
+				.loadGeometryFromShapefile(geometryPath);
 		for (SimpleFeature feature : features) {
-			MultiPolygon multiPolygon = (MultiPolygon) feature.getDefaultGeometry();
+			MultiPolygon multiPolygon = (MultiPolygon) feature
+					.getDefaultGeometry();
 			Geometry geometry = multiPolygon.getGeometryN(0);
 			String id = "" + feature.getAttribute(attribute);
 			GISPolygon polygon = null;
@@ -202,10 +211,12 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 	private void fillNeighborhoods() {
 		Map<String, GISNeighborhoodDetail> details = Reader
 				.readNeighborhoodsDatabase(SourcePaths.NEIGHBORHOODS_DATABASE);
-		for (Map.Entry<String, GISNeighborhoodDetail> detailEntry : details.entrySet()) {
+		for (Map.Entry<String, GISNeighborhoodDetail> detailEntry : details
+				.entrySet()) {
 			String neighborhoodId = detailEntry.getKey();
 			GISNeighborhoodDetail detail = detailEntry.getValue();
-			GISNeighborhood neighborhood = (GISNeighborhood) this.neighborhoods.get(neighborhoodId);
+			GISNeighborhood neighborhood = (GISNeighborhood) this.neighborhoods
+					.get(neighborhoodId);
 			if (neighborhood == null) {
 				continue;
 			}
@@ -218,14 +229,13 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 
 	/**
 	 * Create citizens
-	 * 
-	 * @param susceptibleCount Number of susceptible citizens
-	 * @param infectedCount    Number of infected citizens
 	 */
-	private List<Citizen> createCitizens(int susceptibleCount, int infectedCount) {
+	private List<Citizen> createCitizens() {
+		int susceptibleCount = ParametersAdapter.getSusceptibleCount();
+		int exposedCount = ParametersAdapter.getExposedCount();
 		List<Citizen> citizens = new ArrayList<>();
-		for (int i = 0; i < infectedCount; i++) {
-			Citizen citizen = new Citizen(this, Compartment.INFECTED);
+		for (int i = 0; i < exposedCount; i++) {
+			Citizen citizen = new Citizen(this, Compartment.EXPOSED);
 			citizens.add(citizen);
 		}
 		for (int i = 0; i < susceptibleCount; i++) {

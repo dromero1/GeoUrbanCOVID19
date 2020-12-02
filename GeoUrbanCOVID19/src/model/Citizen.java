@@ -17,10 +17,10 @@ import repast.simphony.engine.schedule.ISchedule;
 import repast.simphony.engine.schedule.ScheduledMethod;
 import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.gis.util.GeometryUtil;
-import repast.simphony.parameter.Parameters;
 import repast.simphony.random.RandomHelper;
 import repast.simphony.space.continuous.NdPoint;
 import simulation.EventScheduler;
+import simulation.ParametersAdapter;
 import simulation.SimulationBuilder;
 import util.TickConverter;
 
@@ -30,11 +30,6 @@ public class Citizen {
 	 * Displacement per step (unit: meters). Reference: <pending>
 	 */
 	public static final double DISPLACEMENT_PER_STEP = 50;
-
-	/**
-	 * Particle expulsion interval (unit: minutes)
-	 */
-	public static final double PARTICLE_EXPULSION_INTERVAL = 15;
 
 	/**
 	 * Citizen id
@@ -80,6 +75,16 @@ public class Citizen {
 	 * Time to incubation end (unit: hours)
 	 */
 	private double incubationEnd;
+
+	/**
+	 * Mask usage probability (unit: probability)
+	 */
+	private double maskUsageProbability;
+
+	/**
+	 * Policy compliance probability (unit: probability)
+	 */
+	private double policyComplianceProbability;
 
 	/**
 	 * Mask usage. Whether the citizen wears a mask or not.
@@ -133,7 +138,8 @@ public class Citizen {
 	 * @param simulationBuilder Reference to the simulation builder
 	 * @param compartment       Compartment
 	 */
-	public Citizen(SimulationBuilder simulationBuilder, Compartment compartment) {
+	public Citizen(SimulationBuilder simulationBuilder,
+			Compartment compartment) {
 		this.simulationBuilder = simulationBuilder;
 		this.compartment = compartment;
 		this.id = Randomizer.getRandomId();
@@ -152,10 +158,10 @@ public class Citizen {
 	public void init() {
 		this.currentNeighborhood = this.livingNeighborhood;
 		this.stratum = Randomizer.getRandomStratum(this.currentNeighborhood);
-		double complianceProbability = this.simulationBuilder.policyCompliance.get(this.stratum);
-		this.policyCompliance = Randomizer.getRandomPolicyCompliance(complianceProbability);
-		double maskUsageProbability = this.simulationBuilder.maskUsage.get(this.stratum);
-		this.maskUsage = Randomizer.getRandomMaskUsage(maskUsageProbability);
+		this.policyComplianceProbability = this.simulationBuilder.policyCompliance
+				.get(this.stratum);
+		this.maskUsageProbability = this.simulationBuilder.maskUsage
+				.get(this.stratum);
 		relocate(this.homeplace);
 		initDisease();
 		scheduleRecurringEvents();
@@ -165,7 +171,8 @@ public class Citizen {
 	 * Step
 	 */
 	public void step() {
-		boolean allowed = this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this);
+		boolean allowed = this.simulationBuilder.policyEnforcer
+				.isAllowedToGoOut(this);
 		if (allowed || !this.policyCompliance) {
 			randomWalk();
 		}
@@ -182,7 +189,12 @@ public class Citizen {
 	 * Wake up and go to workplace
 	 */
 	public void wakeUp() {
-		boolean allowed = this.simulationBuilder.policyEnforcer.isAllowedToGoOut(this);
+		this.policyCompliance = Randomizer
+				.getRandomPolicyCompliance(this.policyComplianceProbability);
+		this.maskUsage = Randomizer
+				.getRandomMaskUsage(this.maskUsageProbability);
+		boolean allowed = this.simulationBuilder.policyEnforcer
+				.isAllowedToGoOut(this);
 		if (allowed || !this.policyCompliance) {
 			this.atHome = false;
 			this.currentNeighborhood = this.workingNeighborhood;
@@ -207,11 +219,14 @@ public class Citizen {
 	public void transitionToExposed() {
 		this.compartment = Compartment.EXPOSED;
 		double incubationPeriod = Randomizer.getRandomIncubationPeriod();
-		double infectiousPeriod = Math.max(incubationPeriod + Randomizer.INFECTION_MIN, 1);
-		this.incubationEnd = RepastEssentials.GetTickCount() + TickConverter.daysToTicks(incubationPeriod);
+		double infectiousPeriod = Math
+				.max(incubationPeriod + Randomizer.INFECTION_MIN, 1);
+		this.incubationEnd = RepastEssentials.GetTickCount()
+				+ TickConverter.daysToTicks(incubationPeriod);
 		double ticks = TickConverter.daysToTicks(infectiousPeriod);
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		eventScheduler.scheduleOneTimeEvent(ticks, this, "transitionToInfected");
+		eventScheduler.scheduleOneTimeEvent(ticks, this,
+				"transitionToInfected");
 	}
 
 	/**
@@ -222,16 +237,21 @@ public class Citizen {
 		PatientType patientType = Randomizer.getRandomPatientType();
 		// Schedule regular particle expulsion
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		double expelInterval = TickConverter.minutesToTicks(PARTICLE_EXPULSION_INTERVAL);
-		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(1, this, expelInterval,
-				"expelParticles");
-		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES, expelAction);
+		double expulsionInterval = ParametersAdapter
+				.getParticleExpulsionInterval();
+		double expelInterval = TickConverter.minutesToTicks(expulsionInterval);
+		ISchedulableAction expelAction = eventScheduler.scheduleRecurringEvent(
+				1, this, expelInterval, "expelParticles");
+		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES,
+				expelAction);
 		// Schedule removal
 		boolean isDying = Randomizer.isGoingToDie(patientType);
 		String removalMethod = (isDying) ? "die" : "transitionToImmune";
 		double timeToDischarge = Randomizer.getRandomTimeToDischarge();
-		double ticksToRemoval = TickConverter.daysToTicks(timeToDischarge - Randomizer.INFECTION_MIN);
-		eventScheduler.scheduleOneTimeEvent(ticksToRemoval, this, removalMethod);
+		double ticksToRemoval = TickConverter
+				.daysToTicks(timeToDischarge - Randomizer.INFECTION_MIN);
+		eventScheduler.scheduleOneTimeEvent(ticksToRemoval, this,
+				removalMethod);
 	}
 
 	/**
@@ -241,6 +261,9 @@ public class Citizen {
 		this.compartment = Compartment.IMMUNE;
 		this.simulationBuilder.outputManager.onNewImmune();
 		this.currentNeighborhood.onNewImmune();
+		unscheduleAction(SchedulableAction.STEP);
+		unscheduleAction(SchedulableAction.WAKE_UP);
+		unscheduleAction(SchedulableAction.RETURN_HOME);
 		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
@@ -397,23 +420,16 @@ public class Citizen {
 	 * Is active case?
 	 */
 	public int isActiveCase() {
-		return (this.compartment == Compartment.EXPOSED || this.compartment == Compartment.INFECTED) ? 1 : 0;
+		return (this.compartment == Compartment.EXPOSED
+				|| this.compartment == Compartment.INFECTED) ? 1 : 0;
 	}
 
 	/**
 	 * Initialize disease
 	 */
 	private void initDisease() {
-		switch (this.compartment) {
-		case EXPOSED:
+		if (this.compartment == Compartment.EXPOSED) {
 			transitionToExposed();
-			break;
-		case INFECTED:
-			this.incubationEnd = -TickConverter.daysToTicks(Randomizer.INFECTION_MIN);
-			transitionToInfected();
-			break;
-		default:
-			break;
 		}
 	}
 
@@ -422,14 +438,17 @@ public class Citizen {
 	 */
 	private void scheduleRecurringEvents() {
 		EventScheduler eventScheduler = EventScheduler.getInstance();
-		ISchedulableAction stepAction = eventScheduler.scheduleRecurringEvent(1, this, 1, "step");
-		ISchedulableAction wakeUpAction = eventScheduler.scheduleRecurringEvent(this.wakeUpTime, this,
-				TickConverter.TICKS_PER_DAY, "wakeUp");
-		ISchedulableAction returnHomeAction = eventScheduler.scheduleRecurringEvent(this.returningHomeTime, this,
-				TickConverter.TICKS_PER_DAY, "returnHome");
+		ISchedulableAction stepAction = eventScheduler.scheduleRecurringEvent(1,
+				this, 1, "step");
+		ISchedulableAction wakeUpAction = eventScheduler.scheduleRecurringEvent(
+				this.wakeUpTime, this, TickConverter.TICKS_PER_DAY, "wakeUp");
+		ISchedulableAction returnHomeAction = eventScheduler
+				.scheduleRecurringEvent(this.returningHomeTime, this,
+						TickConverter.TICKS_PER_DAY, "returnHome");
 		this.scheduledActions.put(SchedulableAction.STEP, stepAction);
 		this.scheduledActions.put(SchedulableAction.WAKE_UP, wakeUpAction);
-		this.scheduledActions.put(SchedulableAction.RETURN_HOME, returnHomeAction);
+		this.scheduledActions.put(SchedulableAction.RETURN_HOME,
+				returnHomeAction);
 	}
 
 	/**
@@ -437,23 +456,27 @@ public class Citizen {
 	 */
 	private void randomWalk() {
 		double angle = RandomHelper.nextDoubleFromTo(0, 2 * Math.PI);
-		this.simulationBuilder.geography.moveByVector(this, DISPLACEMENT_PER_STEP, angle);
+		this.simulationBuilder.geography.moveByVector(this,
+				DISPLACEMENT_PER_STEP, angle);
 	}
 
 	/**
 	 * Infect nearby susceptible individuals
 	 */
 	private void infect() {
-		Parameters simParams = RunEnvironment.getInstance().getParameters();
-		double distance = simParams.getDouble("infectionRadius");
-		Geometry searchArea = GeometryUtil.generateBuffer(this.simulationBuilder.geography,
+		double distance = ParametersAdapter.getInfectionRadius();
+		Geometry searchArea = GeometryUtil.generateBuffer(
+				this.simulationBuilder.geography,
 				this.simulationBuilder.geography.getGeometry(this), distance);
 		Envelope searchEnvelope = searchArea.getEnvelopeInternal();
-		Iterable<Citizen> citizens = this.simulationBuilder.geography.getObjectsWithin(searchEnvelope, Citizen.class);
-		double incubationDiff = RepastEssentials.GetTickCount() - this.incubationEnd;
+		Iterable<Citizen> citizens = this.simulationBuilder.geography
+				.getObjectsWithin(searchEnvelope, Citizen.class);
+		double incubationDiff = RepastEssentials.GetTickCount()
+				- this.incubationEnd;
 		for (Citizen citizen : citizens) {
 			if (citizen.compartment == Compartment.SUSCEPTIBLE
-					&& Randomizer.isGettingExposed(incubationDiff, this.maskUsage, citizen.maskUsage)) {
+					&& Randomizer.isGettingExposed(incubationDiff,
+							this.maskUsage, citizen.maskUsage)) {
 				citizen.transitionToExposed();
 				this.simulationBuilder.outputManager.onNewCase();
 				this.currentNeighborhood.onNewCase();
@@ -468,7 +491,8 @@ public class Citizen {
 	 */
 	private void relocate(NdPoint destination) {
 		GeometryFactory geometryFactory = new GeometryFactory();
-		Coordinate coordinate = new Coordinate(destination.getX(), destination.getY());
+		Coordinate coordinate = new Coordinate(destination.getX(),
+				destination.getY());
 		Point point = geometryFactory.createPoint(coordinate);
 		this.simulationBuilder.geography.move(this, point);
 	}
@@ -479,7 +503,8 @@ public class Citizen {
 	 * @param schedulableAction Action to unscheduled
 	 */
 	private void unscheduleAction(SchedulableAction schedulableAction) {
-		ISchedulableAction action = this.scheduledActions.get(schedulableAction);
+		ISchedulableAction action = this.scheduledActions
+				.get(schedulableAction);
 		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
 		schedule.removeAction(action);
 		this.scheduledActions.remove(schedulableAction);

@@ -40,13 +40,16 @@ public class Reader {
 	 * 
 	 * @param filename File name
 	 */
-	public static List<SimpleFeature> loadGeometryFromShapefile(String filename) {
+	public static List<SimpleFeature> loadGeometryFromShapefile(
+			String filename) {
 		File file = new File(filename);
 		try {
 			FileDataStore store = FileDataStoreFinder.getDataStore(file);
 			SimpleFeatureSource featureSource = store.getFeatureSource();
-			SimpleFeatureCollection featureCollection = featureSource.getFeatures();
-			SimpleFeatureIterator featureIterator = featureCollection.features();
+			SimpleFeatureCollection featureCollection = featureSource
+					.getFeatures();
+			SimpleFeatureIterator featureIterator = featureCollection
+					.features();
 			ArrayList<SimpleFeature> simpleFeatures = new ArrayList<>();
 			while (featureIterator.hasNext()) {
 				simpleFeatures.add(featureIterator.next());
@@ -94,7 +97,8 @@ public class Reader {
 							break;
 						}
 					}
-					Policy policy = PolicyFactory.makePolicy(policyType, beginDay, endDay);
+					Policy policy = PolicyFactory.makePolicy(policyType,
+							beginDay, endDay);
 					policies.add(policy);
 				}
 			}
@@ -109,7 +113,8 @@ public class Reader {
 	 * 
 	 * @param filename File name
 	 */
-	public static Map<String, GISCommune> readCommunesDatabase(String filename) {
+	public static Map<String, GISCommune> readCommunesDatabase(
+			String filename) {
 		Map<String, GISCommune> communes = new HashMap<>();
 		File file = new File(filename);
 		try (Scanner scanner = new Scanner(file)) {
@@ -153,7 +158,8 @@ public class Reader {
 							break;
 						}
 					}
-					GISCommune commune = new GISCommune(id, population, stratumShares);
+					GISCommune commune = new GISCommune(id, population,
+							stratumShares);
 					communes.put(id, commune);
 				}
 			}
@@ -168,7 +174,8 @@ public class Reader {
 	 * 
 	 * @param filename File name
 	 */
-	public static Map<String, GISNeighborhoodDetail> readNeighborhoodsDatabase(String filename) {
+	public static Map<String, GISNeighborhoodDetail> readNeighborhoodsDatabase(
+			String filename) {
 		Map<String, GISNeighborhoodDetail> neighborhoods = new HashMap<>();
 		File file = new File(filename);
 		try (Scanner scanner = new Scanner(file)) {
@@ -193,7 +200,8 @@ public class Reader {
 							break;
 						}
 					}
-					GISNeighborhoodDetail detail = new GISNeighborhoodDetail(id, communeId);
+					GISNeighborhoodDetail detail = new GISNeighborhoodDetail(id,
+							communeId);
 					neighborhoods.put(id, detail);
 				}
 			}
@@ -246,7 +254,8 @@ public class Reader {
 	 * 
 	 * @param filename File name
 	 */
-	public static Map<Integer, Double> readPolicyComplianceDatabase(String filename) {
+	public static Map<Integer, Double> readPolicyComplianceDatabase(
+			String filename) {
 		Map<Integer, Double> policyCompliance = new HashMap<>();
 		File file = new File(filename);
 		try (Scanner scanner = new Scanner(file)) {

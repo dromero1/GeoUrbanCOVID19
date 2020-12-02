@@ -26,7 +26,8 @@ public class VoluntaryHomeIsolationPolicy extends Policy {
 		List<Citizen> family = citizen.getFamily();
 		for (Citizen member : family) {
 			Compartment compartment = member.getCompartment();
-			if (!member.equals(citizen) && compartment == Compartment.INFECTED) {
+			if (!member.equals(citizen)
+					&& compartment == Compartment.INFECTED) {
 				return false;
 			}
 		}

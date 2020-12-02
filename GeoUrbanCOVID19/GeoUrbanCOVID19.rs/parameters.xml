@@ -4,8 +4,8 @@
 		displayName="Default Random Seed" type="int" defaultValue="930489635"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
-	<parameter name="infectedCount" displayName="Infected count"
-		type="int" defaultValue="25" isReadOnly="false"
+	<parameter name="exposedCount" displayName="Exposed count"
+		type="int" defaultValue="50" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="infectionRadius"
 		displayName="Infection radius (meters)" type="double"
@@ -15,4 +15,8 @@
 		displayName="Susceptible count" type="int" defaultValue="20000"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="particleExpulsionInterval"
+		displayName="Particle expulsion interval (minutes)" type="double"
+		defaultValue="60" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>

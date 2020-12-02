@@ -29,7 +29,8 @@ public class SODMatrix {
 	 * @param rows    Rows mapping
 	 * @param columns Columns mapping
 	 */
-	public SODMatrix(List<List<Double>> sod, Map<String, Integer> rows, Map<Integer, String> columns) {
+	public SODMatrix(List<List<Double>> sod, Map<String, Integer> rows,
+			Map<Integer, String> columns) {
 		this.sod = sod;
 		this.rows = rows;
 		this.columns = columns;
