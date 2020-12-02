@@ -26,6 +26,16 @@ public class ParametersAdapter {
 	private static final String PARTICLE_EXPULSION_INTERVAL_PARAM_ID = "particleExpulsionInterval";
 
 	/**
+	 * Ticks to sleep parameter id
+	 */
+	private static final String TICKS_TO_SLEEP_PARAM_ID = "ticksToSleep";
+
+	/**
+	 * Walker share parameter id
+	 */
+	private static final String WALKER_SHARE_PARAM_ID = "walkerShare";
+
+	/**
 	 * Get exposed count
 	 */
 	public static int getExposedCount() {
@@ -55,6 +65,22 @@ public class ParametersAdapter {
 	public static double getParticleExpulsionInterval() {
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		return simParams.getDouble(PARTICLE_EXPULSION_INTERVAL_PARAM_ID);
+	}
+
+	/**
+	 * Get ticks to sleep
+	 */
+	public static double getTicksToSleep() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(TICKS_TO_SLEEP_PARAM_ID);
+	}
+
+	/**
+	 * Get walker share
+	 */
+	public static double getWalkerShare() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(WALKER_SHARE_PARAM_ID);
 	}
 
 	/**

@@ -7,6 +7,10 @@
 	<parameter name="exposedCount" displayName="Exposed count"
 		type="int" defaultValue="50" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="ticksToSleep"
+		displayName="Ticks to sleep (hours)" type="double" defaultValue="2"
+		isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="infectionRadius"
 		displayName="Infection radius (meters)" type="double"
 		defaultValue="5.0" isReadOnly="false"
@@ -18,5 +22,9 @@
 	<parameter name="particleExpulsionInterval"
 		displayName="Particle expulsion interval (minutes)" type="double"
 		defaultValue="60" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
+	<parameter name="walkerShare"
+		displayName="Walker share (probability)" type="double"
+		defaultValue="0.5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>

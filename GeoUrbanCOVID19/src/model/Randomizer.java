@@ -12,22 +12,22 @@ public final class Randomizer {
 	/**
 	 * Minimum wake up time (unit: hours). Reference: <pending>
 	 */
-	public static final double MIN_WAKE_UP_TIME = 4;
+	public static final double MIN_WAKE_UP_TIME = 6;
 
 	/**
 	 * Maximum wake up time (unit: hours). Reference: <pending>
 	 */
-	public static final double MAX_WAKE_UP_TIME = 10;
+	public static final double MAX_WAKE_UP_TIME = 9;
 
 	/**
 	 * Minimum returning home time (unit: hours). Reference: <pending>
 	 */
-	public static final double MIN_RETURN_HOME_TIME = 13;
+	public static final double MIN_RETURN_HOME_TIME = 17;
 
 	/**
 	 * Maximum returning home time (unit: hours). Reference: <pending>
 	 */
-	public static final double MAX_RETURN_HOME_TIME = 22;
+	public static final double MAX_RETURN_HOME_TIME = 20;
 
 	/**
 	 * Infection alpha parameter. Reference: <pending>

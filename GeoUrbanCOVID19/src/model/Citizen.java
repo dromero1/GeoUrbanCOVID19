@@ -98,6 +98,11 @@ public class Citizen {
 	private boolean policyCompliance;
 
 	/**
+	 * Asleep flag
+	 */
+	private boolean asleep;
+
+	/**
 	 * Family
 	 */
 	private List<Citizen> family;
@@ -171,10 +176,12 @@ public class Citizen {
 	 * Step
 	 */
 	public void step() {
-		boolean allowed = this.simulationBuilder.policyEnforcer
-				.isAllowedToGoOut(this);
-		if (allowed || !this.policyCompliance) {
-			randomWalk();
+		if (!this.asleep) {
+			boolean allowed = this.simulationBuilder.policyEnforcer
+					.isAllowedToGoOut(this);
+			if (allowed || !this.policyCompliance) {
+				randomWalk();
+			}
 		}
 	}
 
@@ -189,6 +196,7 @@ public class Citizen {
 	 * Wake up and go to workplace
 	 */
 	public void wakeUp() {
+		this.asleep = false;
 		this.policyCompliance = Randomizer
 				.getRandomPolicyCompliance(this.policyComplianceProbability);
 		this.maskUsage = Randomizer
@@ -200,6 +208,13 @@ public class Citizen {
 			this.currentNeighborhood = this.workingNeighborhood;
 			relocate(this.workplace);
 		}
+	}
+
+	/**
+	 * Sleep
+	 */
+	public void sleep() {
+		this.asleep = true;
 	}
 
 	/**
@@ -264,6 +279,7 @@ public class Citizen {
 		unscheduleAction(SchedulableAction.STEP);
 		unscheduleAction(SchedulableAction.WAKE_UP);
 		unscheduleAction(SchedulableAction.RETURN_HOME);
+		unscheduleAction(SchedulableAction.SLEEP);
 		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
@@ -277,6 +293,7 @@ public class Citizen {
 		unscheduleAction(SchedulableAction.STEP);
 		unscheduleAction(SchedulableAction.WAKE_UP);
 		unscheduleAction(SchedulableAction.RETURN_HOME);
+		unscheduleAction(SchedulableAction.SLEEP);
 		unscheduleAction(SchedulableAction.EXPEL_PARTICLES);
 	}
 
@@ -445,10 +462,16 @@ public class Citizen {
 		ISchedulableAction returnHomeAction = eventScheduler
 				.scheduleRecurringEvent(this.returningHomeTime, this,
 						TickConverter.TICKS_PER_DAY, "returnHome");
+		double ticksToSleep = ParametersAdapter.getTicksToSleep();
+		double bedtime = this.returningHomeTime + ticksToSleep;
+		ISchedulableAction bedtimeAction = eventScheduler
+				.scheduleRecurringEvent(bedtime, this,
+						TickConverter.TICKS_PER_DAY, "sleep");
 		this.scheduledActions.put(SchedulableAction.STEP, stepAction);
 		this.scheduledActions.put(SchedulableAction.WAKE_UP, wakeUpAction);
 		this.scheduledActions.put(SchedulableAction.RETURN_HOME,
 				returnHomeAction);
+		this.scheduledActions.put(SchedulableAction.SLEEP, bedtimeAction);
 	}
 
 	/**
