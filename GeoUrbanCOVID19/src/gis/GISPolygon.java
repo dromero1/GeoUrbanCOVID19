@@ -6,6 +6,11 @@ import repast.simphony.space.gis.Geography;
 public class GISPolygon {
 
 	/**
+	 * Area scaling factor
+	 */
+	public static final double AREA_SCALING_FACTOR = 100000;
+
+	/**
 	 * Polygon id
 	 */
 	protected String id;
@@ -54,6 +59,13 @@ public class GISPolygon {
 	 */
 	public Geometry getGeometry() {
 		return this.geometry;
+	}
+
+	/**
+	 * Get area
+	 */
+	public double getArea() {
+		return this.geometry.getArea() * AREA_SCALING_FACTOR;
 	}
 
 }

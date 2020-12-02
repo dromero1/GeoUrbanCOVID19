@@ -5,6 +5,7 @@ import cern.jet.random.Normal;
 import gis.GISCommune;
 import gis.GISNeighborhood;
 import repast.simphony.random.RandomHelper;
+import simulation.ParametersAdapter;
 import util.TickConverter;
 
 public final class Randomizer {
@@ -299,6 +300,15 @@ public final class Randomizer {
 			}
 		}
 		return -1;
+	}
+
+	/**
+	 * Get random walking pattern. Reference: <pending>
+	 */
+	public static boolean getRandomWalkingPattern() {
+		double walkerShare = ParametersAdapter.getWalkerShare();
+		double r = RandomHelper.nextDoubleFromTo(0, 1);
+		return r < walkerShare;
 	}
 
 }
