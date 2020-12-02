@@ -67,11 +67,6 @@ public final class Randomizer {
 	public static final double STD_INCUBATION_PERIOD = 2.41;
 
 	/**
-	 * Default mask factor. Reference: <pending>
-	 */
-	public static final double DEFAULT_MASK_FACTOR = 0.5;
-
-	/**
 	 * Maximum mask factor. Reference: <pending>
 	 */
 	public static final double MAX_MASK_FACTOR = 1;
@@ -80,16 +75,6 @@ public final class Randomizer {
 	 * Minimum mask factor. Reference: <pending>
 	 */
 	public static final double MIN_MASK_FACTOR = 0;
-
-	/**
-	 * Percentage of compliance probability. Reference: <pending>
-	 */
-	public static final double COMPLIANCE_PROB_PCT = 0.10;
-
-	/**
-	 * Percentage of mask usage probability. Reference: <pending>
-	 */
-	public static final double MASK_USAGE_PROB_PCT = 0.10;
 
 	/**
 	 * Age ranges (unit: age). Reference: <pending>
@@ -218,7 +203,7 @@ public final class Randomizer {
 			return false;
 		}
 		double p = gamma.pdf(days - INFECTION_MIN);
-		double maskFactor = DEFAULT_MASK_FACTOR;
+		double maskFactor = ParametersAdapter.getMaskFactor();
 		if (maskUsageInfected && maskUsageSusceptible) {
 			maskFactor = MAX_MASK_FACTOR;
 		} else if (!maskUsageInfected && !maskUsageSusceptible) {
@@ -244,7 +229,8 @@ public final class Randomizer {
 	 */
 	public static boolean getRandomMaskUsage(double maskUsageProbability) {
 		double mu = maskUsageProbability;
-		double sigma = maskUsageProbability * MASK_USAGE_PROB_PCT;
+		double sigma = maskUsageProbability
+				* ParametersAdapter.getComplianceDeviationPercentage();
 		Normal normal = RandomHelper.createNormal(mu, sigma);
 		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
@@ -259,7 +245,8 @@ public final class Randomizer {
 	public static boolean getRandomPolicyCompliance(
 			double complianceProbability) {
 		double mu = complianceProbability;
-		double sigma = complianceProbability * COMPLIANCE_PROB_PCT;
+		double sigma = complianceProbability
+				* ParametersAdapter.getComplianceDeviationPercentage();
 		Normal normal = RandomHelper.createNormal(mu, sigma);
 		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);

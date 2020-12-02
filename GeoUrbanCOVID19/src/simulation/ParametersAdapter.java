@@ -41,6 +41,16 @@ public class ParametersAdapter {
 	private static final String EFFECTIVE_DEPARTURES_SHARE_PARAM_ID = "effectiveDeparturesShare";
 
 	/**
+	 * Mask factor parameter id
+	 */
+	private static final String MASK_FACTOR_PARAM_ID = "maskFactor";
+
+	/**
+	 * Compliance deviation percentage parameter id
+	 */
+	private static final String COMPLIANCE_DEVIATION_PERCENTAGE_PARAM_ID = "complianceDeviationPercentage";
+
+	/**
 	 * Get exposed count
 	 */
 	public static int getExposedCount() {
@@ -94,6 +104,22 @@ public class ParametersAdapter {
 	public static double getEffectiveDeparturesShare() {
 		Parameters simParams = RunEnvironment.getInstance().getParameters();
 		return simParams.getDouble(EFFECTIVE_DEPARTURES_SHARE_PARAM_ID);
+	}
+
+	/**
+	 * Get mask factor
+	 */
+	public static double getMaskFactor() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(MASK_FACTOR_PARAM_ID);
+	}
+
+	/**
+	 * Get compliance deviation percentage
+	 */
+	public static double getComplianceDeviationPercentage() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(COMPLIANCE_DEVIATION_PERCENTAGE_PARAM_ID);
 	}
 
 	/**

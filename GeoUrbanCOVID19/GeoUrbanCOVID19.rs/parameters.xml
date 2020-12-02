@@ -4,8 +4,12 @@
 		displayName="Default Random Seed" type="int" defaultValue="930489635"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
+	<parameter name="complianceDeviationPercentage"
+		displayName="Compliance deviation percentage (%)" type="double"
+		defaultValue="0.1" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="effectiveDeparturesShare"
-		displayName="Effective departures share (probability)" type="double"
+		displayName="Effective departures share (%)" type="double"
 		defaultValue="0.5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="exposedCount" displayName="Exposed count"
@@ -14,6 +18,9 @@
 	<parameter name="infectionRadius"
 		displayName="Infection radius (meters)" type="double"
 		defaultValue="5.0" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
+	<parameter name="maskFactor" displayName="Mask factor"
+		type="double" defaultValue="0.5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="susceptibleCount"
 		displayName="Susceptible count" type="int" defaultValue="20000"
@@ -27,8 +34,7 @@
 		displayName="Ticks to sleep (hours)" type="double" defaultValue="2"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
-	<parameter name="walkerShare"
-		displayName="Walker share (probability)" type="double"
-		defaultValue="0.5" isReadOnly="false"
+	<parameter name="walkerShare" displayName="Walker share (%)"
+		type="double" defaultValue="0.5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>
