@@ -89,13 +89,18 @@ public class Citizen {
 	/**
 	 * Mask usage. Whether the citizen wears a mask or not.
 	 */
-	private boolean maskUsage;
+	private boolean usesMask;
 
 	/**
 	 * Policy compliance. Whether the citizen complies with external policies or
 	 * not.
 	 */
-	private boolean policyCompliance;
+	private boolean compliesWithPolicies;
+
+	/**
+	 * Walker flag. Whether the citizen is a walker or not.
+	 */
+	private boolean walks;
 
 	/**
 	 * Asleep flag
@@ -152,6 +157,7 @@ public class Citizen {
 		this.atHome = true;
 		this.wakeUpTime = Randomizer.getRandomWakeUpTime();
 		this.returningHomeTime = Randomizer.getRandomReturningHomeTime();
+		this.walks = Randomizer.getRandomWalkingPattern();
 		this.family = new ArrayList<>();
 		this.scheduledActions = new EnumMap<>(SchedulableAction.class);
 	}
@@ -176,10 +182,10 @@ public class Citizen {
 	 * Step
 	 */
 	public void step() {
-		if (!this.asleep) {
+		if (this.walks && !this.asleep) {
 			boolean allowed = this.simulationBuilder.policyEnforcer
 					.isAllowedToGoOut(this);
-			if (allowed || !this.policyCompliance) {
+			if (allowed || !this.compliesWithPolicies) {
 				randomWalk();
 			}
 		}
@@ -197,13 +203,13 @@ public class Citizen {
 	 */
 	public void wakeUp() {
 		this.asleep = false;
-		this.policyCompliance = Randomizer
+		this.compliesWithPolicies = Randomizer
 				.getRandomPolicyCompliance(this.policyComplianceProbability);
-		this.maskUsage = Randomizer
+		this.usesMask = Randomizer
 				.getRandomMaskUsage(this.maskUsageProbability);
 		boolean allowed = this.simulationBuilder.policyEnforcer
 				.isAllowedToGoOut(this);
-		if (allowed || !this.policyCompliance) {
+		if (allowed || !this.compliesWithPolicies) {
 			this.atHome = false;
 			this.currentNeighborhood = this.workingNeighborhood;
 			relocate(this.workplace);
@@ -499,7 +505,7 @@ public class Citizen {
 		for (Citizen citizen : citizens) {
 			if (citizen.compartment == Compartment.SUSCEPTIBLE
 					&& Randomizer.isGettingExposed(incubationDiff,
-							this.maskUsage, citizen.maskUsage)) {
+							this.usesMask, citizen.usesMask)) {
 				citizen.transitionToExposed();
 				this.simulationBuilder.outputManager.onNewCase();
 				this.currentNeighborhood.onNewCase();

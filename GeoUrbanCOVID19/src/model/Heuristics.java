@@ -154,11 +154,26 @@ public final class Heuristics {
 				break;
 			}
 		}
-		// Select random neighborhood
+		// Get total area
 		List<GISNeighborhood> neighborhoods = selectedCommune
 				.getNeighborhoods();
-		int index = RandomHelper.nextIntFromTo(0, neighborhoods.size() - 1);
-		GISNeighborhood selectedNeighborhood = neighborhoods.get(index);
+		double totalArea = 0;
+		for (GISNeighborhood neighborhood : neighborhoods) {
+			double area = neighborhood.getArea();
+			totalArea += area;
+		}
+		// Select random neighborhood
+		GISNeighborhood selectedNeighborhood = null;
+		r = RandomHelper.nextDoubleFromTo(0, 1);
+		cummulativeProbability = 0;
+		for (GISNeighborhood neighborhood : neighborhoods) {
+			double area = neighborhood.getArea();
+			cummulativeProbability += area / totalArea;
+			if (r <= cummulativeProbability) {
+				selectedNeighborhood = neighborhood;
+				break;
+			}
+		}
 		// Generate random point inside selected neighborhood
 		NdPoint selectedHouse = PolygonUtil
 				.getRandomPoint(selectedNeighborhood);
