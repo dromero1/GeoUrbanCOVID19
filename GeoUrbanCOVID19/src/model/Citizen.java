@@ -414,6 +414,13 @@ public class Citizen {
 	}
 
 	/**
+	 * Get stratum
+	 */
+	public int getStratum() {
+		return this.stratum;
+	}
+
+	/**
 	 * Is susceptible?
 	 */
 	public int isSusceptible() {
