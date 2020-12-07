@@ -229,8 +229,9 @@ public final class Randomizer {
 	 */
 	public static boolean getRandomMaskUsage(double maskUsageProbability) {
 		double mu = maskUsageProbability;
-		double sigma = maskUsageProbability
-				* ParametersAdapter.getComplianceDeviationPercentage();
+		double sigma = (1
+				+ ParametersAdapter.getComplianceDeviationPercentage())
+				* maskUsageProbability / 3;
 		Normal normal = RandomHelper.createNormal(mu, sigma);
 		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
@@ -245,8 +246,9 @@ public final class Randomizer {
 	public static boolean getRandomPolicyCompliance(
 			double complianceProbability) {
 		double mu = complianceProbability;
-		double sigma = complianceProbability
-				* ParametersAdapter.getComplianceDeviationPercentage();
+		double sigma = (1
+				+ ParametersAdapter.getComplianceDeviationPercentage())
+				* complianceProbability / 3;
 		Normal normal = RandomHelper.createNormal(mu, sigma);
 		double p = normal.nextDouble();
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
