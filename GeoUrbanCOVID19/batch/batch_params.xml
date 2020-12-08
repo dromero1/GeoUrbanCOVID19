@@ -1,7 +1,7 @@
 <?xml version="1.0" ?>
 <sweep runs="8">
 	<parameter name="particleExpulsionInterval" type="constant"
-		constant_type="double" value="30.0"></parameter>
+		constant_type="double" value="15.0"></parameter>
 	<parameter name="complianceDeviationPercentage"
 		type="constant" constant_type="double" value="0.1"></parameter>
 	<parameter name="exposedCount" type="constant"
