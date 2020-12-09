@@ -23,7 +23,7 @@
 		type="double" defaultValue="0.5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="susceptibleCount"
-		displayName="Susceptible count" type="int" defaultValue="20000"
+		displayName="Susceptible count" type="int" defaultValue="100000"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="particleExpulsionInterval"
