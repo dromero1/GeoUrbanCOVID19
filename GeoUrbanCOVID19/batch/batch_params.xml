@@ -11,11 +11,11 @@
 	<parameter name="infectionRadius" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="walkerShare" type="constant"
-		constant_type="double" value="0.75"></parameter>
+		constant_type="double" value="1.0"></parameter>
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="susceptibleCount" type="constant"
 		constant_type="int" value="100000"></parameter>
 	<parameter name="effectiveDeparturesShare" type="constant"
-		constant_type="double" value="0.75"></parameter>
+		constant_type="double" value="1.0"></parameter>
 </sweep>
