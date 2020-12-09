@@ -10,7 +10,7 @@
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="effectiveDeparturesShare"
 		displayName="Effective departures share (%)" type="double"
-		defaultValue="0.5" isReadOnly="false"
+		defaultValue="1.0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="exposedCount" displayName="Exposed count"
 		type="int" defaultValue="50" isReadOnly="false"
@@ -28,13 +28,13 @@
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="particleExpulsionInterval"
 		displayName="Particle expulsion interval (minutes)" type="double"
-		defaultValue="60" isReadOnly="false"
+		defaultValue="15" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="ticksToSleep"
 		displayName="Ticks to sleep (hours)" type="double" defaultValue="2"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="walkerShare" displayName="Walker share (%)"
-		type="double" defaultValue="0.5" isReadOnly="false"
+		type="double" defaultValue="1.0" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>
