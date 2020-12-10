@@ -35,6 +35,6 @@
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="walkerShare" displayName="Walker share (%)"
-		type="double" defaultValue="1.0" isReadOnly="false"
+		type="double" defaultValue="0.3" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>
