@@ -31,7 +31,7 @@
 		defaultValue="15" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="ticksToSleep"
-		displayName="Ticks to sleep (hours)" type="double" defaultValue="3"
+		displayName="Ticks to sleep (hours)" type="double" defaultValue="2"
 		isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="walkerShare" displayName="Walker share (%)"
