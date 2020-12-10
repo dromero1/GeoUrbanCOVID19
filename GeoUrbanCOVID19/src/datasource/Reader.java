@@ -2,6 +2,7 @@ package datasource;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -19,7 +20,6 @@ import gis.GISCommune;
 import gis.GISNeighborhoodDetail;
 import model.SODMatrix;
 import policy.Policy;
-import policy.PolicyFactory;
 
 public class Reader {
 
@@ -70,40 +70,11 @@ public class Reader {
 	 */
 	public static List<Policy> readPoliciesDatabase(String filename) {
 		List<Policy> policies = new ArrayList<>();
-		File file = new File(filename);
-		try (Scanner scanner = new Scanner(file)) {
-			boolean first = true;
-			while (scanner.hasNextLine()) {
-				String data = scanner.nextLine();
-				if (first) {
-					first = false;
-				} else {
-					String[] elements = data.split(SOURCE_SPLIT_REGEX);
-					String policyType = null;
-					int beginDay = 0;
-					int endDay = 0;
-					for (int i = 0; i < elements.length; i++) {
-						switch (i) {
-						case SourceFeatures.POLICIES_TYPE_COLUMN:
-							policyType = elements[i];
-							break;
-						case SourceFeatures.POLICIES_BEGIN_DAY_COLUMN:
-							beginDay = Integer.parseInt(elements[i]);
-							break;
-						case SourceFeatures.POLICIES_END_DAY_COLUMN:
-							endDay = Integer.parseInt(elements[i]);
-							break;
-						default:
-							break;
-						}
-					}
-					Policy policy = PolicyFactory.makePolicy(policyType,
-							beginDay, endDay);
-					policies.add(policy);
-				}
-			}
+		try (FileReader reader = new FileReader(filename)) {
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
 		}
 		return policies;
 	}
