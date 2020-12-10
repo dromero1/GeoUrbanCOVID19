@@ -46,14 +46,10 @@
 	<layerOrder>
 		<entry>
 			<string>model.Citizen</string>
-			<int>5</int>
+			<int>4</int>
 		</entry>
 		<entry>
 			<string>Scale bar</string>
-			<int>2</int>
-		</entry>
-		<entry>
-			<string>World Map</string>
 			<int>1</int>
 		</entry>
 		<entry>
@@ -62,11 +58,11 @@
 		</entry>
 		<entry>
 			<string>gis.GISNeighborhood</string>
-			<int>4</int>
+			<int>3</int>
 		</entry>
 		<entry>
 			<string>gis.GISPolygon</string>
-			<int>3</int>
+			<int>2</int>
 		</entry>
 	</layerOrder>
 	<projections>
@@ -99,10 +95,6 @@
 	<globeLayers>
 		<entry>
 			<string>Scale bar</string>
-			<boolean>true</boolean>
-		</entry>
-		<entry>
-			<string>World Map</string>
 			<boolean>true</boolean>
 		</entry>
 		<entry>
