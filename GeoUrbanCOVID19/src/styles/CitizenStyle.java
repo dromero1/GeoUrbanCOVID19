@@ -44,7 +44,7 @@ public class CitizenStyle implements MarkStyle<Citizen> {
 	 */
 	public CitizenStyle() {
 		Dimension dimension = new Dimension(WIDTH, HEIGHT);
-		this.textureMap = new HashMap<String, WWTexture>();
+		this.textureMap = new HashMap<>();
 		// Black circle
 		BufferedImage image = PatternFactory.createPattern(
 				PatternFactory.PATTERN_CIRCLE, dimension, STANDARD_SCALE,
