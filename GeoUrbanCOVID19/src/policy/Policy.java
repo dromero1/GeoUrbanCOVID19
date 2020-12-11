@@ -1,5 +1,8 @@
 package policy;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.Citizen;
 import repast.simphony.essentials.RepastEssentials;
 import util.TickConverter;
@@ -44,7 +47,7 @@ public class Policy {
 	/**
 	 * Curfew
 	 */
-	private int[][] curfew;
+	private List<List<Integer>> curfew;
 
 	/**
 	 * Create a new policy
@@ -67,6 +70,7 @@ public class Policy {
 		this.maximumAgeAllowed = maximumAgeAllowed;
 		this.effectiveDeparturesShare = effectiveDeparturesShare;
 		this.isMaskMandatory = isMaskMandatory;
+		this.curfew = new ArrayList<>();
 	}
 
 	/**
@@ -91,10 +95,10 @@ public class Policy {
 			int id = citizen.getId();
 			double ticks = RepastEssentials.GetTickCount();
 			int weekday = TickConverter.ticksToWeekday(ticks);
-			int[] allowedIds = this.curfew[weekday];
+			List<Integer> allowedIds = this.curfew.get(weekday);
 			boolean match = false;
-			for (int i = 0; i < allowedIds.length; i++) {
-				if (id == allowedIds[i]) {
+			for (int allowedId : allowedIds) {
+				if (id == allowedId) {
 					match = true;
 				}
 			}
@@ -110,7 +114,7 @@ public class Policy {
 	 * 
 	 * @param curfew Curfew
 	 */
-	public void setCurfew(int[][] curfew) {
+	public void setCurfew(List<List<Integer>> curfew) {
 		this.curfew = curfew;
 	}
 

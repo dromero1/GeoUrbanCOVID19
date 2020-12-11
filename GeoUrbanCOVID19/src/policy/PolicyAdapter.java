@@ -1,5 +1,9 @@
 package policy;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 public class PolicyAdapter {
@@ -85,7 +89,9 @@ public class PolicyAdapter {
 				maximumAgeAllowed, effectiveDeparturesShare, isMaskMandatory);
 		// Parse curfew
 		if (rawPolicy.containsKey(CURFEW_PARAM_ID)) {
-
+			JSONArray rawCurfew = (JSONArray) rawPolicy.get(CURFEW_PARAM_ID);
+			List<List<Integer>> curfew = parseCurfew(rawCurfew);
+			policy.setCurfew(curfew);
 		}
 		return policy;
 	}
@@ -112,6 +118,25 @@ public class PolicyAdapter {
 	 */
 	public static boolean parseMaskMandatoryFlag(int rawIsMaskMandatory) {
 		return rawIsMaskMandatory == 1;
+	}
+
+	/**
+	 * Parse curfew
+	 * 
+	 * @param rawCurfew Raw curfew
+	 */
+	public static List<List<Integer>> parseCurfew(JSONArray rawCurfew) {
+		List<List<Integer>> curfew = new ArrayList<>();
+		for (int i = 0; i < rawCurfew.size(); i++) {
+			List<Integer> dayIds = new ArrayList<>();
+			JSONArray rawIds = (JSONArray) rawCurfew.get(i);
+			for (int j = 0; j < rawIds.size(); j++) {
+				int id = Math.toIntExact((long) rawIds.get(j));
+				dayIds.add(id);
+			}
+			curfew.add(dayIds);
+		}
+		return curfew;
 	}
 
 }
