@@ -33,6 +33,11 @@ public class PolicyAdapter {
 	private static final String MAX_AGE_PARAM_ID = "ageMax";
 
 	/**
+	 * Mandatory mask flag parameter id
+	 */
+	private static final String MANDATORY_MASK_FLAG_PARAM_ID = "mask";
+
+	/**
 	 * Effective departures share parameter id
 	 */
 	private static final String DEPARTURES_SHARE_PARAM_ID = "factor";
@@ -81,7 +86,7 @@ public class PolicyAdapter {
 				.get(DEPARTURES_SHARE_PARAM_ID);
 		// Parse raw mask mandatory flag
 		int rawMaskMandatoryFlag = Math
-				.toIntExact((long) rawPolicy.get(POLICY_TYPE_PARAM_ID));
+				.toIntExact((long) rawPolicy.get(MANDATORY_MASK_FLAG_PARAM_ID));
 		boolean isMaskMandatory = parseMaskMandatoryFlag(rawMaskMandatoryFlag);
 		// Build policy
 		Policy policy = new Policy(type, startDay, endDay, minimumAgeAllowed,
