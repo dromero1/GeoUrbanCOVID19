@@ -287,6 +287,15 @@ public class Citizen {
 				1, this, expelInterval, "expelParticles");
 		this.scheduledActions.put(SchedulableAction.EXPEL_PARTICLES,
 				expelAction);
+		// Severe and critical patients stop moving
+		if (patientType == PatientType.SEVERE_SYMPTOMS
+				|| patientType == PatientType.CRITICAL_SYMPTOMS) {
+			returnHome();
+			unscheduleAction(SchedulableAction.STEP);
+			unscheduleAction(SchedulableAction.WAKE_UP);
+			unscheduleAction(SchedulableAction.RETURN_HOME);
+			unscheduleAction(SchedulableAction.SLEEP);
+		}
 		// Schedule removal
 		boolean isDying = Randomizer.isGoingToDie(patientType);
 		String removalMethod = (isDying) ? "die" : "transitionToImmune";
@@ -561,11 +570,14 @@ public class Citizen {
 	 * @param schedulableAction Action to unscheduled
 	 */
 	private void unscheduleAction(SchedulableAction schedulableAction) {
-		ISchedulableAction action = this.scheduledActions
-				.get(schedulableAction);
-		ISchedule schedule = RunEnvironment.getInstance().getCurrentSchedule();
-		schedule.removeAction(action);
-		this.scheduledActions.remove(schedulableAction);
+		if (this.scheduledActions.containsKey(schedulableAction)) {
+			ISchedulableAction action = this.scheduledActions
+					.get(schedulableAction);
+			ISchedule schedule = RunEnvironment.getInstance()
+					.getCurrentSchedule();
+			schedule.removeAction(action);
+			this.scheduledActions.remove(schedulableAction);
+		}
 	}
 
 }
