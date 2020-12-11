@@ -8,10 +8,6 @@
 		displayName="Compliance deviation percentage (%)" type="double"
 		defaultValue="0.1" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
-	<parameter name="effectiveDeparturesShare"
-		displayName="Effective departures share (%)" type="double"
-		defaultValue="1.0" isReadOnly="false"
-		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="exposedCount" displayName="Exposed count"
 		type="int" defaultValue="50" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />

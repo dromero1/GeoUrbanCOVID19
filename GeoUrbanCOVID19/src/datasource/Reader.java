@@ -14,12 +14,16 @@ import org.geotools.data.FileDataStoreFinder;
 import org.geotools.data.simple.SimpleFeatureCollection;
 import org.geotools.data.simple.SimpleFeatureIterator;
 import org.geotools.data.simple.SimpleFeatureSource;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.opengis.feature.simple.SimpleFeature;
 import config.SourceFeatures;
 import gis.GISCommune;
 import gis.GISNeighborhoodDetail;
 import model.SODMatrix;
 import policy.Policy;
+import policy.PolicyAdapter;
 
 public class Reader {
 
@@ -27,6 +31,11 @@ public class Reader {
 	 * Source split regular expression
 	 */
 	private static final String SOURCE_SPLIT_REGEX = ",";
+
+	/**
+	 * JSON source object counter
+	 */
+	private static final String SOURCE_OBJECT_COUNTER = "len";
 
 	/**
 	 * Private constructor
@@ -71,10 +80,23 @@ public class Reader {
 	public static List<Policy> readPoliciesDatabase(String filename) {
 		List<Policy> policies = new ArrayList<>();
 		try (FileReader reader = new FileReader(filename)) {
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(reader);
+			JSONObject jsonObject = (JSONObject) obj;
+			int policyCount = Math
+					.toIntExact((long) jsonObject.get(SOURCE_OBJECT_COUNTER));
+			for (int i = 0; i < policyCount; i++) {
+				JSONObject rawPolicy = (JSONObject) jsonObject
+						.get(String.valueOf(i));
+				Policy policy = PolicyAdapter.adapt(rawPolicy);
+				policies.add(policy);
+			}
 		} catch (FileNotFoundException fnfe) {
 			fnfe.printStackTrace();
 		} catch (IOException ioe) {
 			ioe.printStackTrace();
+		} catch (ParseException pe) {
+			pe.printStackTrace();
 		}
 		return policies;
 	}

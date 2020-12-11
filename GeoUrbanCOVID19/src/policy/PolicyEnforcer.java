@@ -1,7 +1,5 @@
 package policy;
 
-import java.util.ArrayList;
-import java.util.List;
 import model.Citizen;
 import simulation.EventScheduler;
 import util.TickConverter;
@@ -9,16 +7,9 @@ import util.TickConverter;
 public class PolicyEnforcer {
 
 	/**
-	 * Current policies
+	 * Current policy
 	 */
-	private List<Policy> currentPolicies;
-
-	/**
-	 * Create a new policy enforcer
-	 */
-	public PolicyEnforcer() {
-		this.currentPolicies = new ArrayList<>();
-	}
+	private Policy currentPolicy;
 
 	/**
 	 * Schedule policy
@@ -28,29 +19,17 @@ public class PolicyEnforcer {
 	public void schedulePolicy(Policy policy) {
 		EventScheduler eventScheduler = EventScheduler.getInstance();
 		double startTick = TickConverter.daysToTicks(policy.getBeginDay());
-		eventScheduler.scheduleOneTimeEvent(startTick, this, "addPolicy",
-				policy);
-		double endTick = TickConverter.daysToTicks(policy.getEndDay());
-		eventScheduler.scheduleOneTimeEvent(endTick, this, "removePolicy",
+		eventScheduler.scheduleOneTimeEvent(startTick, this, "setPolicy",
 				policy);
 	}
 
 	/**
-	 * Add policy
+	 * Set policy
 	 * 
 	 * @param policy Policy
 	 */
-	public void addPolicy(Policy policy) {
-		this.currentPolicies.add(policy);
-	}
-
-	/**
-	 * Remove policy
-	 * 
-	 * @param policy Policy
-	 */
-	public void removePolicy(Policy policy) {
-		this.currentPolicies.remove(policy);
+	public void setPolicy(Policy policy) {
+		this.currentPolicy = policy;
 	}
 
 	/**
@@ -59,12 +38,21 @@ public class PolicyEnforcer {
 	 * @param citizen Citizen
 	 */
 	public boolean isAllowedToGoOut(Citizen citizen) {
-		for (Policy policy : this.currentPolicies) {
-			if (!policy.isAllowedToGoOut(citizen)) {
-				return false;
-			}
-		}
-		return true;
+		return this.currentPolicy.isAllowedToGoOut(citizen);
+	}
+
+	/**
+	 * Is mask usage mandatory?
+	 */
+	public boolean isMaskMandatory() {
+		return this.currentPolicy.isMaskMandatory();
+	}
+
+	/**
+	 * Get effective departures share
+	 */
+	public double getEffectiveDeparturesShare() {
+		return this.currentPolicy.getEffectiveDeparturesShare();
 	}
 
 }

@@ -300,12 +300,13 @@ public final class Randomizer {
 
 	/**
 	 * Get random desire to go out. Reference: <pending>
+	 * 
+	 * @param effectiveDeparturesShare Effective departures share
 	 */
-	public static boolean getRandomDesireToGoOut() {
-		double departuresShare = ParametersAdapter
-				.getEffectiveDeparturesShare();
+	public static boolean getRandomDesireToGoOut(
+			double effectiveDeparturesShare) {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
-		return r < departuresShare;
+		return r < effectiveDeparturesShare;
 	}
 
 }

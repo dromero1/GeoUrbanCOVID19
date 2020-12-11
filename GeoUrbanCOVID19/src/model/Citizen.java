@@ -210,13 +210,26 @@ public class Citizen {
 	 */
 	public void wakeUp() {
 		this.asleep = false;
+		// Set mask usage
+		boolean isMaskMandatory = this.simulationBuilder.policyEnforcer
+				.isMaskMandatory();
+		this.usesMask = false;
+		if (isMaskMandatory) {
+			this.usesMask = Randomizer
+					.getRandomMaskUsage(this.maskUsageProbability);
+		}
+		// Set policy compliance
 		this.compliesWithPolicies = Randomizer
 				.getRandomPolicyCompliance(this.policyComplianceProbability);
-		this.usesMask = Randomizer
-				.getRandomMaskUsage(this.maskUsageProbability);
-		this.wantsToGoOut = Randomizer.getRandomDesireToGoOut();
+		// Set desire to go out
+		double effectiveDeparturesShare = this.simulationBuilder.policyEnforcer
+				.getEffectiveDeparturesShare();
+		this.wantsToGoOut = Randomizer
+				.getRandomDesireToGoOut(effectiveDeparturesShare);
+		// Set isolation restrictions
 		this.allowedToGoOut = this.simulationBuilder.policyEnforcer
 				.isAllowedToGoOut(this);
+		// Determine whether to go out or not
 		if (this.wantsToGoOut
 				&& (this.allowedToGoOut || !this.compliesWithPolicies)) {
 			this.atHome = false;

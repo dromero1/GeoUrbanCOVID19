@@ -20,7 +20,7 @@ public final class SourcePaths {
 	/**
 	 * Policies database
 	 */
-	public static final String POLICIES_DATABASE = "./data/databases/policies.csv";
+	public static final String POLICIES_DATABASE = "./data/databases/policies.json";
 
 	/**
 	 * Communes database
