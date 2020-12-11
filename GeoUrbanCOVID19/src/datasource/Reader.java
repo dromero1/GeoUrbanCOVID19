@@ -211,8 +211,8 @@ public class Reader {
 	 */
 	public static SODMatrix readSODMatrix(String filename) {
 		List<List<Double>> sod = new ArrayList<>();
-		HashMap<String, Integer> rows = new HashMap<>();
-		HashMap<Integer, String> columns = new HashMap<>();
+		Map<String, Integer> rows = new HashMap<>();
+		Map<Integer, String> columns = new HashMap<>();
 		File file = new File(filename);
 		try (Scanner scanner = new Scanner(file)) {
 			int i = 0;

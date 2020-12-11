@@ -4,7 +4,7 @@ import model.Citizen;
 import repast.simphony.essentials.RepastEssentials;
 import util.TickConverter;
 
-public abstract class Policy {
+public class Policy {
 
 	/**
 	 * Policy type
@@ -12,9 +12,9 @@ public abstract class Policy {
 	private PolicyType type;
 
 	/**
-	 * Begin day (unit: days)
+	 * Start day (unit: days)
 	 */
-	private int beginDay;
+	private int startDay;
 
 	/**
 	 * End day (unit: days)
@@ -50,18 +50,18 @@ public abstract class Policy {
 	 * Create a new policy
 	 * 
 	 * @param type                     PolicyType
-	 * @param beginDay                 Begin day
+	 * @param startDay                 Start day
 	 * @param endDay                   End day
 	 * @param minimumAgeAllowed        minimumAgeAllowed
 	 * @param maximumAgeAllowed        Maximum age allowed
 	 * @param effectiveDeparturesShare Effective departures share
 	 * @param isMaskMandatory          Mandatory mask flag
 	 */
-	public Policy(PolicyType type, int beginDay, int endDay,
+	public Policy(PolicyType type, int startDay, int endDay,
 			int minimumAgeAllowed, int maximumAgeAllowed,
 			double effectiveDeparturesShare, boolean isMaskMandatory) {
 		this.type = type;
-		this.beginDay = beginDay;
+		this.startDay = startDay;
 		this.endDay = endDay;
 		this.minimumAgeAllowed = minimumAgeAllowed;
 		this.maximumAgeAllowed = maximumAgeAllowed;
@@ -136,10 +136,10 @@ public abstract class Policy {
 	}
 
 	/**
-	 * Get begin day
+	 * Get start day
 	 */
-	public int getBeginDay() {
-		return this.beginDay;
+	public int getStartDay() {
+		return this.startDay;
 	}
 
 	/**
