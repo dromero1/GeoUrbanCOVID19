@@ -9,7 +9,7 @@
 		defaultValue="0.1" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="exposedCount" displayName="Exposed count"
-		type="int" defaultValue="1" isReadOnly="false"
+		type="int" defaultValue="5" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$IntConverter" />
 	<parameter name="infectionRadius"
 		displayName="Infection radius (meters)" type="double"
