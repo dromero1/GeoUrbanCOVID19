@@ -19,7 +19,7 @@ public class PolicyEnforcer {
 	public void schedulePolicy(Policy policy) {
 		EventScheduler eventScheduler = EventScheduler.getInstance();
 		int startDay = policy.getStartDay();
-		double startTick = TickConverter.daysToTicks(startDay);
+		double startTick = Math.max(TickConverter.daysToTicks(startDay), 1);
 		eventScheduler.scheduleOneTimeEvent(startTick, this, "setPolicy",
 				policy);
 	}
