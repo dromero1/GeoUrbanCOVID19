@@ -5,17 +5,15 @@
 	<parameter name="complianceDeviationPercentage"
 		type="constant" constant_type="double" value="0.1"></parameter>
 	<parameter name="exposedCount" type="constant"
-		constant_type="int" value="50"></parameter>
+		constant_type="int" value="5"></parameter>
 	<parameter name="maskFactor" type="constant"
 		constant_type="double" value="0.5"></parameter>
 	<parameter name="infectionRadius" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="walkerShare" type="constant"
-		constant_type="double" value="1.0"></parameter>
+		constant_type="double" value="0.3"></parameter>
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="susceptibleCount" type="constant"
 		constant_type="int" value="100000"></parameter>
-	<parameter name="effectiveDeparturesShare" type="constant"
-		constant_type="double" value="1.0"></parameter>
 </sweep>
