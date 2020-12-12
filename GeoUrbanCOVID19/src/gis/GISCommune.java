@@ -41,7 +41,7 @@ public class GISCommune {
 	private int newImmune;
 
 	/**
-	 * Create a new commune
+	 * Create a new geo-spatial commune
 	 * 
 	 * @param id            Commune id
 	 * @param population    Population

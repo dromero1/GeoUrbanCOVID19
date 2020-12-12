@@ -13,7 +13,7 @@ public class GISNeighborhoodDetail {
 	private String communeId;
 
 	/**
-	 * Create a new neighborhood detail
+	 * Create a new geo-spatial neighborhood detail
 	 * 
 	 * @param id        Neighborhood id
 	 * @param communeId Commune id

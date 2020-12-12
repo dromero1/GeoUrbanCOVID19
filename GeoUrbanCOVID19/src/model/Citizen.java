@@ -491,6 +491,7 @@ public class Citizen {
 	private void initDisease() {
 		if (this.compartment == Compartment.EXPOSED) {
 			transitionToExposed();
+			this.simulationBuilder.outputManager.onNewCase();
 		}
 	}
 

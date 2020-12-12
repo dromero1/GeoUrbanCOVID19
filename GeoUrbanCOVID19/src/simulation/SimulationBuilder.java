@@ -19,6 +19,7 @@ import model.Compartment;
 import model.Heuristics;
 import model.SODMatrix;
 import output.OutputManager;
+import output.OutputManagerObserver;
 import policy.Policy;
 import policy.PolicyEnforcer;
 import repast.simphony.context.Context;
@@ -26,12 +27,14 @@ import repast.simphony.context.space.gis.GeographyFactory;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
+import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
 import repast.simphony.util.collections.Pair;
 
-public class SimulationBuilder implements ContextBuilder<Object> {
+public class SimulationBuilder
+		implements ContextBuilder<Object>, OutputManagerObserver {
 
 	/**
 	 * End tick (unit: hours)
@@ -118,6 +121,7 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		}
 		// Initialize output manager
 		this.outputManager = new OutputManager();
+		this.outputManager.registerObserver(this);
 		context.add(this.outputManager);
 		// Add students to the simulation
 		List<Citizen> citizens = createCitizens();
@@ -255,6 +259,15 @@ public class SimulationBuilder implements ContextBuilder<Object> {
 		for (Policy policy : policies) {
 			this.policyEnforcer.schedulePolicy(policy);
 		}
+	}
+
+	/**
+	 * Handle the 'onZeroActiveCases' event
+	 */
+	@Override
+	public void onZeroActiveCases() {
+		double currentTick = RepastEssentials.GetTickCount();
+		RunEnvironment.getInstance().endAt(currentTick + 1);
 	}
 
 }

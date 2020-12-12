@@ -1,5 +1,8 @@
 package output;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class OutputManager {
 
 	/**
@@ -23,11 +26,29 @@ public class OutputManager {
 	private int cumulativeCases;
 
 	/**
+	 * Active cases (unit: people)
+	 */
+	private int activeCases;
+
+	/**
+	 * Observers
+	 */
+	private List<OutputManagerObserver> observers;
+
+	/**
+	 * Create a new output manager
+	 */
+	public OutputManager() {
+		this.observers = new ArrayList<>();
+	}
+
+	/**
 	 * Handle the 'onNewCase' event
 	 */
 	public void onNewCase() {
 		this.newCases++;
 		this.cumulativeCases++;
+		this.activeCases++;
 	}
 
 	/**
@@ -35,6 +56,10 @@ public class OutputManager {
 	 */
 	public void onNewDeath() {
 		this.newDeaths++;
+		this.activeCases--;
+		if (this.activeCases == 0) {
+			notifyZeroActiveCases();
+		}
 	}
 
 	/**
@@ -42,6 +67,10 @@ public class OutputManager {
 	 */
 	public void onNewImmune() {
 		this.newImmune++;
+		this.activeCases--;
+		if (this.activeCases == 0) {
+			notifyZeroActiveCases();
+		}
 	}
 
 	/**
@@ -72,10 +101,33 @@ public class OutputManager {
 	}
 
 	/**
+	 * Register observer
+	 */
+	public void registerObserver(OutputManagerObserver observer) {
+		this.observers.add(observer);
+	}
+
+	/**
 	 * Get cumulative cases
 	 */
 	public int getCumulativeCases() {
 		return this.cumulativeCases;
+	}
+
+	/**
+	 * Get active cases
+	 */
+	public int getActiveCases() {
+		return this.activeCases;
+	}
+
+	/**
+	 * Notify observers of zero active cases
+	 */
+	private void notifyZeroActiveCases() {
+		for (OutputManagerObserver observer : this.observers) {
+			observer.onZeroActiveCases();
+		}
 	}
 
 }
