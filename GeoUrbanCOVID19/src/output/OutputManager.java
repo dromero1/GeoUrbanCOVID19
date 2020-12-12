@@ -18,10 +18,16 @@ public class OutputManager {
 	private int newImmune;
 
 	/**
+	 * Cumulative cases (unit: people)
+	 */
+	private int cumulativeCases;
+
+	/**
 	 * Handle the 'onNewCase' event
 	 */
 	public void onNewCase() {
 		this.newCases++;
+		this.cumulativeCases++;
 	}
 
 	/**
@@ -63,6 +69,13 @@ public class OutputManager {
 		int immune = this.newImmune;
 		this.newImmune = 0;
 		return immune;
+	}
+
+	/**
+	 * Get cumulative cases
+	 */
+	public int getCumulativeCases() {
+		return this.cumulativeCases;
 	}
 
 }

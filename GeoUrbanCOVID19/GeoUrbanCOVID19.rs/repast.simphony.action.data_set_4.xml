@@ -1,8 +1,8 @@
 <repast.simphony.data2.engine.DataSetDescriptor
 	simphonyVersion="2.7.0">
-	<name>CommuneStatisticsTimeSeries</name>
+	<name>NeighborhoodStatisticsTimeSeries</name>
 	<type>NON_AGGREGATE</type>
-	<sourceType>gis.GISCommune</sourceType>
+	<sourceType>gis.GISNeighborhood</sourceType>
 	<inclTick>true</inclTick>
 	<inclBatchRun>true</inclBatchRun>
 	<inclRandomSeed>false</inclRandomSeed>
@@ -13,15 +13,15 @@
 		<pType>LAST</pType>
 		<duration>-1.0</duration>
 		<frequency>REPEAT</frequency>
-		<hashCode>-1053371246</hashCode>
+		<hashCode>184802015</hashCode>
 	</scheduleParams>
 	<atEnd>false</atEnd>
 	<methodDataSources class="linked-hash-map">
 		<entry>
-			<string>commune</string>
+			<string>neighborhood</string>
 			<repast.simphony.data2.engine.MethodDataSourceDefinition>
-				<id>commune</id>
-				<className>gis.GISCommune</className>
+				<id>neighborhood</id>
+				<className>gis.GISNeighborhood</className>
 				<methodName>getId</methodName>
 			</repast.simphony.data2.engine.MethodDataSourceDefinition>
 		</entry>
@@ -29,7 +29,7 @@
 			<string>cases</string>
 			<repast.simphony.data2.engine.MethodDataSourceDefinition>
 				<id>cases</id>
-				<className>gis.GISCommune</className>
+				<className>gis.GISNeighborhood</className>
 				<methodName>countNewCases</methodName>
 			</repast.simphony.data2.engine.MethodDataSourceDefinition>
 		</entry>
@@ -37,7 +37,7 @@
 			<string>deaths</string>
 			<repast.simphony.data2.engine.MethodDataSourceDefinition>
 				<id>deaths</id>
-				<className>gis.GISCommune</className>
+				<className>gis.GISNeighborhood</className>
 				<methodName>countNewDeaths</methodName>
 			</repast.simphony.data2.engine.MethodDataSourceDefinition>
 		</entry>
@@ -45,7 +45,7 @@
 			<string>immune</string>
 			<repast.simphony.data2.engine.MethodDataSourceDefinition>
 				<id>immune</id>
-				<className>gis.GISCommune</className>
+				<className>gis.GISNeighborhood</className>
 				<methodName>countNewImmune</methodName>
 			</repast.simphony.data2.engine.MethodDataSourceDefinition>
 		</entry>

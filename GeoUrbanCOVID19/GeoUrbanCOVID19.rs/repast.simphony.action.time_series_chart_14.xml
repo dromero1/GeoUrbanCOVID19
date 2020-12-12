@@ -1,10 +1,10 @@
 <repast.simphony.chart2.engine.TimeSeriesChartDescriptor
 	simphonyVersion="2.7.0">
-	<name>Active Cases Time Series Chart</name>
-	<dataSet>ActiveCasesTimeSeries</dataSet>
+	<name>Cumulative Cases Time Series Chart</name>
+	<dataSet>CumulativeStatisticsTimeSeries</dataSet>
 	<xAxisLabel>hours</xAxisLabel>
-	<yAxisLabel>cases</yAxisLabel>
-	<chartTitle>Active Cases Time Series</chartTitle>
+	<yAxisLabel>cumulative cases</yAxisLabel>
+	<chartTitle>Cumulative Cases Time Series</chartTitle>
 	<type>TIME_SERIES</type>
 	<background>
 		<red>255</red>
@@ -22,9 +22,9 @@
 	<showLegend>false</showLegend>
 	<seriesIds>
 		<entry>
-			<string>activeCases</string>
+			<string>cumulativeCases</string>
 			<SeriesData>
-				<label>activeCases</label>
+				<label>cumulativeCases</label>
 				<color>
 					<red>0</red>
 					<green>0</green>
