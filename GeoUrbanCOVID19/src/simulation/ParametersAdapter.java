@@ -3,7 +3,7 @@ package simulation;
 import repast.simphony.engine.environment.RunEnvironment;
 import repast.simphony.parameter.Parameters;
 
-public class ParametersAdapter {
+public final class ParametersAdapter {
 
 	/**
 	 * Exposed count parameter id
@@ -44,6 +44,23 @@ public class ParametersAdapter {
 	 * Compliance deviation percentage parameter id
 	 */
 	private static final String COMPLIANCE_DEVIATION_PERCENTAGE_PARAM_ID = "complianceDeviationPercentage";
+
+	/**
+	 * Is the calibration mode on parameter id
+	 */
+	private static final String IS_CALIBRATION_MODE_ON_PARAM_ID = "isCalibrationModeOn";
+
+	/**
+	 * Cumulative cases threshold parameter id
+	 */
+	private static final String CUMULATIVE_CASES_THRESHOLD_PARAM_ID = "cumulativeCasesThreshold";
+
+	/**
+	 * Private constructor
+	 */
+	private ParametersAdapter() {
+		throw new UnsupportedOperationException("Utility class");
+	}
 
 	/**
 	 * Get exposed count
@@ -110,10 +127,19 @@ public class ParametersAdapter {
 	}
 
 	/**
-	 * Private constructor
+	 * Is the calibration mode on?
 	 */
-	private ParametersAdapter() {
-		throw new UnsupportedOperationException("Utility class");
+	public static boolean isCalibrationModeOn() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getBoolean(IS_CALIBRATION_MODE_ON_PARAM_ID);
+	}
+
+	/**
+	 * Get cumulative cases threshold
+	 */
+	public static double getCumulativeCasesThreshold() {
+		Parameters simParams = RunEnvironment.getInstance().getParameters();
+		return simParams.getDouble(CUMULATIVE_CASES_THRESHOLD_PARAM_ID);
 	}
 
 }

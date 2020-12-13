@@ -2,6 +2,7 @@ package output;
 
 import java.util.ArrayList;
 import java.util.List;
+import simulation.ParametersAdapter;
 
 public class OutputManager {
 
@@ -46,17 +47,26 @@ public class OutputManager {
 	 * Handle the 'onNewCase' event
 	 */
 	public void onNewCase() {
+		// Update statistics
 		this.newCases++;
 		this.cumulativeCases++;
 		this.activeCases++;
+		// Notify observers if the cumulative cases threshold is reached
+		double threshold = ParametersAdapter.getCumulativeCasesThreshold();
+		double susceptibleCount = ParametersAdapter.getSusceptibleCount();
+		if (this.cumulativeCases / susceptibleCount > threshold) {
+			notifyCumulativeCasesThresholdReached();
+		}
 	}
 
 	/**
 	 * Handle the 'onNewDeath' event
 	 */
 	public void onNewDeath() {
+		// Update statistics
 		this.newDeaths++;
 		this.activeCases--;
+		// Notify observers if the active cases fall to zero
 		if (this.activeCases == 0) {
 			notifyZeroActiveCases();
 		}
@@ -66,8 +76,10 @@ public class OutputManager {
 	 * Handle the 'onNewImmune' event
 	 */
 	public void onNewImmune() {
+		// Update statistics
 		this.newImmune++;
 		this.activeCases--;
+		// Notify observers if the active cases fall to zero
 		if (this.activeCases == 0) {
 			notifyZeroActiveCases();
 		}
@@ -127,6 +139,15 @@ public class OutputManager {
 	private void notifyZeroActiveCases() {
 		for (OutputManagerObserver observer : this.observers) {
 			observer.onZeroActiveCases();
+		}
+	}
+
+	/**
+	 * Notify observers of cumulative cases threshold reached
+	 */
+	private void notifyCumulativeCasesThresholdReached() {
+		for (OutputManagerObserver observer : this.observers) {
+			observer.onCumulativeCasesThresholdReached();
 		}
 	}
 

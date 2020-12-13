@@ -27,7 +27,6 @@ import repast.simphony.context.space.gis.GeographyFactory;
 import repast.simphony.context.space.gis.GeographyFactoryFinder;
 import repast.simphony.dataLoader.ContextBuilder;
 import repast.simphony.engine.environment.RunEnvironment;
-import repast.simphony.essentials.RepastEssentials;
 import repast.simphony.space.continuous.NdPoint;
 import repast.simphony.space.gis.Geography;
 import repast.simphony.space.gis.GeographyParameters;
@@ -45,6 +44,16 @@ public class SimulationBuilder
 	 * Geography projection id
 	 */
 	public static final String GEOGRAPHY_PROJECTION_ID = "city";
+
+	/**
+	 * City polygon id attribute
+	 */
+	public static final String CITY_POLYGON_ID_ATTRIBUTE = "Id";
+
+	/**
+	 * Neighborhood polygon id attribute
+	 */
+	private static final String NEIGHBORHOOD_POLYGON_ID_ATTRIBUTE = "SIT_2017";
 
 	/**
 	 * Reference to geography projection
@@ -98,7 +107,7 @@ public class SimulationBuilder
 		this.geography = createGeographyProjection(context);
 		// Initialize city
 		this.city = readPolygons(SourcePaths.CITY_GEOMETRY_SHAPEFILE,
-				GISPolygonType.SIMPLE, "Id");
+				GISPolygonType.SIMPLE, CITY_POLYGON_ID_ATTRIBUTE);
 		for (GISPolygon cityElement : this.city.values()) {
 			context.add(cityElement);
 		}
@@ -112,7 +121,7 @@ public class SimulationBuilder
 		// Initialize neighborhoods
 		this.neighborhoods = readPolygons(
 				SourcePaths.NEIGHBORHOODS_GEOMETRY_SHAPEFILE,
-				GISPolygonType.NEIGHBORHOOD, "SIT_2017");
+				GISPolygonType.NEIGHBORHOOD, NEIGHBORHOOD_POLYGON_ID_ATTRIBUTE);
 		// Fill neighborhoods
 		fillNeighborhoods();
 		// Add neighborhoods to the simulation
@@ -164,6 +173,24 @@ public class SimulationBuilder
 		// Set end tick
 		RunEnvironment.getInstance().endAt(END_TICK);
 		return context;
+	}
+
+	/**
+	 * Handle the 'onZeroActiveCases' event
+	 */
+	@Override
+	public void onZeroActiveCases() {
+		stopSimulation();
+	}
+
+	/**
+	 * Handle the 'onCumulativeCasesThresholdReached' event
+	 */
+	@Override
+	public void onCumulativeCasesThresholdReached() {
+		if (ParametersAdapter.isCalibrationModeOn()) {
+			stopSimulation();
+		}
 	}
 
 	/**
@@ -262,12 +289,10 @@ public class SimulationBuilder
 	}
 
 	/**
-	 * Handle the 'onZeroActiveCases' event
+	 * Stop simulation
 	 */
-	@Override
-	public void onZeroActiveCases() {
-		double currentTick = RepastEssentials.GetTickCount();
-		RunEnvironment.getInstance().endAt(currentTick + 1);
+	private void stopSimulation() {
+		RunEnvironment.getInstance().endRun();
 	}
 
 }

@@ -33,4 +33,12 @@
 	<parameter name="walkerShare" displayName="Walker share (%)"
 		type="double" defaultValue="0.3" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
+	<parameter name="isCalibrationModeOn"
+		displayName="Is the calibration mode on? (Y/N)" type="boolean"
+		defaultValue="false" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter" />
+	<parameter name="cumulativeCasesThreshold"
+		displayName="Cumulative cases threshold (%)" type="double"
+		defaultValue="0.3" isReadOnly="false"
+		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 </parameters>

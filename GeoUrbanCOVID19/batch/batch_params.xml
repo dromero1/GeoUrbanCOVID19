@@ -1,5 +1,7 @@
 <?xml version="1.0" ?>
-<sweep runs="8">
+<sweep runs="10">
+	<parameter name="isCalibrationModeOn" type="constant"
+		constant_type="boolean" value="false"></parameter>
 	<parameter name="particleExpulsionInterval" type="constant"
 		constant_type="double" value="15.0"></parameter>
 	<parameter name="complianceDeviationPercentage"
@@ -14,6 +16,8 @@
 		constant_type="double" value="0.3"></parameter>
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
+	<parameter name="cumulativeCasesThreshold" type="constant"
+		constant_type="double" value="0.3"></parameter>
 	<parameter name="susceptibleCount" type="constant"
 		constant_type="int" value="100000"></parameter>
 </sweep>

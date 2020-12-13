@@ -7,4 +7,9 @@ public interface OutputManagerObserver {
 	 */
 	public void onZeroActiveCases();
 
+	/**
+	 * Handle the 'onCumulativeCasesThresholdReached' event
+	 */
+	public void onCumulativeCasesThresholdReached();
+
 }
