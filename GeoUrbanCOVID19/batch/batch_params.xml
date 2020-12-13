@@ -17,7 +17,7 @@
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="cumulativeCasesThreshold" type="constant"
-		constant_type="double" value="0.3"></parameter>
+		constant_type="double" value="0.35"></parameter>
 	<parameter name="susceptibleCount" type="constant"
 		constant_type="int" value="100000"></parameter>
 </sweep>
