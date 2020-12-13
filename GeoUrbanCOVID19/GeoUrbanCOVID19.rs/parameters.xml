@@ -34,7 +34,7 @@
 		type="double" defaultValue="0.3" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$DoubleConverter" />
 	<parameter name="isCalibrationModeOn"
-		displayName="Is the calibration mode on? (Y/N)" type="boolean"
+		displayName="Is the calibration mode on? (y/n)" type="boolean"
 		defaultValue="false" isReadOnly="false"
 		converter="repast.simphony.parameter.StringConverterFactory$BooleanConverter" />
 	<parameter name="cumulativeCasesThreshold"
