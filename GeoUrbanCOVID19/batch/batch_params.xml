@@ -3,17 +3,17 @@
 	<parameter name="isCalibrationModeOn" type="constant"
 		constant_type="boolean" value="true"></parameter>
 	<parameter name="particleExpulsionInterval" type="constant"
-		constant_type="double" value="40.0"></parameter>
+		constant_type="double" value="60.0"></parameter>
 	<parameter name="complianceDeviationPercentage"
 		type="constant" constant_type="double" value="0.1"></parameter>
 	<parameter name="exposedCount" type="constant"
-		constant_type="int" value="1"></parameter>
+		constant_type="int" value="5"></parameter>
 	<parameter name="maskFactor" type="constant"
 		constant_type="double" value="0.5"></parameter>
 	<parameter name="infectionRadius" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="walkerShare" type="constant"
-		constant_type="double" value="0.20"></parameter>
+		constant_type="double" value="0.35"></parameter>
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="cumulativeCasesThreshold" type="constant"
