@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <sweep runs="10">
 	<parameter name="isCalibrationModeOn" type="constant"
-		constant_type="boolean" value="true"></parameter>
+		constant_type="boolean" value="false"></parameter>
 	<parameter name="particleExpulsionInterval" type="constant"
-		constant_type="double" value="60.0"></parameter>
+		constant_type="double" value="40.0"></parameter>
 	<parameter name="complianceDeviationPercentage"
 		type="constant" constant_type="double" value="0.1"></parameter>
 	<parameter name="exposedCount" type="constant"
@@ -13,7 +13,7 @@
 	<parameter name="infectionRadius" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="walkerShare" type="constant"
-		constant_type="double" value="0.35"></parameter>
+		constant_type="double" value="0.30"></parameter>
 	<parameter name="ticksToSleep" type="constant"
 		constant_type="double" value="2.0"></parameter>
 	<parameter name="cumulativeCasesThreshold" type="constant"
