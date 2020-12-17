@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<sweep runs="10">
+<sweep runs="5">
 	<parameter name="isCalibrationModeOn" type="constant"
 		constant_type="boolean" value="false"></parameter>
 	<parameter name="particleExpulsionInterval" type="constant"
