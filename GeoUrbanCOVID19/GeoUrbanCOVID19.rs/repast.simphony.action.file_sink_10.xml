@@ -12,6 +12,6 @@
 		<string>deaths</string>
 		<string>immune</string>
 	</sourceIds>
-	<fileName>output/Ouput_CommuneStatistics.csv</fileName>
+	<fileName>output/Output_CommuneStatistics.csv</fileName>
 	<addTimeStamp>false</addTimeStamp>
 </repast.simphony.data2.engine.FileSinkDescriptor>
