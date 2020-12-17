@@ -11,80 +11,79 @@ import util.TickConverter;
 public final class Randomizer {
 
 	/**
-	 * Minimum wake up time (unit: hours). Reference: <pending>
+	 * Minimum wake up time (unit: hours)
 	 */
 	public static final double MIN_WAKE_UP_TIME = 6;
 
 	/**
-	 * Maximum wake up time (unit: hours). Reference: <pending>
+	 * Maximum wake up time (unit: hours)
 	 */
 	public static final double MAX_WAKE_UP_TIME = 9;
 
 	/**
-	 * Minimum returning home time (unit: hours). Reference: <pending>
+	 * Minimum returning home time (unit: hours)
 	 */
 	public static final double MIN_RETURN_HOME_TIME = 17;
 
 	/**
-	 * Maximum returning home time (unit: hours). Reference: <pending>
+	 * Maximum returning home time (unit: hours)
 	 */
 	public static final double MAX_RETURN_HOME_TIME = 20;
 
 	/**
-	 * Infection alpha parameter. Reference: <pending>
+	 * Infection alpha parameter
 	 */
 	public static final double INFECTION_ALPHA = 2.11;
 
 	/**
-	 * Infection beta parameter. Reference: <pending>
+	 * Infection beta parameter
 	 */
 	public static final double INFECTION_BETA = 1.3;
 
 	/**
-	 * Infection minimum parameter. Reference: <pending>
+	 * Infection minimum parameter
 	 */
 	public static final double INFECTION_MIN = -2.4;
 
 	/**
-	 * Discharge alpha parameter. Reference: <pending>
+	 * Discharge alpha parameter
 	 */
 	public static final double DISCHARGE_ALPHA = 1.99;
 
 	/**
-	 * Discharge beta parameter. Reference: <pending>
+	 * Discharge beta parameter
 	 */
 	public static final double DISCHARGE_BETA = 7.77;
 
 	/**
-	 * Incubation period mean parameter (unit: days). Reference: <pending>
+	 * Incubation period mean parameter (unit: days)
 	 */
 	public static final double MEAN_INCUBATION_PERIOD = 5.52;
 
 	/**
-	 * Incubation period standard deviation parameter (unit: days). Reference:
-	 * <pending>
+	 * Incubation period standard deviation parameter (unit: days)
 	 */
 	public static final double STD_INCUBATION_PERIOD = 2.41;
 
 	/**
-	 * Maximum mask factor. Reference: <pending>
+	 * Maximum mask factor
 	 */
 	public static final double MAX_MASK_FACTOR = 1;
 
 	/**
-	 * Minimum mask factor. Reference: <pending>
+	 * Minimum mask factor
 	 */
 	public static final double MIN_MASK_FACTOR = 0;
 
 	/**
-	 * Age ranges (unit: age). Reference: <pending>
+	 * Age ranges (unit: age)
 	 */
 	protected static final int[][] AGE_RANGES = { { 0, 9 }, { 10, 19 },
 			{ 20, 29 }, { 30, 39 }, { 40, 49 }, { 50, 59 }, { 60, 69 },
 			{ 70, 79 }, { 80, 121 } };
 
 	/**
-	 * Age probabilities (unit: probability). Reference: <pending>
+	 * Age probabilities (unit: probability)
 	 */
 	protected static final double[] AGE_PROBABILITIES = { 0.1443, 0.169, 0.1728,
 			0.1487, 0.1221, 0.1104, 0.0728, 0.0393, 0.0206 };
@@ -117,14 +116,14 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random id. Reference: <pending>
+	 * Get random id
 	 */
 	public static int getRandomId() {
 		return RandomHelper.nextIntFromTo(0, 9);
 	}
 
 	/**
-	 * Get random age (unit: age). Reference: <pending>
+	 * Get random age (unit: age)
 	 */
 	public static int getRandomAge() {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
@@ -140,7 +139,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random incubation period (unit: days). Reference: <pending>
+	 * Get random incubation period (unit: days)
 	 */
 	public static double getRandomIncubationPeriod() {
 		double t = Math.pow(MEAN_INCUBATION_PERIOD, 2)
@@ -154,7 +153,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random patient type. Reference: <pending>
+	 * Get random patient type
 	 */
 	public static PatientType getRandomPatientType() {
 		double r = RandomHelper.nextDoubleFromTo(0, 1);
@@ -170,7 +169,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Is the patient going to die? Reference: <pending>
+	 * Is the patient going to die?
 	 * 
 	 * @param patientType Patient type
 	 */
@@ -187,7 +186,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Is the citizen getting exposed? Reference: <pending>
+	 * Is the citizen getting exposed?
 	 * 
 	 * @param incubationDiff       Incubation difference
 	 * @param maskUsageInfected    Mask usage of infected citizen
@@ -214,7 +213,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random time to discharge (unit: days). Reference: <pending>
+	 * Get random time to discharge (unit: days)
 	 */
 	public static double getRandomTimeToDischarge() {
 		Gamma gamma = RandomHelper.createGamma(DISCHARGE_ALPHA,
@@ -223,7 +222,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random mask usage. Reference: <pending>
+	 * Get random mask usage
 	 * 
 	 * @param maskUsageProbability Mask usage probability
 	 */
@@ -238,7 +237,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random policy compliance. Reference: <pending>
+	 * Get random policy compliance
 	 * 
 	 * @param complianceProbability Compliance probability
 	 */
@@ -254,7 +253,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random wake up time (unit: hours). Reference: <pending>
+	 * Get random wake up time (unit: hours)
 	 */
 	public static double getRandomWakeUpTime() {
 		return RandomHelper.nextDoubleFromTo(MIN_WAKE_UP_TIME,
@@ -262,7 +261,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random returning home time (unit: hours). Reference: <pending>
+	 * Get random returning home time (unit: hours)
 	 */
 	public static double getRandomReturningHomeTime() {
 		return RandomHelper.nextDoubleFromTo(MIN_RETURN_HOME_TIME,
@@ -270,7 +269,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random stratum. Reference: <pending>
+	 * Get random stratum
 	 * 
 	 * @param neighborhood Neighborhood
 	 */
@@ -290,7 +289,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random walking pattern. Reference: <pending>
+	 * Get random walking pattern
 	 */
 	public static boolean getRandomWalkingPattern() {
 		double walkerShare = ParametersAdapter.getWalkerShare();
@@ -299,7 +298,7 @@ public final class Randomizer {
 	}
 
 	/**
-	 * Get random desire to go out. Reference: <pending>
+	 * Get random desire to go out
 	 * 
 	 * @param effectiveDeparturesShare Effective departures share
 	 */

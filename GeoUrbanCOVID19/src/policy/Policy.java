@@ -2,7 +2,6 @@ package policy;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import model.Citizen;
 import repast.simphony.essentials.RepastEssentials;
 import util.TickConverter;

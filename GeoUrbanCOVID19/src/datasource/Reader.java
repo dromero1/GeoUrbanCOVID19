@@ -28,7 +28,7 @@ import policy.PolicyAdapter;
 public class Reader {
 
 	/**
-	 * Source split regular expression
+	 * CSV source split regular expression
 	 */
 	private static final String SOURCE_SPLIT_REGEX = ",";
 

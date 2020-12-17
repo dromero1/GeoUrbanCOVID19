@@ -27,7 +27,7 @@ import util.TickConverter;
 public class Citizen {
 
 	/**
-	 * Displacement per step (unit: meters). Reference: <pending>
+	 * Displacement per step (unit: meters)
 	 */
 	public static final double DISPLACEMENT_PER_STEP = 50;
 
