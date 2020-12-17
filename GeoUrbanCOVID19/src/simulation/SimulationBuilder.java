@@ -180,7 +180,9 @@ public class SimulationBuilder
 	 */
 	@Override
 	public void onZeroActiveCases() {
-		stopSimulation();
+		if (ParametersAdapter.isCalibrationModeOn()) {
+			stopSimulation();
+		}
 	}
 
 	/**
