@@ -25,7 +25,7 @@ import model.SODMatrix;
 import policy.Policy;
 import policy.PolicyAdapter;
 
-public class Reader {
+public final class Reader {
 
 	/**
 	 * CSV source split regular expression
