@@ -132,7 +132,7 @@ public class SimulationBuilder
 		this.outputManager = new OutputManager();
 		this.outputManager.registerObserver(this);
 		context.add(this.outputManager);
-		// Add students to the simulation
+		// Add citizens to the simulation
 		List<Citizen> citizens = createCitizens();
 		for (Citizen citizen : citizens) {
 			context.add(citizen);
